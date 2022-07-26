@@ -12,10 +12,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.compose.*
 import com.woowahan.accountbook.components.calendar.CalendarScreen
 import com.woowahan.accountbook.components.history.HistoryScreen
 import com.woowahan.accountbook.components.history.create.HistoryCreateScreen
@@ -47,7 +45,6 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Main() {
-    var currentRoute by rememberSaveable { mutableStateOf(BottomNavigationRoute.History.route) }
     val navController = rememberNavController()
     val navList =
         listOf(
@@ -61,19 +58,18 @@ fun Main() {
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             BottomNavigation {
-                navList.forEach {
+                navList.forEach { screen ->
+                    val currentBackStackEntryAsState by navController.currentBackStackEntryAsState()
+                    val currentRoute = currentBackStackEntryAsState?.destination
                     BottomNavigationItem(
                         unselectedContentColor = White80,
-                        selected = currentRoute == it.route,
-                        label = { Text(it.label) },
-                        onClick = {
-                            currentRoute = it.route
-                            navController.navigate(it.route)
-                        },
+                        selected = currentRoute?.hierarchy?.any { it.route == screen.route } == true,
+                        label = { Text(screen.label) },
+                        onClick = { navController.navigate(screen.route) },
                         icon = {
                             Icon(
-                                painter = painterResource(it.iconId),
-                                contentDescription = it.label
+                                painter = painterResource(screen.iconId),
+                                contentDescription = screen.label
                             )
                         },
                     )
