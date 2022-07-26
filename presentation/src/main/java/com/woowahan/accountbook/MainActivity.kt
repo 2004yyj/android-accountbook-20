@@ -4,12 +4,25 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
+import androidx.navigation.compose.rememberNavController
+import com.woowahan.accountbook.components.calendar.CalendarScreen
+import com.woowahan.accountbook.components.history.HistoryScreen
+import com.woowahan.accountbook.components.history.create.HistoryCreateScreen
+import com.woowahan.accountbook.components.setting.SettingScreen
+import com.woowahan.accountbook.components.setting.create.CategoryCreateScreen
+import com.woowahan.accountbook.components.setting.create.PaymentMethodCreateScreen
+import com.woowahan.accountbook.components.statistics.StatisticsScreen
+import com.woowahan.accountbook.navigation.BottomNavigationRoute
+import com.woowahan.accountbook.navigation.Screen
 import com.woowahan.accountbook.ui.theme.AccountBookTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +35,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
+                    Main()
                 }
             }
         }
@@ -30,14 +43,64 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
+fun Main() {
+    var currentScreen by rememberSaveable { mutableStateOf(Screen.HistoryIndex.route) }
+    val navController = rememberNavController()
+    val navList =
+        listOf(
+            BottomNavigationRoute.History,
+            BottomNavigationRoute.Calendar,
+            BottomNavigationRoute.Statistics,
+            BottomNavigationRoute.Setting
+        )
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            BottomNavigation {
+                navList.forEach {
+                    BottomNavigationItem(
+                        selected = currentScreen == it.route,
+                        label = { Text(it.label) },
+                        onClick = {
+                            currentScreen = it.route
+                            navController.navigate(it.route)
+                        },
+                        icon = {
+                            Icon(
+                                painter = painterResource(it.iconId),
+                                contentDescription = it.label
+                            )
+                        },
+                    )
+                }
+            }
+        }
+    ) {
+        NavHost(navController = navController, startDestination = BottomNavigationRoute.History.route) {
+            navigation(route = BottomNavigationRoute.History.route, startDestination = Screen.HistoryIndex.route) {
+                composable(route = Screen.HistoryIndex.route) { HistoryScreen() }
+                composable(route = Screen.HistoryIndex.HistoryCreate.route) { HistoryCreateScreen() }
+            }
+            navigation(route = BottomNavigationRoute.Calendar.route, startDestination = Screen.CalendarIndex.route) {
+                composable(route = Screen.CalendarIndex.route) { CalendarScreen() }
+            }
+            navigation(route = BottomNavigationRoute.Statistics.route, startDestination = Screen.StatisticsIndex.route) {
+                composable(route = Screen.StatisticsIndex.route) { StatisticsScreen() }
+            }
+            navigation(route = BottomNavigationRoute.Setting.route, startDestination = Screen.SettingIndex.route) {
+                composable(route = Screen.SettingIndex.route) { SettingScreen() }
+                composable(route = Screen.SettingIndex.CategoryCreate.route) { CategoryCreateScreen() }
+                composable(route = Screen.SettingIndex.PaymentMethodCreate.route) { PaymentMethodCreateScreen() }
+            }
+        }
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     AccountBookTheme {
-        Greeting("Android")
+        Main()
     }
 }
