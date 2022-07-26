@@ -24,6 +24,7 @@ import com.woowahan.accountbook.components.statistics.StatisticsScreen
 import com.woowahan.accountbook.navigation.BottomNavigationRoute
 import com.woowahan.accountbook.navigation.Screen
 import com.woowahan.accountbook.ui.theme.AccountBookTheme
+import com.woowahan.accountbook.ui.theme.White80
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,10 +61,11 @@ fun Main() {
             BottomNavigation {
                 navList.forEach {
                     BottomNavigationItem(
-                        selected = currentScreen == it.route,
+                        unselectedContentColor = White80,
+                        selected = currentRoute == it.route,
                         label = { Text(it.label) },
                         onClick = {
-                            currentScreen = it.route
+                            currentRoute = it.route
                             navController.navigate(it.route)
                         },
                         icon = {
