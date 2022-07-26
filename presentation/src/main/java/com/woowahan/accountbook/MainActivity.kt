@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Main() {
-    var currentScreen by rememberSaveable { mutableStateOf(Screen.HistoryIndex.route) }
+    var currentRoute by rememberSaveable { mutableStateOf(BottomNavigationRoute.History.route) }
     val navController = rememberNavController()
     val navList =
         listOf(
