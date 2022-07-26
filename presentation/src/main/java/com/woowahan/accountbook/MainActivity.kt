@@ -3,7 +3,9 @@ package com.woowahan.accountbook
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -79,21 +81,38 @@ fun Main() {
             }
         }
     ) {
-        NavHost(navController = navController, startDestination = BottomNavigationRoute.History.route) {
-            navigation(route = BottomNavigationRoute.History.route, startDestination = Screen.HistoryIndex.route) {
-                composable(route = Screen.HistoryIndex.route) { HistoryScreen() }
-                composable(route = Screen.HistoryIndex.HistoryCreate.route) { HistoryCreateScreen() }
-            }
-            navigation(route = BottomNavigationRoute.Calendar.route, startDestination = Screen.CalendarIndex.route) {
-                composable(route = Screen.CalendarIndex.route) { CalendarScreen() }
-            }
-            navigation(route = BottomNavigationRoute.Statistics.route, startDestination = Screen.StatisticsIndex.route) {
-                composable(route = Screen.StatisticsIndex.route) { StatisticsScreen() }
-            }
-            navigation(route = BottomNavigationRoute.Setting.route, startDestination = Screen.SettingIndex.route) {
-                composable(route = Screen.SettingIndex.route) { SettingScreen() }
-                composable(route = Screen.SettingIndex.CategoryCreate.route) { CategoryCreateScreen() }
-                composable(route = Screen.SettingIndex.PaymentMethodCreate.route) { PaymentMethodCreateScreen() }
+        Row(modifier = Modifier.padding(it)) {
+            NavHost(
+                navController = navController,
+                startDestination = BottomNavigationRoute.History.route
+            ) {
+                navigation(
+                    route = BottomNavigationRoute.History.route,
+                    startDestination = Screen.HistoryIndex.route
+                ) {
+                    composable(route = Screen.HistoryIndex.route) { HistoryScreen(navController) }
+                    composable(route = Screen.HistoryIndex.HistoryCreate.route) { HistoryCreateScreen() }
+                }
+                navigation(
+                    route = BottomNavigationRoute.Calendar.route,
+                    startDestination = Screen.CalendarIndex.route
+                ) {
+                    composable(route = Screen.CalendarIndex.route) { CalendarScreen() }
+                }
+                navigation(
+                    route = BottomNavigationRoute.Statistics.route,
+                    startDestination = Screen.StatisticsIndex.route
+                ) {
+                    composable(route = Screen.StatisticsIndex.route) { StatisticsScreen() }
+                }
+                navigation(
+                    route = BottomNavigationRoute.Setting.route,
+                    startDestination = Screen.SettingIndex.route
+                ) {
+                    composable(route = Screen.SettingIndex.route) { SettingScreen() }
+                    composable(route = Screen.SettingIndex.CategoryCreate.route) { CategoryCreateScreen() }
+                    composable(route = Screen.SettingIndex.PaymentMethodCreate.route) { PaymentMethodCreateScreen() }
+                }
             }
         }
     }
