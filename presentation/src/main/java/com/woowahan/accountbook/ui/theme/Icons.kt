@@ -3,7 +3,7 @@ package com.woowahan.accountbook.ui.theme
 import androidx.annotation.DrawableRes
 import com.woowahan.accountbook.R
 
-sealed class Icons(@DrawableRes iconId: Int) {
+sealed class Icons (@DrawableRes val iconId: Int) {
     object ArrowBottom: Icons(R.drawable.ic_arrow_bottom)
     object ArrowLeft: Icons(R.drawable.ic_arrow_left)
     object ArrowRight: Icons(R.drawable.ic_arrow_right)
