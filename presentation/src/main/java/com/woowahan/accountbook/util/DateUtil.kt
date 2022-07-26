@@ -26,3 +26,8 @@ fun String.toMillis(): Long {
     val sdf = SimpleDateFormat("yyyy년 MM월", Locale.KOREA)
     return sdf.parse(this)?.time ?: 0L
 }
+
+fun Long.toMonthDate(): String {
+    val sdf = SimpleDateFormat("M월 dd일", Locale.KOREA)
+    return sdf.format(this) ?: ""
+}
