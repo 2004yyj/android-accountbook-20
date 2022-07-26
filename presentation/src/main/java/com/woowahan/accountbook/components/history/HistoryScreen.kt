@@ -28,6 +28,7 @@ fun HistoryScreen(
     viewModel: HistoryViewModel = viewModel()
 ) {
     val history by viewModel.history.collectAsState()
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
     var currentMonthLong by remember { mutableStateOf(System.currentTimeMillis()) }
 
     viewModel.getHistory()
@@ -55,38 +56,43 @@ fun HistoryScreen(
             }
         }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isRefreshing),
+            onRefresh = { viewModel.refresh() }
         ) {
-            LazyColumn(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(paddingValues)
             ) {
-                history.groupBy { it.date }.forEach { (manufacturer, models) ->
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    history.groupBy { it.date }.forEach { (manufacturer, models) ->
 
-                    val incomeTotal = models.sumOf {
-                        if (it.amount > 0) it.amount else 0
-                    }.toMoneyString()
-                    val expenseTotal = models.sumOf {
-                        if (it.amount < 0) (it.amount * -1) else 0
-                    }.toMoneyString()
+                        val incomeTotal = models.sumOf {
+                            if (it.amount > 0) it.amount else 0
+                        }.toMoneyString()
+                        val expenseTotal = models.sumOf {
+                            if (it.amount < 0) (it.amount * -1) else 0
+                        }.toMoneyString()
 
-                    stickyHeader {
-                        HistoryListHeader(
-                            date = manufacturer,
-                            incomeTotal = incomeTotal,
-                            expenseTotal = expenseTotal
-                        )
-                    }
+                        stickyHeader {
+                            HistoryListHeader(
+                                date = manufacturer,
+                                incomeTotal = incomeTotal,
+                                expenseTotal = expenseTotal
+                            )
+                        }
 
-                    items(models.count()) { index ->
-                        HistoryListItem(
-                            item = models[index],
-                            index = index,
-                            count = models.count()
-                        )
+                        items(models.count()) { index ->
+                            HistoryListItem(
+                                item = models[index],
+                                index = index,
+                                count = models.count()
+                            )
+                        }
                     }
                 }
             }
