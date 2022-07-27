@@ -3,14 +3,13 @@ package com.woowahan.accountbook.components.history.create
 import android.app.DatePickerDialog
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.ButtonDefaults.buttonColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -18,6 +17,7 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -27,15 +27,13 @@ import com.woowahan.accountbook.components.editable.Editable
 import com.woowahan.accountbook.components.history.create.radio.PaymentTypeRadioGroup
 import com.woowahan.accountbook.components.spinner.CustomDropDownMenu
 import com.woowahan.accountbook.components.textfield.CustomTextField
-import com.woowahan.accountbook.ui.theme.Purple
-import com.woowahan.accountbook.ui.theme.SubmitShape
-import com.woowahan.accountbook.ui.theme.Typography
-import com.woowahan.accountbook.ui.theme.White
+import com.woowahan.accountbook.ui.theme.*
 import com.woowahan.accountbook.util.parseMoneyLong
 import com.woowahan.accountbook.util.toLongTime
 import com.woowahan.accountbook.util.toMoneyString
 import com.woowahan.accountbook.util.toYearMonthDayDots
 import com.woowahan.accountbook.viewmodel.history.create.HistoryCreateViewModel
+import kotlinx.coroutines.flow.collect
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.*
@@ -59,6 +57,13 @@ fun HistoryCreateScreen(
     viewModel.getCategories()
 
     val context = LocalContext.current
+    LocalLifecycleOwner.current.apply {
+        lifecycleScope.launchWhenStarted {
+            viewModel.isSuccess.collect {
+                navController.popBackStack()
+            }
+        }
+    }
 
     val datePickerDialog = DatePickerDialog(context)
     datePickerDialog.setOnDateSetListener { _, year, month, dayOfMonth ->
@@ -179,6 +184,10 @@ fun HistoryCreateScreen(
             }
 
             Button(
+                colors = buttonColors(
+                    backgroundColor = Yellow,
+                    disabledBackgroundColor = Yellow80
+                ),
                 enabled = enterMoney != 0L && selectedPaymentMethod != "",
                 shape = SubmitShape,
                 modifier = Modifier
@@ -186,7 +195,14 @@ fun HistoryCreateScreen(
                     .height(48.dp)
                     .align(Alignment.BottomCenter),
                 onClick = {
-                    navController.popBackStack()
+                    viewModel.insertHistory(
+                        type = selectedType,
+                        date = selectedDate,
+                        money = enterMoney,
+                        content = enterContent,
+                        paymentMethod = selectedPaymentMethod,
+                        category = selectedCategory
+                    )
                 }
             ) {
                 Text(text = "등록하기", color = White)
