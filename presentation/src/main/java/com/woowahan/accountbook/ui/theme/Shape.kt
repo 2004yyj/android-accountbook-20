@@ -12,3 +12,6 @@ val Shapes = Shapes(
 
 val RadioLeftOption = RoundedCornerShape(topStart = 10.dp, bottomStart = 10.dp)
 val RadioRightOption = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp)
+
+val PopupShape = RoundedCornerShape(14.dp)
+val SubmitShape = RoundedCornerShape(16.dp)
