@@ -38,6 +38,12 @@ fun HistoryCreateScreen(navController: NavController) {
     var enterMoney by remember { mutableStateOf(0L) }
     var enterContent by remember { mutableStateOf("") }
 
+    val context = LocalContext.current
+
+    val datePickerDialog = DatePickerDialog(context)
+    datePickerDialog.setOnDateSetListener { _, year, month, dayOfMonth ->
+        selectedDate = "$year.${month + 1}.$dayOfMonth".toLongTime("yyyy.MM.dd")
+    }
 
     Column(
         modifier = Modifier
@@ -70,6 +76,7 @@ fun HistoryCreateScreen(navController: NavController) {
                 TransparentButton(
                     modifier = Modifier.fillMaxSize(),
                     onClick = {
+                        datePickerDialog.show()
                     }
                 ) {
                     Text(

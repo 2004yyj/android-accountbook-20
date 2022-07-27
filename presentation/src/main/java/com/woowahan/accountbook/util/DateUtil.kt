@@ -17,6 +17,11 @@ fun Long.getForwardMonthMillis(): Long {
     return calendar.timeInMillis
 }
 
+fun String.toLongTime(format: String): Long {
+    val sdf = SimpleDateFormat(format, Locale.KOREA)
+    return sdf.parse(this)?.time ?: 0L
+}
+
 fun Long.toYearMonth(): String {
     val sdf = SimpleDateFormat("yyyy년 MM월", Locale.KOREA)
     return sdf.format(this) ?: ""
