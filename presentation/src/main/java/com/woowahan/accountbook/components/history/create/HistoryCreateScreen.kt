@@ -33,11 +33,14 @@ import com.woowahan.accountbook.util.toLongTime
 import com.woowahan.accountbook.util.toMoneyString
 import com.woowahan.accountbook.util.toYearMonthDayDots
 import com.woowahan.accountbook.viewmodel.history.create.HistoryCreateViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.*
 
+@OptIn(FlowPreview::class)
 @Composable
 fun HistoryCreateScreen(
     navController: NavController,
@@ -58,10 +61,12 @@ fun HistoryCreateScreen(
 
     val context = LocalContext.current
     LocalLifecycleOwner.current.apply {
-        lifecycleScope.launchWhenStarted {
-            viewModel.isSuccess.collect {
-                navController.popBackStack()
-            }
+        lifecycleScope.launchWhenResumed {
+            viewModel.isSuccess
+                .debounce(300)
+                .collect {
+                    navController.popBackStack()
+                }
         }
     }
 
