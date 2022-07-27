@@ -31,3 +31,8 @@ fun Long.toMonthDate(): String {
     val sdf = SimpleDateFormat("M월 dd일", Locale.KOREA)
     return sdf.format(this) ?: ""
 }
+
+fun Long.toYearMonthDayDots(): String {
+    val sdf = SimpleDateFormat("yyyy. M. dd EEEE", Locale.KOREA)
+    return sdf.format(this) ?: ""
+}
