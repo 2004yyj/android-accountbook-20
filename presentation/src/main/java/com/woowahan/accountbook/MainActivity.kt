@@ -87,7 +87,7 @@ fun Main() {
                     startDestination = Screen.HistoryIndex.route
                 ) {
                     composable(route = Screen.HistoryIndex.route) { HistoryScreen(navController) }
-                    composable(route = Screen.HistoryIndex.HistoryCreate.route) { HistoryCreateScreen() }
+                    composable(route = Screen.HistoryIndex.HistoryCreate.route) { HistoryCreateScreen(navController) }
                 }
                 navigation(
                     route = BottomNavigationRoute.Calendar.route,
