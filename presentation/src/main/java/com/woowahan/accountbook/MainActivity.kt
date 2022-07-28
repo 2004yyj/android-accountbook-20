@@ -1,6 +1,7 @@
 package com.woowahan.accountbook
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Row
@@ -8,10 +9,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.*
 import com.woowahan.accountbook.components.calendar.CalendarScreen
@@ -25,6 +27,7 @@ import com.woowahan.accountbook.navigation.BottomNavigationRoute
 import com.woowahan.accountbook.navigation.Screen
 import com.woowahan.accountbook.ui.theme.AccountBookTheme
 import com.woowahan.accountbook.ui.theme.White80
+import com.woowahan.accountbook.viewmodel.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -46,7 +49,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Main() {
+fun Main(mainViewModel: MainViewModel = viewModel()) {
     val navController = rememberNavController()
     val navList =
         listOf(
@@ -55,6 +58,15 @@ fun Main() {
             BottomNavigationRoute.Statistics,
             BottomNavigationRoute.Setting
         )
+    val context = LocalContext.current
+
+    val isFailure by mainViewModel.isFailure.collectAsState()
+
+    if (isFailure.isNotEmpty()) {
+        Toast.makeText(context, isFailure, Toast.LENGTH_SHORT).show()
+    }
+
+    mainViewModel.createTables()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
