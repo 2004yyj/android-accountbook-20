@@ -6,5 +6,5 @@ data class HistoryData(
     val amount: Int,
     val content: String,
     val category: CategoryData,
-    val paymentMethod: PaymentMethodData,
+    val paymentMethod: PaymentMethodData?,
 )

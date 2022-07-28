@@ -10,7 +10,7 @@ fun HistoryData.toModel(): History {
         amount,
         content,
         category.toModel(),
-        paymentMethod.toModel()
+        paymentMethod?.toModel()
     )
 }
 
@@ -21,6 +21,6 @@ fun History.toEntity(): HistoryData {
         amount,
         content,
         category.toEntity(),
-        paymentMethod.toEntity()
+        paymentMethod?.toEntity()
     )
 }
