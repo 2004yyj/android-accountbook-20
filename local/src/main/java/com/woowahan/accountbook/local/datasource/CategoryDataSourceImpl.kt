@@ -1,7 +1,7 @@
 package com.woowahan.accountbook.local.datasource
 
 import com.woowahan.accountbook.data.datasource.CategoryDataSource
-import com.woowahan.accountbook.data.local.dao.CategoryDao
+import com.woowahan.accountbook.data.local.CategoryDao
 import com.woowahan.accountbook.data.mapper.toModel
 import com.woowahan.accountbook.domain.model.Category
 import javax.inject.Inject

@@ -1,7 +1,7 @@
 package com.woowahan.accountbook.local.datasource
 
 import com.woowahan.accountbook.data.datasource.PaymentMethodDataSource
-import com.woowahan.accountbook.data.local.dao.PaymentMethodDao
+import com.woowahan.accountbook.data.local.PaymentMethodDao
 import com.woowahan.accountbook.data.mapper.toModel
 import com.woowahan.accountbook.domain.model.PaymentMethod
 

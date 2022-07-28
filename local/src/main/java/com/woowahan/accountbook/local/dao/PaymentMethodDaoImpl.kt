@@ -1,7 +1,7 @@
 package com.woowahan.accountbook.local.dao
 
 import com.woowahan.accountbook.data.entity.PaymentMethodData
-import com.woowahan.accountbook.data.local.dao.PaymentMethodDao
+import com.woowahan.accountbook.data.local.PaymentMethodDao
 import com.woowahan.accountbook.local.helper.DatabaseOpenHelper
 import com.woowahan.accountbook.local.util.runSQL
 import com.woowahan.accountbook.local.util.runSQLWithReadableTransaction

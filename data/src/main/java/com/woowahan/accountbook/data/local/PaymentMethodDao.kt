@@ -1,4 +1,4 @@
-package com.woowahan.accountbook.data.local.dao
+package com.woowahan.accountbook.data.local
 
 import com.woowahan.accountbook.data.entity.PaymentMethodData
 

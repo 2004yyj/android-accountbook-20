@@ -1,7 +1,7 @@
 package com.woowahan.accountbook.local.dao
 
 import com.woowahan.accountbook.data.entity.CategoryData
-import com.woowahan.accountbook.data.local.dao.CategoryDao
+import com.woowahan.accountbook.data.local.CategoryDao
 import com.woowahan.accountbook.local.helper.DatabaseOpenHelper
 import com.woowahan.accountbook.local.util.runSQL
 import com.woowahan.accountbook.local.util.runSQLWithReadableTransaction
