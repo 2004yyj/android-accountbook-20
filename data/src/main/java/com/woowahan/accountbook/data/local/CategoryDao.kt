@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface CategoryDao {
     suspend fun getAllCategories(): List<CategoryData>
-    suspend fun getCategoryByName(name: String): CategoryData
+    suspend fun getCategoryByType(type: String): CategoryData
     suspend fun createCategoryTable()
     suspend fun dropCategoryTable()
     suspend fun insertCategory(type: String, name: String, color: Long)

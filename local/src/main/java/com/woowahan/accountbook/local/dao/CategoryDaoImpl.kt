@@ -31,10 +31,10 @@ class CategoryDaoImpl @Inject constructor(
         }
     }
 
-    override suspend fun getCategoryByName(name: String): CategoryData {
-        val sql = "SELECT * FROM Category WHERE name = ?"
+    override suspend fun getCategoryByType(type: String): CategoryData {
+        val sql = "SELECT * FROM Category WHERE type = ?"
         return dbHelper.runSQLWithReadableTransaction {
-            val cursor = rawQuery(sql, arrayOf(name))
+            val cursor = rawQuery(sql, arrayOf(type))
             val categoryData = CategoryData(
                 cursor.getInt(0),
                 cursor.getString(1),
