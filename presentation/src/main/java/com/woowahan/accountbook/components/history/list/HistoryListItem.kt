@@ -27,21 +27,23 @@ fun HistoryListItem(
                 .padding(horizontal = 16.dp)
                 .padding(top = 10.dp)
         ) {
-            CategoryChip(
-                text = {
-                    Text(
-                        text = item.category.name,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                color = Color(item.category.color),
-                modifier = Modifier.align(Alignment.TopStart)
-            )
-            Text(
-                text = item.paymentMethod.name,
-                modifier = Modifier.align(Alignment.TopEnd),
-                color = PurpleLight
-            )
+            item.paymentMethod?.name?.let {
+                CategoryChip(
+                    text = {
+                        Text(
+                            text = item.category.name,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
+                    color = Color(item.category.color),
+                    modifier = Modifier.align(Alignment.TopStart)
+                )
+                Text(
+                    text = it,
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    color = PurpleLight
+                )
+            }
         }
 
         Box(

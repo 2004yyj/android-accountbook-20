@@ -19,83 +19,11 @@ class HistoryViewModel: ViewModel() {
 
     fun getHistory() {
         viewModelScope.launch {
-            delay(1000)
-            _historyList.emit(listOf(
-                    History(
-                        0,
-                        1658825376000,
-                        -10000,
-                        "밥",
-                        Category("지출", "미분류", 0xFF4A6CC3),
-                        PaymentMethod("현대카드")
-                    ),
-                    History(
-                        0,
-                        1658707200000,
-                        -10000,
-                        "밥",
-                        Category("지출", "미분류", 0xFF4A6CC3),
-                        PaymentMethod("현대카드")
-                    ),
-                    History(
-                        0,
-                        1658707200000,
-                        10000,
-                        "돈",
-                        Category("수입", "미분류", 0xFF4A6CC3),
-                        PaymentMethod("현대카드")
-                    ),
-                    History(
-                        0,
-                        1658620800000,
-                        10000,
-                        "돈",
-                        Category("수입", "미분류", 0xFF4A6CC3),
-                        PaymentMethod("현대카드")
-                    ),
-                ))
         }
     }
 
     fun refresh() {
         viewModelScope.launch {
-            _isRefreshing.emit(true)
-            delay(1000)
-            _historyList.emit(listOf(
-                History(
-                    0,
-                    1658825376000,
-                    -10000,
-                    "밥",
-                    Category("지출", "미분류", 0xFF4A6CC3),
-                    PaymentMethod("현대카드")
-                ),
-                History(
-                    0,
-                    1658707200000,
-                    -10000,
-                    "밥",
-                    Category("지출", "미분류", 0xFF4A6CC3),
-                    PaymentMethod("현대카드")
-                ),
-                History(
-                    0,
-                    1658707200000,
-                    10000,
-                    "돈",
-                    Category("수입", "미분류", 0xFF4A6CC3),
-                    PaymentMethod("현대카드")
-                ),
-                History(
-                    0,
-                    1658620800000,
-                    10000,
-                    "돈",
-                    Category("수입", "미분류", 0xFF4A6CC3),
-                    PaymentMethod("현대카드")
-                ),
-            ))
-            _isRefreshing.emit(false)
         }
     }
 }

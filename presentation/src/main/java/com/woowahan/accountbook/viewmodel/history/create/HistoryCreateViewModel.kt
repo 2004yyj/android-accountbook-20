@@ -24,27 +24,13 @@ class HistoryCreateViewModel: ViewModel() {
 
     fun getPaymentMethods() {
         viewModelScope.launch {
-            _paymentMethods.emit(
-                listOf(
-                    PaymentMethod("토스뱅크카드"),
-                    PaymentMethod("현대카드"),
-                    PaymentMethod("BC카드"),
-                )
-            )
+
         }
     }
 
     fun getCategories() {
         viewModelScope.launch {
-            _categories.emit(
-                listOf(
-                    Category("expense", "교통비", Blue1.value.toLong()),
-                    Category("income", "용돈", Blue1.value.toLong()),
-                    Category("expense", "밥값", Blue1.value.toLong()),
-                    Category("income", "월급", Blue1.value.toLong()),
-                    Category("expense", "교통비", Blue1.value.toLong()),
-                )
-            )
+
         }
     }
 
@@ -58,9 +44,5 @@ class HistoryCreateViewModel: ViewModel() {
     ) {
         val filteredCategory = category.ifEmpty { "미분류" }
         val filteredContent = content.ifEmpty { "무제" }
-
-        viewModelScope.launch {
-            _isSuccess.emit(true)
-        }
     }
 }

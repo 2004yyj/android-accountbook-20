@@ -25,7 +25,9 @@ import com.woowahan.accountbook.navigation.BottomNavigationRoute
 import com.woowahan.accountbook.navigation.Screen
 import com.woowahan.accountbook.ui.theme.AccountBookTheme
 import com.woowahan.accountbook.ui.theme.White80
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
