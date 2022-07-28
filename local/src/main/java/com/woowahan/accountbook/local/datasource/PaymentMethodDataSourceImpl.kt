@@ -4,8 +4,9 @@ import com.woowahan.accountbook.data.datasource.PaymentMethodDataSource
 import com.woowahan.accountbook.data.local.PaymentMethodDao
 import com.woowahan.accountbook.data.mapper.toModel
 import com.woowahan.accountbook.domain.model.PaymentMethod
+import javax.inject.Inject
 
-class PaymentMethodDataSourceImpl(
+class PaymentMethodDataSourceImpl @Inject constructor(
     private val dao: PaymentMethodDao
 ): PaymentMethodDataSource {
     override suspend fun getAllPaymentMethods(): List<PaymentMethod> {

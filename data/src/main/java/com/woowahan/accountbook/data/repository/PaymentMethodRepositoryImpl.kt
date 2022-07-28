@@ -3,8 +3,9 @@ package com.woowahan.accountbook.data.repository
 import com.woowahan.accountbook.data.datasource.PaymentMethodDataSource
 import com.woowahan.accountbook.domain.model.PaymentMethod
 import com.woowahan.accountbook.domain.repository.PaymentMethodRepository
+import javax.inject.Inject
 
-class PaymentMethodRepositoryImpl(
+class PaymentMethodRepositoryImpl @Inject constructor(
     private val dataSource: PaymentMethodDataSource
 ): PaymentMethodRepository {
     override suspend fun getAllPaymentMethods(): List<PaymentMethod> {

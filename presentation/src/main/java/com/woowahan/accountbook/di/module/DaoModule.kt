@@ -1,8 +1,10 @@
 package com.woowahan.accountbook.di.module
 
 import com.woowahan.accountbook.data.local.CategoryDao
+import com.woowahan.accountbook.data.local.HistoryDao
 import com.woowahan.accountbook.data.local.PaymentMethodDao
 import com.woowahan.accountbook.local.dao.CategoryDaoImpl
+import com.woowahan.accountbook.local.dao.HistoryDaoImpl
 import com.woowahan.accountbook.local.dao.PaymentMethodDaoImpl
 import dagger.Binds
 import dagger.Module
@@ -17,4 +19,7 @@ abstract class DaoModule {
 
     @Binds
     abstract fun bindsPaymentMethodDao(paymentMethodDaoImpl: PaymentMethodDaoImpl): PaymentMethodDao
+
+    @Binds
+    abstract fun bindsHistoryDao(historyDaoImpl: HistoryDaoImpl): HistoryDao
 }

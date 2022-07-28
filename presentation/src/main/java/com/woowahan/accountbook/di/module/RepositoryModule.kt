@@ -1,8 +1,10 @@
 package com.woowahan.accountbook.di.module
 
 import com.woowahan.accountbook.data.repository.CategoryRepositoryImpl
+import com.woowahan.accountbook.data.repository.HistoryRepositoryImpl
 import com.woowahan.accountbook.data.repository.PaymentMethodRepositoryImpl
 import com.woowahan.accountbook.domain.repository.CategoryRepository
+import com.woowahan.accountbook.domain.repository.HistoryRepository
 import com.woowahan.accountbook.domain.repository.PaymentMethodRepository
 import dagger.Binds
 import dagger.Module
@@ -18,4 +20,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindsPaymentMethodRepository(paymentMethodRepositoryImpl: PaymentMethodRepositoryImpl): PaymentMethodRepository
+
+    @Binds
+    abstract fun bindsHistoryRepository(historyRepositoryImpl: HistoryRepositoryImpl): HistoryRepository
 }
