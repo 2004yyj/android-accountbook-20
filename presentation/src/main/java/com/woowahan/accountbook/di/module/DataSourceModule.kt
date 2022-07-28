@@ -1,7 +1,9 @@
 package com.woowahan.accountbook.di.module
 
 import com.woowahan.accountbook.data.datasource.CategoryDataSource
+import com.woowahan.accountbook.data.datasource.PaymentMethodDataSource
 import com.woowahan.accountbook.local.datasource.CategoryDataSourceImpl
+import com.woowahan.accountbook.local.datasource.PaymentMethodDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,4 +15,7 @@ import javax.inject.Singleton
 abstract class DataSourceModule {
     @Binds
     abstract fun bindsCategoryDataSource(categoryDataSourceImpl: CategoryDataSourceImpl): CategoryDataSource
+
+    @Binds
+    abstract fun bindsPaymentMethodDataSource(paymentMethodDataSourceImpl: PaymentMethodDataSourceImpl): PaymentMethodDataSource
 }

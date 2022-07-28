@@ -1,7 +1,9 @@
 package com.woowahan.accountbook.di.module
 
 import com.woowahan.accountbook.data.repository.CategoryRepositoryImpl
+import com.woowahan.accountbook.data.repository.PaymentMethodRepositoryImpl
 import com.woowahan.accountbook.domain.repository.CategoryRepository
+import com.woowahan.accountbook.domain.repository.PaymentMethodRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,4 +15,7 @@ import javax.inject.Singleton
 abstract class RepositoryModule {
     @Binds
     abstract fun bindsCategoryRepository(categoryRepositoryImpl: CategoryRepositoryImpl): CategoryRepository
+
+    @Binds
+    abstract fun bindsPaymentMethodRepository(paymentMethodRepositoryImpl: PaymentMethodRepositoryImpl): PaymentMethodRepository
 }
