@@ -40,6 +40,7 @@ fun HistoryScreen(
     val historyChecked = remember { mutableStateListOf<Int>() }
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val isFailure by viewModel.isFailure.collectAsState(initial = "")
+    val isSuccessDeleteHistory by viewModel.isSuccessDeleteHistory.collectAsState()
     var currentMonthFirstDayLong by remember { mutableStateOf(System.currentTimeMillis().getCurrentMonthFirstDayMillis()) }
     var forwardMonthFirstDayLong by remember { mutableStateOf(System.currentTimeMillis().getForwardMonthMillis()) }
 
@@ -55,6 +56,7 @@ fun HistoryScreen(
     }
 
     fun initial(refreshState: Boolean = false) = run {
+        isModifyModeEnabled = false
         viewModel.getHistory(
             currentMonthFirstDayLong,
             forwardMonthFirstDayLong,
@@ -82,6 +84,10 @@ fun HistoryScreen(
         )
     }
 
+    if (isSuccessDeleteHistory) {
+        initial()
+    }
+
     initial()
 
     Scaffold(
@@ -104,7 +110,10 @@ fun HistoryScreen(
                     title = { Text(text = "${historyChecked.size}개 선택") },
                     modifier = Modifier.fillMaxWidth(),
                     isModifyModeEnabled = isModifyModeEnabled,
-                    onClickBack = { isModifyModeEnabled = false }
+                    onClickBack = { isModifyModeEnabled = false },
+                    onClickModify = {
+                        viewModel.deleteAllHistory(historyChecked)
+                    }
                 )
             }
         },

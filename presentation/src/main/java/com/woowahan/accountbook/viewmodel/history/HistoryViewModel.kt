@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.woowahan.accountbook.domain.model.History
 import com.woowahan.accountbook.domain.model.Result
+import com.woowahan.accountbook.domain.usecase.history.DeleteAllHistoryUseCase
 import com.woowahan.accountbook.domain.usecase.history.GetAllHistoriesByMonthAndTypeUseCase
 import com.woowahan.accountbook.domain.usecase.history.GetTotalPayByMonthAndTypeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
     private val getTotalPayByMonthAndTypeUseCase: GetTotalPayByMonthAndTypeUseCase,
-    private val getAllHistoriesByMonthAndTypeUseCase: GetAllHistoriesByMonthAndTypeUseCase
+    private val getAllHistoriesByMonthAndTypeUseCase: GetAllHistoriesByMonthAndTypeUseCase,
+    private val deleteAllHistoryUseCase: DeleteAllHistoryUseCase
 ): ViewModel() {
     private val _historyList = MutableStateFlow<SnapshotStateList<History>>(mutableStateListOf())
     val history = _historyList.asStateFlow()
@@ -33,6 +35,26 @@ class HistoryViewModel @Inject constructor(
 
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
+
+    private val _isSuccessDeleteHistory = MutableStateFlow(false)
+    val isSuccessDeleteHistory = _isSuccessDeleteHistory.asStateFlow()
+
+    fun deleteAllHistory(idList: List<Int>) {
+        viewModelScope.launch {
+            deleteAllHistoryUseCase(idList).collect {
+                when (it) {
+                    is Result.Failure -> {
+                        it.cause.message?.let { message ->
+                            _isFailure.emit(message)
+                        }
+                    }
+                    is Result.Success<Unit> -> {
+                        _isSuccessDeleteHistory.emit(true)
+                    }
+                }
+            }
+        }
+    }
 
     fun getHistory(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: String = "income", refreshState: Boolean = false) {
         viewModelScope.launch {
