@@ -104,6 +104,7 @@ fun HistoryListItem(
                     Text(
                         text = item.paymentMethod?.name ?: "",
                         color = PurpleLight,
+                        modifier = Modifier.align(Alignment.End)
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))
