@@ -12,8 +12,8 @@ class CategoryRepositoryImpl @Inject constructor(
         return dataSource.getAllCategories()
     }
 
-    override suspend fun getCategoryByType(type: String): Category {
-        return dataSource.getCategoryByType(type)
+    override suspend fun getAllCategoryByType(type: String): List<Category> {
+        return dataSource.getAllCategoryByType(type)
     }
 
     override suspend fun getCategoryByName(name: String): Category {
