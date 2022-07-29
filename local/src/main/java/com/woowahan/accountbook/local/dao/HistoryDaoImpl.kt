@@ -25,7 +25,14 @@ class HistoryDaoImpl @Inject constructor(
         return dbHelper.runSQLWithReadableTransaction {
             var totalPay = 0L
             val cursor = rawQuery(sql, arrayOf(firstDayOfMonth.toString(), firstDayOfNextMonth.toString()))
-            while(cursor.moveToNext()) totalPay += cursor.getInt(0)
+            while(cursor.moveToNext()) {
+                if (cursor.getString(7) == type) {
+                    totalPay +=
+                        if (cursor.getString(7) == "income")
+                            cursor.getLong(2)
+                        else cursor.getLong(2) * -1
+                }
+            }
             cursor.close()
             totalPay
         }
@@ -50,19 +57,16 @@ class HistoryDaoImpl @Inject constructor(
                         cursor.getLong(2),
                         cursor.getString(3),
                         CategoryData(
-                            cursor.getInt(4),
-                            cursor.getString(5),
-                            cursor.getString(6),
-                            cursor.getString(7).toULong()
+                            cursor.getInt(6),
+                            cursor.getString(7),
+                            cursor.getString(8),
+                            cursor.getString(9).toULong()
                         ),
-                        if (cursor.getInt(8) < 0)
-                            null
-                        else {
-                            PaymentMethodData(
-                                cursor.getInt(8),
-                                cursor.getString(9)
-                            )
-                        }
+                        if (cursor.getString(7) == "income") null
+                        else PaymentMethodData(
+                            cursor.getInt(10),
+                            cursor.getString(11),
+                        )
                     )
                 )
             }
@@ -94,19 +98,16 @@ class HistoryDaoImpl @Inject constructor(
                         cursor.getLong(2),
                         cursor.getString(3),
                         CategoryData(
-                            cursor.getInt(4),
-                            cursor.getString(5),
-                            cursor.getString(6),
-                            cursor.getString(7).toULong()
+                            cursor.getInt(6),
+                            cursor.getString(7),
+                            cursor.getString(8),
+                            cursor.getString(9).toULong()
                         ),
-                        if (cursor.getInt(8) < 0)
-                            null
-                        else {
-                            PaymentMethodData(
-                                cursor.getInt(8),
-                                cursor.getString(9)
-                            )
-                        }
+                        if (cursor.getString(7) == "income") null
+                        else PaymentMethodData(
+                            cursor.getInt(10),
+                            cursor.getString(11),
+                        )
                     )
                 )
             }
