@@ -36,23 +36,31 @@ class HistoryViewModel @Inject constructor(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
 
-    fun getHistory(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: String = "income") {
+    fun getHistory(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: String = "income", refreshState: Boolean = false) {
         viewModelScope.launch {
+            if (refreshState) {
+                _isRefreshing.emit(true)
+            }
             getAllHistoriesByMonthAndTypeUseCase(firstDayOfMonth, firstDayOfNextMonth, type).collect {
                 when (it) {
                     is Result.Success<List<History>> -> {
                         _historyList.emit(it.value)
+                        _isRefreshing.emit(false)
                     }
                     is Result.Failure -> {
                         it.cause.message?.let { message -> _isFailure.emit(message) }
+                        _isRefreshing.emit(false)
                     }
                 }
             }
         }
     }
 
-    fun getTotalPay(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: String) {
+    fun getTotalPay(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: String, refreshState: Boolean = false) {
         viewModelScope.launch {
+            if (refreshState) {
+                _isRefreshing.emit(true)
+            }
             getTotalPayByMonthAndTypeUseCase(
                 firstDayOfMonth = firstDayOfMonth,
                 firstDayOfNextMonth = firstDayOfNextMonth,
@@ -62,9 +70,11 @@ class HistoryViewModel @Inject constructor(
                     is Result.Success<Long> -> {
                         if (type == "income") _incomeTotal.emit(it.value.toInt())
                         else if (type == "expense") _expenseTotal.emit(it.value.toInt())
+                        _isRefreshing.emit(false)
                     }
                     is Result.Failure -> {
                         it.cause.message?.let { message -> _isFailure.emit(message) }
+                        _isRefreshing.emit(false)
                     }
                 }
             }

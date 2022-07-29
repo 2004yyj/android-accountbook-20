@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -25,7 +26,6 @@ import com.woowahan.accountbook.navigation.Screen
 import com.woowahan.accountbook.ui.theme.*
 import com.woowahan.accountbook.util.*
 import com.woowahan.accountbook.viewmodel.history.HistoryViewModel
-import kotlin.coroutines.coroutineContext
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -50,28 +50,34 @@ fun HistoryScreen(
         Toast.makeText(context, isFailure, Toast.LENGTH_SHORT).show()
     }
 
-    viewModel.getHistory(
-        currentMonthLong.getCurrentMonthFirstDayMillis(),
-        currentMonthLong.getForwardMonthMillis(),
-        when {
-            isCheckedIncome && isCheckedExpense -> "all"
-            isCheckedIncome && !isCheckedExpense -> "income"
-            isCheckedExpense && !isCheckedIncome -> "expense"
-            else -> ""
-        }
-    )
+    fun initial(refreshState: Boolean = false) = run {
+        viewModel.getHistory(
+            currentMonthLong.getCurrentMonthFirstDayMillis(),
+            currentMonthLong.getForwardMonthMillis(),
+            when {
+                isCheckedIncome && isCheckedExpense -> "all"
+                isCheckedIncome && !isCheckedExpense -> "income"
+                isCheckedExpense && !isCheckedIncome -> "expense"
+                else -> ""
+            }, refreshState
+        )
 
-    viewModel.getTotalPay(
-        currentMonthLong.getCurrentMonthFirstDayMillis(),
-        currentMonthLong.getForwardMonthMillis(),
-        "income"
-    )
+        viewModel.getTotalPay(
+            currentMonthLong.getCurrentMonthFirstDayMillis(),
+            currentMonthLong.getForwardMonthMillis(),
+            "income",
+            refreshState
+        )
 
-    viewModel.getTotalPay(
-        currentMonthLong.getCurrentMonthFirstDayMillis(),
-        currentMonthLong.getForwardMonthMillis(),
-        "expense"
-    )
+        viewModel.getTotalPay(
+            currentMonthLong.getCurrentMonthFirstDayMillis(),
+            currentMonthLong.getForwardMonthMillis(),
+            "expense",
+            refreshState
+        )
+    }
+
+    initial()
 
     Scaffold(
         topBar = {
@@ -98,12 +104,7 @@ fun HistoryScreen(
     ) { paddingValues ->
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing),
-            onRefresh = {
-                viewModel.getHistory(
-                    currentMonthLong.getCurrentMonthFirstDayMillis(),
-                    currentMonthLong.getForwardMonthMillis()
-                )
-            }
+            onRefresh = { initial(true) }
         ) {
             Column(
                 modifier = Modifier
@@ -115,40 +116,47 @@ fun HistoryScreen(
                         .fillMaxSize()
                 ) {
                     item {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 20.dp)
-                                .padding(horizontal = 16.dp)
-                        ) {
-                            TypeCheckbox(
-                                modifier = Modifier.weight(1f),
-                                title = { Text(text = "수입") },
-                                subtitle = {
-                                    if (incomeTotal != 0) {
-                                        Text(text = incomeTotal.toMoneyString())
+                        Box(modifier = if(history.isEmpty()) Modifier.fillParentMaxSize() else Modifier) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 20.dp)
+                                    .padding(horizontal = 16.dp)
+                            ) {
+                                TypeCheckbox(
+                                    modifier = Modifier.weight(1f),
+                                    title = { Text(text = "수입") },
+                                    subtitle = {
+                                        if (incomeTotal != 0) {
+                                            Text(text = incomeTotal.toMoneyString())
+                                        }
+                                    },
+                                    shape = RadioLeftOption,
+                                    checked = isCheckedIncome,
+                                    onCheckedChange = {
+                                        isCheckedIncome = it
                                     }
-                                },
-                                shape = RadioLeftOption,
-                                checked = isCheckedIncome,
-                                onCheckedChange = {
-                                    isCheckedIncome = it
-                                }
-                            )
+                                )
 
-                            TypeCheckbox(
-                                modifier = Modifier.weight(1f),
-                                title = { Text(text = "지출") },
-                                subtitle = {
-                                    if (expenseTotal != 0) {
-                                        Text(text = expenseTotal.toMoneyString())
+                                TypeCheckbox(
+                                    modifier = Modifier.weight(1f),
+                                    title = { Text(text = "지출") },
+                                    subtitle = {
+                                        if (expenseTotal != 0) {
+                                            Text(text = expenseTotal.toMoneyString())
+                                        }
+                                    },
+                                    shape = RadioRightOption,
+                                    checked = isCheckedExpense,
+                                    onCheckedChange = {
+                                        isCheckedExpense = it
                                     }
-                                },
-                                shape = RadioRightOption,
-                                checked = isCheckedExpense,
-                                onCheckedChange = {
-                                    isCheckedExpense = it
-                                }
+                                )
+                            }
+
+                            Text(
+                                modifier = Modifier.align(Alignment.Center),
+                                text = "내역이 없습니다."
                             )
                         }
                     }
