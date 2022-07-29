@@ -194,6 +194,9 @@ fun HistoryCreateScreen(
                         CustomDropDownMenu(
                             value = selectedPaymentMethod,
                             onChangedValue = { selectedPaymentMethod = it },
+                            onDismissRequest = {
+                                addingPaymentMethod = ""
+                            },
                             items = paymentMethods.map { it.name },
                             footerItem = {
                                 CustomTextField(
@@ -225,6 +228,9 @@ fun HistoryCreateScreen(
                     CustomDropDownMenu(
                         value = selectedCategory,
                         onChangedValue = { selectedCategory = it },
+                        onDismissRequest = {
+                            addingCategory = ""
+                        },
                         items = categories.filter { it.name != "무분류" }.map { it.name },
                         footerItem = {
                             Box(modifier = Modifier.fillMaxWidth()) {

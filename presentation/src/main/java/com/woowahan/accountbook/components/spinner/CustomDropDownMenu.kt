@@ -23,6 +23,7 @@ import com.woowahan.accountbook.ui.theme.PurpleLight
 fun CustomDropDownMenu(
     value: String,
     onChangedValue: (String) -> Unit,
+    onDismissRequest: () -> Unit,
     items: List<String>,
     footerItem: @Composable BoxScope.() -> Unit,
     modifier: Modifier = Modifier,
@@ -69,7 +70,10 @@ fun CustomDropDownMenu(
                         shape = PopupShape
                     ),
                 expanded = expended,
-                onDismissRequest = { expended = false }
+                onDismissRequest = {
+                    expended = false
+                    onDismissRequest()
+                }
             ) {
                 items.forEach {
                     DropdownMenuItem(onClick = {
