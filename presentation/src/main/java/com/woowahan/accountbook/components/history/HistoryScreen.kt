@@ -23,6 +23,7 @@ import com.woowahan.accountbook.components.appbar.MonthAppBar
 import com.woowahan.accountbook.components.checkbox.TypeCheckbox
 import com.woowahan.accountbook.components.history.list.HistoryListHeader
 import com.woowahan.accountbook.components.history.list.HistoryListItem
+import com.woowahan.accountbook.domain.model.History
 import com.woowahan.accountbook.navigation.Screen
 import com.woowahan.accountbook.ui.theme.*
 import com.woowahan.accountbook.util.*
@@ -37,10 +38,9 @@ fun HistoryScreen(
     val context = LocalContext.current
 
     val history by viewModel.history.collectAsState()
-    val historyChecked = remember { mutableStateListOf<Int>() }
+    val historyChecked = remember { mutableStateListOf<History>() }
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val isFailure by viewModel.isFailure.collectAsState(initial = "")
-    val isSuccessDeleteHistory by viewModel.isSuccessDeleteHistory.collectAsState()
     var currentMonthFirstDayLong by remember { mutableStateOf(System.currentTimeMillis().getCurrentMonthFirstDayMillis()) }
     var forwardMonthFirstDayLong by remember { mutableStateOf(System.currentTimeMillis().getForwardMonthMillis()) }
 
@@ -84,10 +84,6 @@ fun HistoryScreen(
         )
     }
 
-    if (isSuccessDeleteHistory) {
-        initial()
-    }
-
     initial()
 
     Scaffold(
@@ -113,6 +109,7 @@ fun HistoryScreen(
                     onClickBack = { isModifyModeEnabled = false },
                     onClickModify = {
                         viewModel.deleteAllHistory(historyChecked)
+                        isModifyModeEnabled = false
                     }
                 )
             }
@@ -220,10 +217,10 @@ fun HistoryScreen(
                                 index = index,
                                 count = models.count(),
                                 isCheckable = isModifyModeEnabled,
-                                isChecked = historyChecked.contains(history[realIndex].id),
+                                isChecked = historyChecked.contains(history[realIndex]),
                                 onCheckedChange = {
-                                    if (it) historyChecked.add(history[realIndex].id)
-                                    else historyChecked.remove(history[realIndex].id)
+                                    if (it) historyChecked.add(history[realIndex])
+                                    else historyChecked.remove(history[realIndex])
                                     if (historyChecked.size == 0 && isModifyModeEnabled)
                                         isModifyModeEnabled = false
                                 },

@@ -5,6 +5,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.woowahan.accountbook.domain.model.Category
 import com.woowahan.accountbook.domain.model.History
 import com.woowahan.accountbook.domain.model.Result
 import com.woowahan.accountbook.domain.usecase.history.DeleteAllHistoryUseCase
@@ -36,20 +37,20 @@ class HistoryViewModel @Inject constructor(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
 
-    private val _isSuccessDeleteHistory = MutableStateFlow(false)
-    val isSuccessDeleteHistory = _isSuccessDeleteHistory.asStateFlow()
-
-    fun deleteAllHistory(idList: List<Int>) {
+    fun deleteAllHistory(idList: List<History>) {
         viewModelScope.launch {
-            deleteAllHistoryUseCase(idList).collect {
+            deleteAllHistoryUseCase(idList.map { it.id }).collect {
                 when (it) {
+                    is Result.Success<Unit> -> {
+                        _historyList.value.apply {
+                            removeAll(idList)
+                            _historyList.emit(this)
+                        }
+                    }
                     is Result.Failure -> {
                         it.cause.message?.let { message ->
                             _isFailure.emit(message)
                         }
-                    }
-                    is Result.Success<Unit> -> {
-                        _isSuccessDeleteHistory.emit(true)
                     }
                 }
             }
