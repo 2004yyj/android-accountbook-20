@@ -24,7 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.woowahan.accountbook.components.appbar.BackAppBar
 import com.woowahan.accountbook.components.button.TransparentButton
 import com.woowahan.accountbook.components.editable.Editable
-import com.woowahan.accountbook.components.history.create.radio.PaymentTypeRadioGroup
+import com.woowahan.accountbook.components.history.create.radio.TypeRadioButton
 import com.woowahan.accountbook.components.spinner.CustomDropDownMenu
 import com.woowahan.accountbook.components.textfield.CustomTextField
 import com.woowahan.accountbook.ui.theme.*
@@ -34,11 +34,9 @@ import com.woowahan.accountbook.util.toMoneyString
 import com.woowahan.accountbook.util.toYearMonthDayDots
 import com.woowahan.accountbook.viewmodel.history.create.HistoryCreateViewModel
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import java.util.*
 
 @OptIn(FlowPreview::class)
 @Composable
@@ -46,7 +44,8 @@ fun HistoryCreateScreen(
     navController: NavController,
     viewModel: HistoryCreateViewModel = viewModel()
 ) {
-    var selectedType by remember { mutableStateOf("수입") }
+    var selectedIncome by remember { mutableStateOf(true) }
+    var selectedExpense by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf(Instant.now().truncatedTo(ChronoUnit.DAYS).epochSecond * 1000) }
     var enterMoney by remember { mutableStateOf(0L) }
     var enterContent by remember { mutableStateOf("") }
@@ -91,20 +90,40 @@ fun HistoryCreateScreen(
             modifier = Modifier
                 .padding(it)
                 .fillMaxSize()
-                .padding(vertical = 10.dp)
+                .padding(top = 10.dp, bottom = 30.dp)
                 .padding(horizontal = 16.dp)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                PaymentTypeRadioGroup(
-                    items = listOf("수입", "지출"),
-                    selectedItem = selectedType,
-                    onClick = {
-                        selectedType = it
-                    }
-                )
+                Row(modifier = Modifier.padding(top = 10.dp)) {
+                    TypeRadioButton(
+                        modifier = Modifier.weight(1f),
+                        title = { Text("수입") },
+                        shape = RadioLeftOption,
+                        checked = selectedIncome,
+                        onCheckedChange = {
+                            if (it) {
+                                selectedIncome = it
+                                selectedExpense = !it
+                            }
+                        }
+                    )
+
+                    TypeRadioButton(
+                        modifier = Modifier.weight(1f),
+                        title = { Text("지출") },
+                        shape = RadioRightOption,
+                        checked = selectedExpense,
+                        onCheckedChange = {
+                            if (it) {
+                                selectedExpense = it
+                                selectedIncome = !it
+                            }
+                        }
+                    )
+                }
 
                 Editable(
                     text = { Text(text = "일자") }
@@ -201,7 +220,7 @@ fun HistoryCreateScreen(
                     .align(Alignment.BottomCenter),
                 onClick = {
                     viewModel.insertHistory(
-                        type = selectedType,
+                        type = if (selectedIncome) "income" else "expense",
                         date = selectedDate,
                         money = enterMoney,
                         content = enterContent,
