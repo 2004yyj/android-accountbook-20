@@ -61,7 +61,7 @@ fun CustomTextField(
             it()
             if (value.isEmpty()) {
                 CompositionLocalProvider(
-                    LocalContentAlpha provides ContentAlpha.high,
+                    LocalContentAlpha provides 1f,
                     LocalContentColor provides labelColor,
                     LocalTextStyle provides textStyle,
                     content = placeholder,
