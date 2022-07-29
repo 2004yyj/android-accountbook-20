@@ -6,7 +6,9 @@ import com.woowahan.accountbook.domain.model.Category
 import com.woowahan.accountbook.domain.model.PaymentMethod
 import com.woowahan.accountbook.domain.model.Result
 import com.woowahan.accountbook.domain.usecase.category.GetCategoryByNameUseCase
+import com.woowahan.accountbook.domain.usecase.category.GetAllCategoryByTypeUseCase
 import com.woowahan.accountbook.domain.usecase.history.InsertHistoryUseCase
+import com.woowahan.accountbook.domain.usecase.paymentmethod.GetAllPaymentMethodsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -16,7 +18,9 @@ import javax.inject.Inject
 @HiltViewModel
 class HistoryCreateViewModel @Inject constructor(
     private val insertHistoryUseCase: InsertHistoryUseCase,
-    private val getCategoryByNameUseCase: GetCategoryByNameUseCase
+    private val getCategoryByNameUseCase: GetCategoryByNameUseCase,
+    private val getAllCategoryByTypeUseCase: GetAllCategoryByTypeUseCase,
+    private val getAllPaymentMethodsUseCase: GetAllPaymentMethodsUseCase
 ): ViewModel() {
 
     private val _isSuccess = MutableStateFlow(false)
@@ -33,13 +37,27 @@ class HistoryCreateViewModel @Inject constructor(
 
     fun getPaymentMethods() {
         viewModelScope.launch {
-
+            getAllPaymentMethodsUseCase().collect {
+                when(it) {
+                    is Result.Success<List<PaymentMethod>> ->
+                        _paymentMethods.emit(it.value)
+                    is Result.Failure ->
+                        it.cause.message?.let { message -> _isFailure.emit(message) }
+                }
+            }
         }
     }
 
-    fun getCategories() {
+    fun getCategories(type: String) {
         viewModelScope.launch {
-
+            getAllCategoryByTypeUseCase(type).collect {
+                when(it) {
+                    is Result.Success<List<Category>> ->
+                        _categories.emit(it.value)
+                    is Result.Failure ->
+                        it.cause.message?.let { message -> _isFailure.emit(message) }
+                }
+            }
         }
     }
 

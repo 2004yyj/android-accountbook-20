@@ -41,7 +41,6 @@ import kotlinx.coroutines.flow.debounce
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
-@OptIn(FlowPreview::class)
 @Composable
 fun HistoryCreateScreen(
     navController: NavController,
@@ -67,7 +66,7 @@ fun HistoryCreateScreen(
     val categories by viewModel.categories.collectAsState()
 
     viewModel.getPaymentMethods()
-    viewModel.getCategories()
+    viewModel.getCategories(if (selectedIncome) "income" else "expense")
 
     if (isSuccess) {
         navController.popBackStack()
@@ -116,6 +115,7 @@ fun HistoryCreateScreen(
                                 selectedIncome = it
                                 selectedExpense = !it
                                 selectedPaymentMethod = ""
+                                selectedCategory = ""
                                 addingPaymentMethod = ""
                                 addingCategory = ""
                             }
@@ -132,6 +132,7 @@ fun HistoryCreateScreen(
                                 selectedExpense = it
                                 selectedIncome = !it
                                 selectedPaymentMethod = ""
+                                selectedCategory = ""
                                 addingPaymentMethod = ""
                                 addingCategory = ""
                             }
@@ -197,7 +198,7 @@ fun HistoryCreateScreen(
                             onDismissRequest = {
                                 addingPaymentMethod = ""
                             },
-                            items = categories.filter { it.name != "무분류" }.map { it.name },
+                            items = paymentMethods.map { it.name },
                             footerItem = {
                                 CustomTextField(
                                     modifier = Modifier
@@ -234,7 +235,7 @@ fun HistoryCreateScreen(
                         onDismissRequest = {
                             addingCategory = ""
                         },
-                        items = categories.filter { it.name != "무분류" }.map { it.name },
+                        items = categories.map { it.name },
                         footerItem = {
                             CustomTextField(
                                 modifier = Modifier
@@ -291,7 +292,7 @@ fun HistoryCreateScreen(
                     viewModel.insertHistory(
                         type = type,
                         date = selectedDate,
-                        money = enterMoney,
+                        money = if (selectedIncome) enterMoney else -enterMoney,
                         content = enterContent,
                         paymentMethod = paymentMethods.find { it.name == selectedPaymentMethod },
                         category = categories.find { it.name == selectedCategory }
