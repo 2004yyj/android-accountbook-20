@@ -43,8 +43,9 @@ fun HistoryScreen(
     val incomeTotal by viewModel.incomeTotal.collectAsState()
     val expenseTotal by viewModel.expenseTotal.collectAsState()
 
-    var isCheckedIncome by remember { mutableStateOf(false) }
-    var isCheckedExpense by remember { mutableStateOf(false) }
+    var isCheckedIncome by rememberSaveable { mutableStateOf(true) }
+    var isCheckedExpense by rememberSaveable { mutableStateOf(false) }
+    var isModifyModeEnabled by rememberSaveable { mutableStateOf(false) }
 
     if (isFailure.isNotEmpty()) {
         Toast.makeText(context, isFailure, Toast.LENGTH_SHORT).show()
@@ -82,18 +83,27 @@ fun HistoryScreen(
 
     Scaffold(
         topBar = {
-            MonthAppBar(
-                title = { Text(text = currentMonthFirstDayLong.toYearMonth()) },
-                modifier = Modifier.fillMaxWidth(),
-                onClickMonthBack = {
-                    currentMonthFirstDayLong = currentMonthFirstDayLong.getBackMonthMillis()
-                    forwardMonthFirstDayLong = currentMonthFirstDayLong.getForwardMonthMillis()
-                },
-                onClickMonthForward = {
-                    currentMonthFirstDayLong = currentMonthFirstDayLong.getForwardMonthMillis()
-                    forwardMonthFirstDayLong = currentMonthFirstDayLong.getForwardMonthMillis()
-                }
-            )
+            if (!isModifyModeEnabled) {
+                MonthAppBar(
+                    title = { Text(text = currentMonthFirstDayLong.toYearMonth()) },
+                    modifier = Modifier.fillMaxWidth(),
+                    onClickMonthBack = {
+                        currentMonthFirstDayLong = currentMonthFirstDayLong.getBackMonthMillis()
+                        forwardMonthFirstDayLong = currentMonthFirstDayLong.getForwardMonthMillis()
+                    },
+                    onClickMonthForward = {
+                        currentMonthFirstDayLong = currentMonthFirstDayLong.getForwardMonthMillis()
+                        forwardMonthFirstDayLong = currentMonthFirstDayLong.getForwardMonthMillis()
+                    }
+                )
+            } else {
+                BackAppBar(
+                    title = { Text(text = currentMonthFirstDayLong.toYearMonth()) },
+                    modifier = Modifier.fillMaxWidth(),
+                    isModifyModeEnabled = isModifyModeEnabled,
+                    onClickBack = { isModifyModeEnabled = false }
+                )
+            }
         },
         floatingActionButton = {
             FloatingActionButton(
