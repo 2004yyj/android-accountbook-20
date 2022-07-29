@@ -155,7 +155,7 @@ class HistoryDaoImpl @Inject constructor(
             statement.bindLong(2, amount.toLong())
             statement.bindString(3, content)
             statement.bindLong(4, category.id.toLong())
-            paymentMethod?.id?.toLong()?.let { statement.bindLong(4, it) }
+            paymentMethod?.id?.toLong()?.let { statement.bindLong(5, it) }
             statement.executeInsert()
         }
     }
@@ -175,7 +175,7 @@ class HistoryDaoImpl @Inject constructor(
             statement.bindLong(2, amount.toLong())
             statement.bindString(3, content)
             statement.bindLong(4, category.id.toLong())
-            paymentMethod?.id?.toLong()?.let { statement.bindLong(4, it) }
+            paymentMethod?.id?.toLong()?.let { statement.bindLong(5, it) }
             statement.executeUpdateDelete()
         }
     }
