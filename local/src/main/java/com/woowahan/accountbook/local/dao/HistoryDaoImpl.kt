@@ -8,6 +8,7 @@ import com.woowahan.accountbook.local.helper.DatabaseOpenHelper
 import com.woowahan.accountbook.local.util.runSQL
 import com.woowahan.accountbook.local.util.runSQLWithReadableTransaction
 import com.woowahan.accountbook.local.util.runSQLWithWritableTransaction
+import com.woowahan.accountbook.local.util.whereInSQLQueryIdList
 import javax.inject.Inject
 
 class HistoryDaoImpl @Inject constructor(
@@ -181,6 +182,14 @@ class HistoryDaoImpl @Inject constructor(
 
     override suspend fun deleteHistory(id: Int) {
         val sql = "DELETE FROM History WHERE id = $id"
+        dbHelper.runSQLWithWritableTransaction {
+            val statement = compileStatement(sql)
+            statement.executeUpdateDelete()
+        }
+    }
+
+    override suspend fun deleteAllHistory(idList: List<Int>) {
+        val sql = "DELETE FROM History WHERE id IN ${whereInSQLQueryIdList(idList)}"
         dbHelper.runSQLWithWritableTransaction {
             val statement = compileStatement(sql)
             statement.executeUpdateDelete()

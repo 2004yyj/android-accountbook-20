@@ -65,4 +65,8 @@ class HistoryRepositoryImpl @Inject constructor(
     override suspend fun deleteHistory(id: Int) {
         return dataSource.deleteHistory(id)
     }
+
+    override suspend fun deleteAllHistory(idList: List<Int>) {
+        return dataSource.deleteAllHistory(idList)
+    }
 }

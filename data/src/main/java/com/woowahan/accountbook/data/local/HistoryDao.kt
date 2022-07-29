@@ -13,4 +13,5 @@ interface HistoryDao {
     suspend fun insertHistory(date: Long, amount: Long, content: String, category: CategoryData, paymentMethod: PaymentMethodData?)
     suspend fun updateHistory(id: Int, date: Long, amount: Long, content: String, category: CategoryData, paymentMethod: PaymentMethodData?)
     suspend fun deleteHistory(id: Int)
+    suspend fun deleteAllHistory(idList: List<Int>)
 }
