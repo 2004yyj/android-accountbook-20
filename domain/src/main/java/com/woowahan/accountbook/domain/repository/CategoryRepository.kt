@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface CategoryRepository {
     suspend fun getAllCategories(): List<Category>
     suspend fun getCategoryByType(type: String): Category
+    suspend fun getCategoryByName(name: String): Category
     suspend fun createCategoryTable()
     suspend fun dropCategoryTable()
     suspend fun insertCategory(type: String, name: String, color: ULong)

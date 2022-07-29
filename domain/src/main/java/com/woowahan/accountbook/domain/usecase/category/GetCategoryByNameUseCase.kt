@@ -6,13 +6,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import java.lang.Exception
 
-class GetCategoryByTypeUseCase(
+class GetCategoryByNameUseCase(
     private val repository: CategoryRepository
 ) {
-    operator fun invoke(type: String) = flow {
+    operator fun invoke(name: String) = flow {
         emit(Result.Loading)
         try {
-            val category = repository.getCategoryByType(type)
+            val category = repository.getCategoryByName(name)
             emit(Result.Success(category))
         } catch (e: Exception) {
             emit(Result.Failure(e))
