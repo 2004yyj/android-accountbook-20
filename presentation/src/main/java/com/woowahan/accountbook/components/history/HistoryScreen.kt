@@ -124,7 +124,11 @@ fun HistoryScreen(
                             TypeCheckbox(
                                 modifier = Modifier.weight(1f),
                                 title = { Text(text = "수입") },
-                                subtitle = { Text(text = incomeTotal.toMoneyString()) },
+                                subtitle = {
+                                    if (incomeTotal != 0) {
+                                        Text(text = incomeTotal.toMoneyString())
+                                    }
+                                },
                                 shape = RadioLeftOption,
                                 checked = isCheckedIncome,
                                 onCheckedChange = {
@@ -135,7 +139,11 @@ fun HistoryScreen(
                             TypeCheckbox(
                                 modifier = Modifier.weight(1f),
                                 title = { Text(text = "지출") },
-                                subtitle = { Text(text = expenseTotal.toMoneyString()) },
+                                subtitle = {
+                                    if (expenseTotal != 0) {
+                                        Text(text = expenseTotal.toMoneyString())
+                                    }
+                                },
                                 shape = RadioRightOption,
                                 checked = isCheckedExpense,
                                 onCheckedChange = {
