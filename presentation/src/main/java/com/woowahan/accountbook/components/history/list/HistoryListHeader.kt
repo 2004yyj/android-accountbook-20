@@ -1,5 +1,6 @@
 package com.woowahan.accountbook.components.history.list
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
@@ -8,10 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.woowahan.accountbook.ui.theme.Purple
-import com.woowahan.accountbook.ui.theme.PurpleLight
-import com.woowahan.accountbook.ui.theme.PurpleLight40
-import com.woowahan.accountbook.ui.theme.Typography
+import com.woowahan.accountbook.ui.theme.*
 import com.woowahan.accountbook.util.toMoneyString
 import com.woowahan.accountbook.util.toMonthDate
 
@@ -25,9 +23,10 @@ fun HistoryListHeader(
         modifier =
         Modifier
             .padding(horizontal = 16.dp)
-            .padding(top = 20.dp)
             .fillMaxWidth()
+            .background(White)
     ) {
+        Spacer(modifier = Modifier.height(20.dp))
         Box(modifier = Modifier.fillMaxWidth()) {
             Text(
                 text = date.toMonthDate(),
