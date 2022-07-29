@@ -151,10 +151,10 @@ class HistoryDaoImpl @Inject constructor(
         val sql = "INSERT INTO History (date, amount, content, category_id, payment_method_id) VALUES (?, ?, ?, ?, ${if (paymentMethod != null) "?" else "NULL"})"
         dbHelper.runSQLWithWritableTransaction {
             val statement = compileStatement(sql)
-            statement.bindLong(0, date)
-            statement.bindLong(1, amount.toLong())
-            statement.bindString(2, content)
-            statement.bindLong(3, category.id.toLong())
+            statement.bindLong(1, date)
+            statement.bindLong(2, amount.toLong())
+            statement.bindString(3, content)
+            statement.bindLong(4, category.id.toLong())
             paymentMethod?.id?.toLong()?.let { statement.bindLong(4, it) }
             statement.executeInsert()
         }
@@ -171,10 +171,10 @@ class HistoryDaoImpl @Inject constructor(
         val sql = "UPDATE History SET date = ?, amount = ?, content = ?, category_id = ?, payment_method_id = ${if (paymentMethod != null) "?" else "NULL"})"
         dbHelper.runSQLWithWritableTransaction {
             val statement = compileStatement(sql)
-            statement.bindLong(0, date)
-            statement.bindLong(1, amount.toLong())
-            statement.bindString(2, content)
-            statement.bindLong(3, category.id.toLong())
+            statement.bindLong(1, date)
+            statement.bindLong(2, amount.toLong())
+            statement.bindString(3, content)
+            statement.bindLong(4, category.id.toLong())
             paymentMethod?.id?.toLong()?.let { statement.bindLong(4, it) }
             statement.executeUpdateDelete()
         }

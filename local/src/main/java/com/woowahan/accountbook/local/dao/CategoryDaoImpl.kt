@@ -66,9 +66,9 @@ class CategoryDaoImpl @Inject constructor(
         val sql = "INSERT INTO Category (type, name, color) VALUES (?, ?, ?)"
         dbHelper.runSQLWithWritableTransaction {
             val statement = compileStatement(sql)
-            statement.bindString(0, type)
-            statement.bindString(1, name)
-            statement.bindLong(2, color)
+            statement.bindString(1, type)
+            statement.bindString(2, name)
+            statement.bindLong(3, color)
             statement.executeInsert()
         }
     }
@@ -77,9 +77,9 @@ class CategoryDaoImpl @Inject constructor(
         val sql = "UPDATE Category SET type = ?, name = ?, color = ? WHERE id = $id"
         dbHelper.runSQLWithWritableTransaction {
             val statement = compileStatement(sql)
-            statement.bindString(0, type)
-            statement.bindString(1, name)
-            statement.bindLong(2, color)
+            statement.bindString(1, type)
+            statement.bindString(2, name)
+            statement.bindLong(3, color)
             statement.executeUpdateDelete()
         }
     }
