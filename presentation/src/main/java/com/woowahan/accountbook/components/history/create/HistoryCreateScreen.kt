@@ -52,6 +52,9 @@ fun HistoryCreateScreen(
     val isSuccess by viewModel.isSuccess.collectAsState()
     val isFailure by viewModel.isFailure.collectAsState()
 
+    var addingPaymentMethod by remember { mutableStateOf("") }
+    var addingCategory by remember { mutableStateOf("") }
+
     var selectedIncome by remember { mutableStateOf(true) }
     var selectedExpense by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf(Instant.now().truncatedTo(ChronoUnit.DAYS).epochSecond * 1000) }
@@ -188,20 +191,25 @@ fun HistoryCreateScreen(
                             onChangedValue = { selectedPaymentMethod = it },
                             items = paymentMethods.map { it.name },
                             footerItem = {
-                                Box(modifier = Modifier.fillMaxWidth()) {
-                                    Text(
-                                        modifier = Modifier.align(Alignment.CenterStart),
-                                        text = "추가하기"
-                                    )
+                                CustomTextField(
+                                    modifier = Modifier.align(Alignment.CenterStart),
+                                    placeholder = { Text(text = "추가하기", fontWeight = FontWeight.Bold) },
+                                    value = addingPaymentMethod,
+                                    onValueChange = {
+                                        addingPaymentMethod = it
+                                    }
+                                )
 
+                                IconButton(
+                                    modifier = Modifier.align(Alignment.CenterEnd),
+                                    onClick = {  }
+                                ) {
                                     Icon(
-                                        modifier = Modifier.align(Alignment.CenterEnd),
                                         painter = painterResource(Icons.Plus.iconId),
                                         contentDescription = "plus"
                                     )
                                 }
                             },
-                            onFooterItemClick = { }
                         )
                     }
                 }
@@ -215,19 +223,26 @@ fun HistoryCreateScreen(
                         items = categories.filter { it.name != "무분류" }.map { it.name },
                         footerItem = {
                             Box(modifier = Modifier.fillMaxWidth()) {
-                                Text(
+                                CustomTextField(
                                     modifier = Modifier.align(Alignment.CenterStart),
-                                    text = "추가하기"
+                                    placeholder = { Text(text = "추가하기", fontWeight = FontWeight.Bold) },
+                                    value = addingCategory,
+                                    onValueChange = {
+                                        addingCategory = it
+                                    }
                                 )
 
-                                Icon(
+                                IconButton(
                                     modifier = Modifier.align(Alignment.CenterEnd),
-                                    painter = painterResource(Icons.Plus.iconId),
-                                    contentDescription = "plus"
-                                )
+                                    onClick = {  }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(Icons.Plus.iconId),
+                                        contentDescription = "plus"
+                                    )
+                                }
                             }
                         },
-                        onFooterItemClick = {  }
                     )
                 }
 

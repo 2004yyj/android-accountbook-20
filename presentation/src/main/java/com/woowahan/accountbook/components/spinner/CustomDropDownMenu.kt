@@ -5,26 +5,26 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.woowahan.accountbook.components.button.TransparentButton
-import com.woowahan.accountbook.ui.theme.*
+import com.woowahan.accountbook.ui.theme.Icons
+import com.woowahan.accountbook.ui.theme.PopupShape
+import com.woowahan.accountbook.ui.theme.Purple
+import com.woowahan.accountbook.ui.theme.PurpleLight
 
 @Composable
 fun CustomDropDownMenu(
     value: String,
     onChangedValue: (String) -> Unit,
     items: List<String>,
-    footerItem: @Composable () -> Unit,
-    onFooterItemClick: () -> Unit,
+    footerItem: @Composable BoxScope.() -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var expended by remember { mutableStateOf(false) }
@@ -79,13 +79,17 @@ fun CustomDropDownMenu(
                         Text(text = it, color = Purple)
                     }
                 }
-
-                DropdownMenuItem(onClick = onFooterItemClick) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(MenuDefaults.DropdownMenuItemContentPadding)
+                ) {
                     CompositionLocalProvider(
                         LocalContentAlpha provides ContentAlpha.high,
                         LocalContentColor provides Purple,
-                        content = footerItem,
-                    )
+                    ) {
+                        footerItem()
+                    }
                 }
             }
         }
