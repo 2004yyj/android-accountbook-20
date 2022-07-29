@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -17,6 +18,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.woowahan.accountbook.components.appbar.BackAppBar
 import com.woowahan.accountbook.components.appbar.MonthAppBar
 import com.woowahan.accountbook.components.checkbox.TypeCheckbox
 import com.woowahan.accountbook.components.history.list.HistoryListHeader
@@ -35,6 +37,7 @@ fun HistoryScreen(
     val context = LocalContext.current
 
     val history by viewModel.history.collectAsState()
+    val historyChecked = remember { mutableStateListOf<Int>() }
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val isFailure by viewModel.isFailure.collectAsState(initial = "")
     var currentMonthFirstDayLong by remember { mutableStateOf(System.currentTimeMillis().getCurrentMonthFirstDayMillis()) }
@@ -98,7 +101,7 @@ fun HistoryScreen(
                 )
             } else {
                 BackAppBar(
-                    title = { Text(text = currentMonthFirstDayLong.toYearMonth()) },
+                    title = { Text(text = "${historyChecked.size}개 선택") },
                     modifier = Modifier.fillMaxWidth(),
                     isModifyModeEnabled = isModifyModeEnabled,
                     onClickBack = { isModifyModeEnabled = false }
@@ -151,7 +154,9 @@ fun HistoryScreen(
                                     shape = RadioLeftOption,
                                     checked = isCheckedIncome,
                                     onCheckedChange = {
-                                        isCheckedIncome = it
+                                        if (!isModifyModeEnabled) {
+                                            isCheckedIncome = it
+                                        }
                                     }
                                 )
 
@@ -166,7 +171,9 @@ fun HistoryScreen(
                                     shape = RadioRightOption,
                                     checked = isCheckedExpense,
                                     onCheckedChange = {
-                                        isCheckedExpense = it
+                                        if (!isModifyModeEnabled) {
+                                            isCheckedExpense = it
+                                        }
                                     }
                                 )
                             }
@@ -198,10 +205,23 @@ fun HistoryScreen(
                         }
 
                         items(models.count()) { index ->
+                            val realIndex = history.indexOf(models[index])
                             HistoryListItem(
                                 item = models[index],
                                 index = index,
-                                count = models.count()
+                                count = models.count(),
+                                isCheckable = isModifyModeEnabled,
+                                isChecked = historyChecked.contains(history[realIndex].id),
+                                onCheckedChange = {
+                                    if (it) historyChecked.add(history[realIndex].id)
+                                    else historyChecked.remove(history[realIndex].id)
+                                    if (historyChecked.size == 0 && isModifyModeEnabled)
+                                        isModifyModeEnabled = false
+                                },
+                                onCheckableChange = {
+                                    historyChecked.clear()
+                                    isModifyModeEnabled = it
+                                }
                             )
                         }
                     }

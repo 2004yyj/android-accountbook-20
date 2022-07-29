@@ -7,4 +7,5 @@ data class History(
     val content: String,
     val category: Category,
     val paymentMethod: PaymentMethod?,
+    var isChecked: Boolean = false
 )

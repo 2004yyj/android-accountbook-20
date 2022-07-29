@@ -1,17 +1,15 @@
 package com.woowahan.accountbook.viewmodel.history
 
-import android.util.Log
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.woowahan.accountbook.domain.model.Category
 import com.woowahan.accountbook.domain.model.History
-import com.woowahan.accountbook.domain.model.PaymentMethod
 import com.woowahan.accountbook.domain.model.Result
 import com.woowahan.accountbook.domain.usecase.history.GetAllHistoriesByMonthAndTypeUseCase
 import com.woowahan.accountbook.domain.usecase.history.GetTotalPayByMonthAndTypeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,7 +19,7 @@ class HistoryViewModel @Inject constructor(
     private val getTotalPayByMonthAndTypeUseCase: GetTotalPayByMonthAndTypeUseCase,
     private val getAllHistoriesByMonthAndTypeUseCase: GetAllHistoriesByMonthAndTypeUseCase
 ): ViewModel() {
-    private val _historyList = MutableStateFlow<List<History>>(emptyList())
+    private val _historyList = MutableStateFlow<SnapshotStateList<History>>(mutableStateListOf())
     val history = _historyList.asStateFlow()
 
     private val _incomeTotal = MutableStateFlow(0)
@@ -44,7 +42,7 @@ class HistoryViewModel @Inject constructor(
             getAllHistoriesByMonthAndTypeUseCase(firstDayOfMonth, firstDayOfNextMonth, type).collect {
                 when (it) {
                     is Result.Success<List<History>> -> {
-                        _historyList.emit(it.value)
+                        _historyList.emit(it.value.toMutableStateList())
                         _isRefreshing.emit(false)
                     }
                     is Result.Failure -> {
