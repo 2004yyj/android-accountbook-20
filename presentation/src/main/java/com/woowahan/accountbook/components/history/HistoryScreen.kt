@@ -198,18 +198,18 @@ fun HistoryScreen(
 
                     history.groupBy { it.date }.forEach { (manufacturer, models) ->
 
-                        val incomeTotal = models.sumOf {
+                        val groupIncomeTotal = models.sumOf {
                             if (it.amount > 0) it.amount else 0
-                        }.toMoneyString()
-                        val expenseTotal = models.sumOf {
+                        }
+                        val groupExpenseTotal = models.sumOf {
                             if (it.amount < 0) (it.amount * -1) else 0
-                        }.toMoneyString()
+                        }
 
                         stickyHeader {
                             HistoryListHeader(
                                 date = manufacturer,
-                                incomeTotal = incomeTotal,
-                                expenseTotal = expenseTotal
+                                incomeTotal = groupIncomeTotal,
+                                expenseTotal = groupExpenseTotal,
                             )
                         }
 
