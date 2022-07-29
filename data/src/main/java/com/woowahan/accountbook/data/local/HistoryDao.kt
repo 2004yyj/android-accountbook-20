@@ -10,7 +10,7 @@ interface HistoryDao {
     suspend fun getAllHistoriesByMonthAndType(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: String): List<HistoryData>
     suspend fun createHistoryTable()
     suspend fun dropHistoryTable()
-    suspend fun insertHistory(date: Long, amount: Int, content: String, category: CategoryData, paymentMethod: PaymentMethodData?)
-    suspend fun updateHistory(id: Int, date: Long, amount: Int, content: String, category: CategoryData, paymentMethod: PaymentMethodData?)
+    suspend fun insertHistory(date: Long, amount: Long, content: String, category: CategoryData, paymentMethod: PaymentMethodData?)
+    suspend fun updateHistory(id: Int, date: Long, amount: Long, content: String, category: CategoryData, paymentMethod: PaymentMethodData?)
     suspend fun deleteHistory(id: Int)
 }

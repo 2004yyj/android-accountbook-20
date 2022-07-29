@@ -9,10 +9,10 @@ import java.lang.Exception
 class GetCategoryByTypeUseCase(
     private val repository: CategoryRepository
 ) {
-    operator fun invoke(name: String) = flow {
+    operator fun invoke(type: String) = flow {
         emit(Result.Loading)
         try {
-            val category = repository.getCategoryByType(name)
+            val category = repository.getCategoryByType(type)
             emit(Result.Success(category))
         } catch (e: Exception) {
             emit(Result.Failure(e))

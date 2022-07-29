@@ -17,6 +17,10 @@ class CategoryDataSourceImpl @Inject constructor(
         return dao.getCategoryByType(type).toModel()
     }
 
+    override suspend fun getCategoryByName(name: String): Category {
+        return dao.getCategoryByName(name).toModel()
+    }
+
     override suspend fun createCategoryTable() {
         return dao.createCategoryTable()
     }
@@ -25,11 +29,11 @@ class CategoryDataSourceImpl @Inject constructor(
         return dao.dropCategoryTable()
     }
 
-    override suspend fun insertCategory(type: String, name: String, color: Long) {
+    override suspend fun insertCategory(type: String, name: String, color: ULong) {
         return dao.insertCategory(type, name, color)
     }
 
-    override suspend fun updateCategory(id: Int, type: String, name: String, color: Long) {
+    override suspend fun updateCategory(id: Int, type: String, name: String, color: ULong) {
         return dao.updateCategory(id, type, name, color)
     }
 

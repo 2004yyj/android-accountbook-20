@@ -12,7 +12,7 @@ import java.lang.Exception
 class InsertHistoryUseCase(
     private val repository: HistoryRepository
 ) {
-    operator fun invoke(date: Long, amount: Int, content: String, category: Category, paymentMethod: PaymentMethod?) = flow {
+    operator fun invoke(date: Long, amount: Long, content: String, category: Category, paymentMethod: PaymentMethod?) = flow {
         try {
             repository.insertHistory(date, amount, content, category, paymentMethod)
             emit(Result.Success(Unit))

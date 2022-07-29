@@ -53,7 +53,7 @@ class HistoryDaoImpl @Inject constructor(
                             cursor.getInt(4),
                             cursor.getString(5),
                             cursor.getString(6),
-                            cursor.getLong(7)
+                            cursor.getString(7).toULong()
                         ),
                         if (cursor.getInt(8) < 0)
                             null
@@ -97,7 +97,7 @@ class HistoryDaoImpl @Inject constructor(
                             cursor.getInt(4),
                             cursor.getString(5),
                             cursor.getString(6),
-                            cursor.getLong(7)
+                            cursor.getString(7).toULong()
                         ),
                         if (cursor.getInt(8) < 0)
                             null

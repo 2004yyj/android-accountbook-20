@@ -43,7 +43,7 @@ class HistoryRepositoryImpl @Inject constructor(
 
     override suspend fun insertHistory(
         date: Long,
-        amount: Int,
+        amount: Long,
         content: String,
         category: Category,
         paymentMethod: PaymentMethod?
@@ -54,7 +54,7 @@ class HistoryRepositoryImpl @Inject constructor(
     override suspend fun updateHistory(
         id: Int,
         date: Long,
-        amount: Int,
+        amount: Long,
         content: String,
         category: Category,
         paymentMethod: PaymentMethod?
