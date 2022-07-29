@@ -197,10 +197,13 @@ fun HistoryCreateScreen(
                             onDismissRequest = {
                                 addingPaymentMethod = ""
                             },
-                            items = paymentMethods.map { it.name },
+                            items = categories.filter { it.name != "무분류" }.map { it.name },
                             footerItem = {
                                 CustomTextField(
-                                    modifier = Modifier.align(Alignment.CenterStart),
+                                    modifier = Modifier
+                                        .align(Alignment.CenterStart)
+                                        .padding(end = 48.dp + 16.dp),
+                                    singleLine = true,
                                     placeholder = { Text(text = "추가하기", fontWeight = FontWeight.Bold) },
                                     value = addingPaymentMethod,
                                     onValueChange = {
@@ -233,25 +236,26 @@ fun HistoryCreateScreen(
                         },
                         items = categories.filter { it.name != "무분류" }.map { it.name },
                         footerItem = {
-                            Box(modifier = Modifier.fillMaxWidth()) {
-                                CustomTextField(
-                                    modifier = Modifier.align(Alignment.CenterStart),
-                                    placeholder = { Text(text = "추가하기", fontWeight = FontWeight.Bold) },
-                                    value = addingCategory,
-                                    onValueChange = {
-                                        addingCategory = it
-                                    }
-                                )
-
-                                IconButton(
-                                    modifier = Modifier.align(Alignment.CenterEnd),
-                                    onClick = {  }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(Icons.Plus.iconId),
-                                        contentDescription = "plus"
-                                    )
+                            CustomTextField(
+                                modifier = Modifier
+                                    .align(Alignment.CenterStart)
+                                    .padding(end = 48.dp + 16.dp),
+                                singleLine = true,
+                                placeholder = { Text(text = "추가하기", fontWeight = FontWeight.Bold) },
+                                value = addingCategory,
+                                onValueChange = {
+                                    addingCategory = it
                                 }
+                            )
+
+                            IconButton(
+                                modifier = Modifier.align(Alignment.CenterEnd),
+                                onClick = {  }
+                            ) {
+                                Icon(
+                                    painter = painterResource(Icons.Plus.iconId),
+                                    contentDescription = "plus"
+                                )
                             }
                         },
                     )
