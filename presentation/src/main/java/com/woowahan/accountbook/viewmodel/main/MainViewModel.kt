@@ -59,15 +59,6 @@ class MainViewModel @Inject constructor(
             println(Blue1.value)
             val incomeResult = insertCategoryUseCase.invoke("income", "미분류/수입", Blue1.value).last()
             val expenseResult = insertCategoryUseCase.invoke("expense", "미분류/지출", Blue1.value).last()
-
-            when {
-                incomeResult is Result.Failure -> {
-                    incomeResult.cause.message?.let { _isFailure.emit(it) }
-                }
-                expenseResult is Result.Failure -> {
-                    expenseResult.cause.message?.let { _isFailure.emit(it) }
-                }
-            }
         }
     }
 }

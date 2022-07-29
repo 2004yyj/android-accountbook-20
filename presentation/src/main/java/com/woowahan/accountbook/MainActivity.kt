@@ -61,13 +61,6 @@ fun Main(mainViewModel: MainViewModel = viewModel()) {
         )
     val context = LocalContext.current
 
-    val isFailure by mainViewModel.isFailure.collectAsState()
-
-    if (isFailure.isNotEmpty()) {
-        Log.d("Main", "Main: $isFailure")
-        Toast.makeText(context, isFailure, Toast.LENGTH_SHORT).show()
-    }
-
     mainViewModel.createTables()
 
     Scaffold(
