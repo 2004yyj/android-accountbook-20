@@ -1,6 +1,7 @@
 package com.woowahan.accountbook
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -63,6 +64,7 @@ fun Main(mainViewModel: MainViewModel = viewModel()) {
     val isFailure by mainViewModel.isFailure.collectAsState()
 
     if (isFailure.isNotEmpty()) {
+        Log.d("Main", "Main: $isFailure")
         Toast.makeText(context, isFailure, Toast.LENGTH_SHORT).show()
     }
 
