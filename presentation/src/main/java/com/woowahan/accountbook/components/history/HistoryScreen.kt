@@ -13,7 +13,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -38,7 +37,8 @@ fun HistoryScreen(
     val history by viewModel.history.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val isFailure by viewModel.isFailure.collectAsState(initial = "")
-    var currentMonthLong by remember { mutableStateOf(System.currentTimeMillis()) }
+    var currentMonthFirstDayLong by remember { mutableStateOf(System.currentTimeMillis().getCurrentMonthFirstDayMillis()) }
+    var forwardMonthFirstDayLong by remember { mutableStateOf(System.currentTimeMillis().getForwardMonthMillis()) }
 
     val incomeTotal by viewModel.incomeTotal.collectAsState()
     val expenseTotal by viewModel.expenseTotal.collectAsState()
@@ -52,26 +52,27 @@ fun HistoryScreen(
 
     fun initial(refreshState: Boolean = false) = run {
         viewModel.getHistory(
-            currentMonthLong.getCurrentMonthFirstDayMillis(),
-            currentMonthLong.getForwardMonthMillis(),
+            currentMonthFirstDayLong,
+            forwardMonthFirstDayLong,
             when {
                 isCheckedIncome && isCheckedExpense -> "all"
                 isCheckedIncome && !isCheckedExpense -> "income"
                 isCheckedExpense && !isCheckedIncome -> "expense"
                 else -> ""
-            }, refreshState
+            },
+            refreshState
         )
 
         viewModel.getTotalPay(
-            currentMonthLong.getCurrentMonthFirstDayMillis(),
-            currentMonthLong.getForwardMonthMillis(),
+            currentMonthFirstDayLong,
+            forwardMonthFirstDayLong,
             "income",
             refreshState
         )
 
         viewModel.getTotalPay(
-            currentMonthLong.getCurrentMonthFirstDayMillis(),
-            currentMonthLong.getForwardMonthMillis(),
+            currentMonthFirstDayLong,
+            forwardMonthFirstDayLong,
             "expense",
             refreshState
         )
@@ -82,10 +83,16 @@ fun HistoryScreen(
     Scaffold(
         topBar = {
             MonthAppBar(
-                title = { Text(text = currentMonthLong.toYearMonth()) },
+                title = { Text(text = currentMonthFirstDayLong.toYearMonth()) },
                 modifier = Modifier.fillMaxWidth(),
-                onClickMonthBack = { currentMonthLong = currentMonthLong.getBackMonthMillis() },
-                onClickMonthForward = { currentMonthLong = currentMonthLong.getForwardMonthMillis() }
+                onClickMonthBack = {
+                    currentMonthFirstDayLong = currentMonthFirstDayLong.getBackMonthMillis()
+                    forwardMonthFirstDayLong = currentMonthFirstDayLong.getForwardMonthMillis()
+                },
+                onClickMonthForward = {
+                    currentMonthFirstDayLong = currentMonthFirstDayLong.getForwardMonthMillis()
+                    forwardMonthFirstDayLong = currentMonthFirstDayLong.getForwardMonthMillis()
+                }
             )
         },
         floatingActionButton = {

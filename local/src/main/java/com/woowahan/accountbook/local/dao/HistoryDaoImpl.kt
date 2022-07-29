@@ -20,7 +20,7 @@ class HistoryDaoImpl @Inject constructor(
                     "ON History.category_id = Category.id " +
                     "LEFT OUTER JOIN PaymentMethod " +
                     "ON IFNULL(History.payment_method_id, -1) = PaymentMethod.id " +
-                    "WHERE (History.date >= ? OR History.date < ?) AND History.amount ${if (type == "income") ">" else "<"} 0"
+                    "WHERE History.date >= ? AND History.date < ? AND History.amount ${if (type == "income") ">" else "<"} 0"
 
         return dbHelper.runSQLWithReadableTransaction {
             var totalPay = 0L
@@ -45,7 +45,7 @@ class HistoryDaoImpl @Inject constructor(
                     "ON History.category_id = Category.id " +
                     "LEFT OUTER JOIN PaymentMethod " +
                     "ON IFNULL(History.payment_method_id, -1) = PaymentMethod.id " +
-                    "WHERE History.date >= ? OR History.date < ?"
+                    "WHERE History.date >= ? AND History.date < ?"
         return dbHelper.runSQLWithReadableTransaction {
             val cursor = rawQuery(sql, arrayOf(firstDayOfMonth.toString(), firstDayOfNextMonth.toString()))
             val list = mutableListOf<HistoryData>()
@@ -86,7 +86,7 @@ class HistoryDaoImpl @Inject constructor(
                     "ON History.category_id = Category.id " +
                     "LEFT OUTER JOIN PaymentMethod " +
                     "ON IFNULL(History.payment_method_id, -1) = PaymentMethod.id " +
-                    "WHERE (History.date >= ? OR History.date < ?) AND History.amount ${if (type == "income") ">" else "<"} 0"
+                    "WHERE History.date >= ? AND History.date < ? AND History.amount ${if (type == "income") ">" else "<"} 0"
         return dbHelper.runSQLWithReadableTransaction {
             val cursor = rawQuery(sql, arrayOf(firstDayOfMonth.toString(), firstDayOfNextMonth.toString()))
             val list = mutableListOf<HistoryData>()
