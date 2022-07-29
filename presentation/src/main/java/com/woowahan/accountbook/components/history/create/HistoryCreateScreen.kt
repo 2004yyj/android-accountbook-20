@@ -1,6 +1,7 @@
 package com.woowahan.accountbook.components.history.create
 
 import android.app.DatePickerDialog
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -18,6 +19,7 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -43,8 +45,13 @@ import java.time.temporal.ChronoUnit
 @Composable
 fun HistoryCreateScreen(
     navController: NavController,
-    viewModel: HistoryCreateViewModel = viewModel()
+    viewModel: HistoryCreateViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
+    val isSuccess by viewModel.isSuccess.collectAsState()
+    val isFailure by viewModel.isFailure.collectAsState()
+
     var selectedIncome by remember { mutableStateOf(true) }
     var selectedExpense by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf(Instant.now().truncatedTo(ChronoUnit.DAYS).epochSecond * 1000) }
@@ -59,15 +66,12 @@ fun HistoryCreateScreen(
     viewModel.getPaymentMethods()
     viewModel.getCategories()
 
-    val context = LocalContext.current
-    LocalLifecycleOwner.current.apply {
-        lifecycleScope.launchWhenResumed {
-            viewModel.isSuccess
-                .debounce(300)
-                .collect {
-                    navController.popBackStack()
-                }
-        }
+    if (isSuccess) {
+        navController.popBackStack()
+    }
+
+    if (isFailure.isNotEmpty()) {
+        Toast.makeText(context, isFailure, Toast.LENGTH_SHORT).show()
     }
 
     val datePickerDialog = DatePickerDialog(context)
@@ -108,6 +112,7 @@ fun HistoryCreateScreen(
                             if (it) {
                                 selectedIncome = it
                                 selectedExpense = !it
+                                selectedPaymentMethod = ""
                             }
                         }
                     )
@@ -174,29 +179,31 @@ fun HistoryCreateScreen(
                     )
                 }
 
-                Editable(
-                    text = { Text(text = "결제 수단") }
-                ) {
-                    CustomDropDownMenu(
-                        value = selectedPaymentMethod,
-                        onChangedValue = { selectedPaymentMethod = it },
-                        items = paymentMethods.map { it.name },
-                        footerItem = {
-                            Box(modifier = Modifier.fillMaxWidth()) {
-                                Text(
-                                    modifier = Modifier.align(Alignment.CenterStart),
-                                    text = "추가하기"
-                                )
+                if (selectedExpense) {
+                    Editable(
+                        text = { Text(text = "결제 수단") }
+                    ) {
+                        CustomDropDownMenu(
+                            value = selectedPaymentMethod,
+                            onChangedValue = { selectedPaymentMethod = it },
+                            items = paymentMethods.map { it.name },
+                            footerItem = {
+                                Box(modifier = Modifier.fillMaxWidth()) {
+                                    Text(
+                                        modifier = Modifier.align(Alignment.CenterStart),
+                                        text = "추가하기"
+                                    )
 
-                                Icon(
-                                    modifier = Modifier.align(Alignment.CenterEnd),
-                                    painter = painterResource(Icons.Plus.iconId),
-                                    contentDescription = "plus"
-                                )
-                            }
-                        },
-                        onFooterItemClick = {  }
-                    )
+                                    Icon(
+                                        modifier = Modifier.align(Alignment.CenterEnd),
+                                        painter = painterResource(Icons.Plus.iconId),
+                                        contentDescription = "plus"
+                                    )
+                                }
+                            },
+                            onFooterItemClick = { }
+                        )
+                    }
                 }
 
                 Editable(
@@ -205,7 +212,7 @@ fun HistoryCreateScreen(
                     CustomDropDownMenu(
                         value = selectedCategory,
                         onChangedValue = { selectedCategory = it },
-                        items = categories.map { it.name },
+                        items = categories.filter { it.name != "무분류" }.map { it.name },
                         footerItem = {
                             Box(modifier = Modifier.fillMaxWidth()) {
                                 Text(
@@ -243,20 +250,21 @@ fun HistoryCreateScreen(
                     backgroundColor = Yellow,
                     disabledBackgroundColor = Yellow80
                 ),
-                enabled = enterMoney != 0L && selectedPaymentMethod != "",
+                enabled = enterMoney != 0L && (selectedPaymentMethod != "" || selectedIncome),
                 shape = SubmitShape,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp)
                     .align(Alignment.BottomCenter),
                 onClick = {
+                    val type = if (selectedIncome) "income" else "expense"
                     viewModel.insertHistory(
-                        type = if (selectedIncome) "income" else "expense",
+                        type = type,
                         date = selectedDate,
                         money = enterMoney,
                         content = enterContent,
-                        paymentMethod = selectedPaymentMethod,
-                        category = selectedCategory
+                        paymentMethod = paymentMethods.find { it.name == selectedPaymentMethod },
+                        category = categories.find { it.name == selectedCategory }
                     )
                 }
             ) {
