@@ -12,10 +12,10 @@ class GetAllHistoriesByMonthAndTypeUseCase(
 ) {
     operator fun invoke(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: String = "") = flow {
         try {
-            val list = if (type.isEmpty()) {
-                repository.getAllHistoriesByMonthAndType(firstDayOfMonth, firstDayOfNextMonth)
-            } else {
-                repository.getAllHistoriesByMonthAndType(firstDayOfMonth, firstDayOfNextMonth, type)
+            val list = when (type) {
+                "all" -> repository.getAllHistoriesByMonthAndType(firstDayOfMonth, firstDayOfNextMonth)
+                "income", "expense" -> repository.getAllHistoriesByMonthAndType(firstDayOfMonth, firstDayOfNextMonth, type)
+                else -> emptyList()
             }
             emit(Result.Success(list))
         } catch (e: Exception) {

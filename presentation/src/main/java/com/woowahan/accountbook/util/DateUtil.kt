@@ -6,13 +6,32 @@ import java.util.*
 fun Long.getBackMonthMillis(): Long {
     val calendar = Calendar.getInstance()
     calendar.time = Date(this)
+    calendar.set(Calendar.HOUR_OF_DAY, 0)
+    calendar.clear(Calendar.MINUTE)
+    calendar.clear(Calendar.SECOND)
+    calendar.clear(Calendar.MILLISECOND)
     calendar.add(Calendar.MONTH, -1)
+    return calendar.timeInMillis
+}
+
+fun Long.getCurrentMonthFirstDayMillis(): Long {
+    val calendar = Calendar.getInstance()
+    calendar.time = Date(this)
+    calendar.set(Calendar.HOUR_OF_DAY, 0)
+    calendar.clear(Calendar.MINUTE)
+    calendar.clear(Calendar.SECOND)
+    calendar.clear(Calendar.MILLISECOND)
+    calendar.set(Calendar.DAY_OF_MONTH, 1)
     return calendar.timeInMillis
 }
 
 fun Long.getForwardMonthMillis(): Long {
     val calendar = Calendar.getInstance()
     calendar.time = Date(this)
+    calendar.set(Calendar.HOUR_OF_DAY, 0)
+    calendar.clear(Calendar.MINUTE)
+    calendar.clear(Calendar.SECOND)
+    calendar.clear(Calendar.MILLISECOND)
     calendar.add(Calendar.MONTH, 1)
     return calendar.timeInMillis
 }
