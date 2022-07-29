@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -179,7 +180,22 @@ fun HistoryCreateScreen(
                     CustomDropDownMenu(
                         value = selectedPaymentMethod,
                         onChangedValue = { selectedPaymentMethod = it },
-                        items = paymentMethods.map { it.name }
+                        items = paymentMethods.map { it.name },
+                        footerItem = {
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                Text(
+                                    modifier = Modifier.align(Alignment.CenterStart),
+                                    text = "추가하기"
+                                )
+
+                                Icon(
+                                    modifier = Modifier.align(Alignment.CenterEnd),
+                                    painter = painterResource(Icons.Plus.iconId),
+                                    contentDescription = "plus"
+                                )
+                            }
+                        },
+                        onFooterItemClick = {  }
                     )
                 }
 
@@ -189,7 +205,22 @@ fun HistoryCreateScreen(
                     CustomDropDownMenu(
                         value = selectedCategory,
                         onChangedValue = { selectedCategory = it },
-                        items = categories.map { it.name }
+                        items = categories.map { it.name },
+                        footerItem = {
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                Text(
+                                    modifier = Modifier.align(Alignment.CenterStart),
+                                    text = "추가하기"
+                                )
+
+                                Icon(
+                                    modifier = Modifier.align(Alignment.CenterEnd),
+                                    painter = painterResource(Icons.Plus.iconId),
+                                    contentDescription = "plus"
+                                )
+                            }
+                        },
+                        onFooterItemClick = {  }
                     )
                 }
 

@@ -4,10 +4,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -25,6 +22,8 @@ fun CustomDropDownMenu(
     value: String,
     onChangedValue: (String) -> Unit,
     items: List<String>,
+    footerItem: @Composable () -> Unit,
+    onFooterItemClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var expended by remember { mutableStateOf(false) }
@@ -78,6 +77,14 @@ fun CustomDropDownMenu(
                     }) {
                         Text(text = it, color = Purple)
                     }
+                }
+
+                DropdownMenuItem(onClick = onFooterItemClick) {
+                    CompositionLocalProvider(
+                        LocalContentAlpha provides ContentAlpha.high,
+                        LocalContentColor provides Purple,
+                        content = footerItem,
+                    )
                 }
             }
         }
