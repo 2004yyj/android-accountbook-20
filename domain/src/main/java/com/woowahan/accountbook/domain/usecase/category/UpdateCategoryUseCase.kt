@@ -10,7 +10,7 @@ import java.lang.Exception
 class UpdateCategoryUseCase(
     private val repository: CategoryRepository
 ) {
-    operator fun invoke(id: Int, type: String, name: String, color: Long) = flow {
+    operator fun invoke(id: Int, type: String, name: String, color: ULong) = flow {
         emit(Result.Loading)
         try {
             repository.updateCategory(id, type, name, color)

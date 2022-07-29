@@ -22,7 +22,7 @@ class CategoryDaoImpl @Inject constructor(
                         cursor.getInt(0),
                         cursor.getString(1),
                         cursor.getString(2),
-                        cursor.getLong(3)
+                        cursor.getString(3).toULong()
                     )
                 )
             }
@@ -39,7 +39,7 @@ class CategoryDaoImpl @Inject constructor(
                 cursor.getInt(0),
                 cursor.getString(1),
                 cursor.getString(2),
-                cursor.getLong(3)
+                cursor.getString(3).toULong()
             )
             cursor.close()
             return@runSQLWithReadableTransaction categoryData
@@ -62,24 +62,24 @@ class CategoryDaoImpl @Inject constructor(
         }
     }
 
-    override suspend fun insertCategory(type: String, name: String, color: Long) {
+    override suspend fun insertCategory(type: String, name: String, color: ULong) {
         val sql = "INSERT INTO Category (type, name, color) VALUES (?, ?, ?)"
         dbHelper.runSQLWithWritableTransaction {
             val statement = compileStatement(sql)
             statement.bindString(0, type)
             statement.bindString(1, name)
-            statement.bindLong(2, color)
+            statement.bindString(2, color.toString())
             statement.executeInsert()
         }
     }
 
-    override suspend fun updateCategory(id: Int, type: String, name: String, color: Long) {
+    override suspend fun updateCategory(id: Int, type: String, name: String, color: ULong) {
         val sql = "UPDATE Category SET type = ?, name = ?, color = ? WHERE id = $id"
         dbHelper.runSQLWithWritableTransaction {
             val statement = compileStatement(sql)
             statement.bindString(0, type)
             statement.bindString(1, name)
-            statement.bindLong(2, color)
+            statement.bindString(2, color.toString())
             statement.executeUpdateDelete()
         }
     }

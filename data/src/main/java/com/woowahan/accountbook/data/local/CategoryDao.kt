@@ -9,7 +9,7 @@ interface CategoryDao {
     suspend fun getCategoryByType(type: String): CategoryData
     suspend fun createCategoryTable()
     suspend fun dropCategoryTable()
-    suspend fun insertCategory(type: String, name: String, color: Long)
-    suspend fun updateCategory(id: Int, type: String, name: String, color: Long)
+    suspend fun insertCategory(type: String, name: String, color: ULong)
+    suspend fun updateCategory(id: Int, type: String, name: String, color: ULong)
     suspend fun deleteCategory(id: Int)
 }

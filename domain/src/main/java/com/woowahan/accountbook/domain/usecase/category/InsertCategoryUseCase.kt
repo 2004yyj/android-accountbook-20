@@ -10,7 +10,7 @@ import java.lang.Exception
 class InsertCategoryUseCase(
     private val repository: CategoryRepository
 ) {
-    operator fun invoke(type: String, name: String, color: Long) = flow {
+    operator fun invoke(type: String, name: String, color: ULong) = flow {
         emit(Result.Loading)
         try {
             repository.insertCategory(type, name, color)
