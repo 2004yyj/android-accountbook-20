@@ -4,8 +4,6 @@ import com.woowahan.accountbook.data.entity.CategoryData
 import com.woowahan.accountbook.data.entity.HistoryData
 import com.woowahan.accountbook.data.entity.PaymentMethodData
 import com.woowahan.accountbook.data.local.HistoryDao
-import com.woowahan.accountbook.domain.model.Category
-import com.woowahan.accountbook.domain.model.PaymentMethod
 import com.woowahan.accountbook.local.helper.DatabaseOpenHelper
 import com.woowahan.accountbook.local.util.runSQL
 import com.woowahan.accountbook.local.util.runSQLWithReadableTransaction
@@ -49,7 +47,7 @@ class HistoryDaoImpl @Inject constructor(
                     HistoryData(
                         cursor.getInt(0),
                         cursor.getLong(1),
-                        cursor.getInt(2),
+                        cursor.getLong(2),
                         cursor.getString(3),
                         CategoryData(
                             cursor.getInt(4),
@@ -93,7 +91,7 @@ class HistoryDaoImpl @Inject constructor(
                     HistoryData(
                         cursor.getInt(0),
                         cursor.getLong(1),
-                        cursor.getInt(2),
+                        cursor.getLong(2),
                         cursor.getString(3),
                         CategoryData(
                             cursor.getInt(4),
@@ -143,7 +141,7 @@ class HistoryDaoImpl @Inject constructor(
 
     override suspend fun insertHistory(
         date: Long,
-        amount: Int,
+        amount: Long,
         content: String,
         category: CategoryData,
         paymentMethod: PaymentMethodData?
@@ -151,11 +149,11 @@ class HistoryDaoImpl @Inject constructor(
         val sql = "INSERT INTO History (date, amount, content, category_id, payment_method_id) VALUES (?, ?, ?, ?, ${if (paymentMethod != null) "?" else "NULL"})"
         dbHelper.runSQLWithWritableTransaction {
             val statement = compileStatement(sql)
-            statement.bindLong(0, date)
-            statement.bindLong(1, amount.toLong())
-            statement.bindString(2, content)
-            statement.bindLong(3, category.id.toLong())
-            paymentMethod?.id?.toLong()?.let { statement.bindLong(4, it) }
+            statement.bindLong(1, date)
+            statement.bindLong(2, amount.toLong())
+            statement.bindString(3, content)
+            statement.bindLong(4, category.id.toLong())
+            paymentMethod?.id?.toLong()?.let { statement.bindLong(5, it) }
             statement.executeInsert()
         }
     }
@@ -163,7 +161,7 @@ class HistoryDaoImpl @Inject constructor(
     override suspend fun updateHistory(
         id: Int,
         date: Long,
-        amount: Int,
+        amount: Long,
         content: String,
         category: CategoryData,
         paymentMethod: PaymentMethodData?
@@ -171,11 +169,11 @@ class HistoryDaoImpl @Inject constructor(
         val sql = "UPDATE History SET date = ?, amount = ?, content = ?, category_id = ?, payment_method_id = ${if (paymentMethod != null) "?" else "NULL"})"
         dbHelper.runSQLWithWritableTransaction {
             val statement = compileStatement(sql)
-            statement.bindLong(0, date)
-            statement.bindLong(1, amount.toLong())
-            statement.bindString(2, content)
-            statement.bindLong(3, category.id.toLong())
-            paymentMethod?.id?.toLong()?.let { statement.bindLong(4, it) }
+            statement.bindLong(1, date)
+            statement.bindLong(2, amount.toLong())
+            statement.bindString(3, content)
+            statement.bindLong(4, category.id.toLong())
+            paymentMethod?.id?.toLong()?.let { statement.bindLong(5, it) }
             statement.executeUpdateDelete()
         }
     }

@@ -18,6 +18,7 @@ fun SQLiteOpenHelper.runSQLWithWritableTransaction(function: SQLiteDatabase.() -
     try {
         db.beginTransaction()
         function.invoke(writableDatabase)
+        db.setTransactionSuccessful()
     } catch (e: SQLException) {
         throw e
     } finally {
@@ -26,7 +27,7 @@ fun SQLiteOpenHelper.runSQLWithWritableTransaction(function: SQLiteDatabase.() -
 }
 
 fun <T> SQLiteOpenHelper.runSQLWithReadableTransaction(function: SQLiteDatabase.() -> T): T {
-    val db = writableDatabase
+    val db = readableDatabase
     try {
         db.beginTransaction()
         return function.invoke(writableDatabase)

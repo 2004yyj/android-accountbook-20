@@ -46,8 +46,24 @@ class CategoryDaoImpl @Inject constructor(
         }
     }
 
+    override suspend fun getCategoryByName(name: String): CategoryData {
+        val sql = "SELECT * FROM Category WHERE name = ?"
+        return dbHelper.runSQLWithReadableTransaction {
+            val cursor = rawQuery(sql, arrayOf(name))
+            cursor.moveToFirst()
+            val categoryData = CategoryData(
+                cursor.getInt(0),
+                cursor.getString(1),
+                cursor.getString(2),
+                cursor.getString(3).toULong()
+            )
+            cursor.close()
+            return@runSQLWithReadableTransaction categoryData
+        }
+    }
+
     override suspend fun createCategoryTable() {
-        val sql = "CREATE TABLE IF NOT EXISTS Category (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, name TEXT NOT NULL UNIQUE, color INTEGER NOT NULL);"
+        val sql = "CREATE TABLE IF NOT EXISTS Category (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, name TEXT NOT NULL UNIQUE, color TEXT NOT NULL);"
         dbHelper.runSQL {
             val statement = compileStatement(sql)
             statement.execute()
@@ -66,9 +82,9 @@ class CategoryDaoImpl @Inject constructor(
         val sql = "INSERT INTO Category (type, name, color) VALUES (?, ?, ?)"
         dbHelper.runSQLWithWritableTransaction {
             val statement = compileStatement(sql)
-            statement.bindString(0, type)
-            statement.bindString(1, name)
-            statement.bindString(2, color.toString())
+            statement.bindString(1, type)
+            statement.bindString(2, name)
+            statement.bindString(3, color.toString())
             statement.executeInsert()
         }
     }
@@ -77,9 +93,9 @@ class CategoryDaoImpl @Inject constructor(
         val sql = "UPDATE Category SET type = ?, name = ?, color = ? WHERE id = $id"
         dbHelper.runSQLWithWritableTransaction {
             val statement = compileStatement(sql)
-            statement.bindString(0, type)
-            statement.bindString(1, name)
-            statement.bindString(2, color.toString())
+            statement.bindString(1, type)
+            statement.bindString(2, name)
+            statement.bindString(3, color.toString())
             statement.executeUpdateDelete()
         }
     }

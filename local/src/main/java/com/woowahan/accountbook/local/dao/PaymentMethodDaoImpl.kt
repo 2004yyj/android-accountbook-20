@@ -62,7 +62,7 @@ class PaymentMethodDaoImpl @Inject constructor(
         val sql = "INSERT INTO PaymentMethod (name) VALUES (?)"
         dbHelper.runSQLWithWritableTransaction {
             val statement = compileStatement(sql)
-            statement.bindString(0, name)
+            statement.bindString(1, name)
             statement.executeInsert()
         }
     }
@@ -71,7 +71,7 @@ class PaymentMethodDaoImpl @Inject constructor(
         val sql = "UPDATE PaymentMethod SET name = ? WHERE id = $id"
         dbHelper.runSQLWithWritableTransaction {
             val statement = compileStatement(sql)
-            statement.bindString(0, name)
+            statement.bindString(1, name)
             statement.executeUpdateDelete()
         }
     }
