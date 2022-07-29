@@ -69,7 +69,9 @@ fun HistoryCreateScreen(
     viewModel.getCategories(if (selectedIncome) "income" else "expense")
 
     if (isSuccess) {
-        navController.popBackStack()
+        LaunchedEffect(true) {
+            navController.popBackStack()
+        }
     }
 
     if (isFailure.isNotEmpty()) {
