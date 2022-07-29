@@ -116,6 +116,8 @@ fun HistoryCreateScreen(
                                 selectedIncome = it
                                 selectedExpense = !it
                                 selectedPaymentMethod = ""
+                                addingPaymentMethod = ""
+                                addingCategory = ""
                             }
                         }
                     )
@@ -129,6 +131,9 @@ fun HistoryCreateScreen(
                             if (it) {
                                 selectedExpense = it
                                 selectedIncome = !it
+                                selectedPaymentMethod = ""
+                                addingPaymentMethod = ""
+                                addingCategory = ""
                             }
                         }
                     )
