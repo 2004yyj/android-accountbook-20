@@ -27,7 +27,6 @@ fun HistoryListItem(
                 .padding(horizontal = 16.dp)
                 .padding(top = 10.dp)
         ) {
-            item.paymentMethod?.name?.let {
                 CategoryChip(
                     text = {
                         Text(
@@ -38,6 +37,7 @@ fun HistoryListItem(
                     color = Color(item.category.color),
                     modifier = Modifier.align(Alignment.TopStart)
                 )
+            item.paymentMethod?.name?.let {
                 Text(
                     text = it,
                     modifier = Modifier.align(Alignment.TopEnd),

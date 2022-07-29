@@ -161,10 +161,12 @@ fun HistoryScreen(
                                 )
                             }
 
-                            Text(
-                                modifier = Modifier.align(Alignment.Center),
-                                text = "내역이 없습니다."
-                            )
+                            if (history.isEmpty()) {
+                                Text(
+                                    modifier = Modifier.align(Alignment.Center),
+                                    text = "내역이 없습니다."
+                                )
+                            }
                         }
                     }
 
