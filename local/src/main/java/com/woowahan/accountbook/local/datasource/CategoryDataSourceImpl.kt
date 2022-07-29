@@ -13,8 +13,8 @@ class CategoryDataSourceImpl @Inject constructor(
         return dao.getAllCategories().map { it.toModel() }
     }
 
-    override suspend fun getCategoryByType(type: String): Category {
-        return dao.getCategoryByType(type).toModel()
+    override suspend fun getAllCategoryByType(type: String): List<Category> {
+        return dao.getAllCategoryByType(type).map { it.toModel() }
     }
 
     override suspend fun getCategoryByName(name: String): Category {

@@ -31,19 +31,23 @@ class CategoryDaoImpl @Inject constructor(
         }
     }
 
-    override suspend fun getCategoryByType(type: String): CategoryData {
+    override suspend fun getAllCategoryByType(type: String): List<CategoryData> {
         val sql = "SELECT * FROM Category WHERE type = ?"
-        return dbHelper.runSQLWithReadableTransaction {
+        return dbHelper.runSQLWithReadableTransaction<List<CategoryData>> {
             val cursor = rawQuery(sql, arrayOf(type))
-            cursor.moveToFirst()
-            val categoryData = CategoryData(
-                cursor.getInt(0),
-                cursor.getString(1),
-                cursor.getString(2),
-                cursor.getString(3).toULong()
-            )
+            val list = mutableListOf<CategoryData>()
+            while (cursor.moveToNext()) {
+                list.add(
+                    CategoryData(
+                        cursor.getInt(0),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getString(3).toULong()
+                    )
+                )
+            }
             cursor.close()
-            return@runSQLWithReadableTransaction categoryData
+            return@runSQLWithReadableTransaction list
         }
     }
 

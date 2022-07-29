@@ -10,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -20,8 +19,6 @@ import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.woowahan.accountbook.components.appbar.BackAppBar
@@ -36,12 +33,9 @@ import com.woowahan.accountbook.util.toLongTime
 import com.woowahan.accountbook.util.toMoneyString
 import com.woowahan.accountbook.util.toYearMonthDayDots
 import com.woowahan.accountbook.viewmodel.history.create.HistoryCreateViewModel
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.debounce
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
-@OptIn(FlowPreview::class)
 @Composable
 fun HistoryCreateScreen(
     navController: NavController,
@@ -51,6 +45,9 @@ fun HistoryCreateScreen(
 
     val isSuccess by viewModel.isSuccess.collectAsState()
     val isFailure by viewModel.isFailure.collectAsState()
+
+    var addingPaymentMethod by remember { mutableStateOf("") }
+    var addingCategory by remember { mutableStateOf("") }
 
     var selectedIncome by remember { mutableStateOf(true) }
     var selectedExpense by remember { mutableStateOf(false) }
@@ -64,14 +61,12 @@ fun HistoryCreateScreen(
     val categories by viewModel.categories.collectAsState()
 
     viewModel.getPaymentMethods()
-    viewModel.getCategories()
+    viewModel.getCategories(if (selectedIncome) "income" else "expense")
 
     if (isSuccess) {
-        navController.popBackStack()
-    }
-
-    if (isFailure.isNotEmpty()) {
-        Toast.makeText(context, isFailure, Toast.LENGTH_SHORT).show()
+        LaunchedEffect(true) {
+            navController.popBackStack()
+        }
     }
 
     val datePickerDialog = DatePickerDialog(context)
@@ -113,6 +108,9 @@ fun HistoryCreateScreen(
                                 selectedIncome = it
                                 selectedExpense = !it
                                 selectedPaymentMethod = ""
+                                selectedCategory = ""
+                                addingPaymentMethod = ""
+                                addingCategory = ""
                             }
                         }
                     )
@@ -126,6 +124,10 @@ fun HistoryCreateScreen(
                             if (it) {
                                 selectedExpense = it
                                 selectedIncome = !it
+                                selectedPaymentMethod = ""
+                                selectedCategory = ""
+                                addingPaymentMethod = ""
+                                addingCategory = ""
                             }
                         }
                     )
@@ -186,22 +188,36 @@ fun HistoryCreateScreen(
                         CustomDropDownMenu(
                             value = selectedPaymentMethod,
                             onChangedValue = { selectedPaymentMethod = it },
+                            onDismissRequest = {
+                                addingPaymentMethod = ""
+                            },
                             items = paymentMethods.map { it.name },
                             footerItem = {
-                                Box(modifier = Modifier.fillMaxWidth()) {
-                                    Text(
-                                        modifier = Modifier.align(Alignment.CenterStart),
-                                        text = "추가하기"
-                                    )
+                                CustomTextField(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterStart)
+                                        .padding(end = 48.dp + 16.dp),
+                                    singleLine = true,
+                                    placeholder = { Text(text = "추가하기", fontWeight = FontWeight.Bold) },
+                                    value = addingPaymentMethod,
+                                    onValueChange = {
+                                        addingPaymentMethod = it
+                                    }
+                                )
 
+                                IconButton(
+                                    modifier = Modifier.align(Alignment.CenterEnd),
+                                    onClick = {
+                                        viewModel.insertPaymentMethod(addingPaymentMethod)
+                                        addingPaymentMethod = ""
+                                    }
+                                ) {
                                     Icon(
-                                        modifier = Modifier.align(Alignment.CenterEnd),
                                         painter = painterResource(Icons.Plus.iconId),
                                         contentDescription = "plus"
                                     )
                                 }
                             },
-                            onFooterItemClick = { }
                         )
                     }
                 }
@@ -212,22 +228,36 @@ fun HistoryCreateScreen(
                     CustomDropDownMenu(
                         value = selectedCategory,
                         onChangedValue = { selectedCategory = it },
-                        items = categories.filter { it.name != "무분류" }.map { it.name },
+                        onDismissRequest = {
+                            addingCategory = ""
+                        },
+                        items = categories.map { it.name },
                         footerItem = {
-                            Box(modifier = Modifier.fillMaxWidth()) {
-                                Text(
-                                    modifier = Modifier.align(Alignment.CenterStart),
-                                    text = "추가하기"
-                                )
+                            CustomTextField(
+                                modifier = Modifier
+                                    .align(Alignment.CenterStart)
+                                    .padding(end = 48.dp + 16.dp),
+                                singleLine = true,
+                                placeholder = { Text(text = "추가하기", fontWeight = FontWeight.Bold) },
+                                value = addingCategory,
+                                onValueChange = {
+                                    addingCategory = it
+                                }
+                            )
 
+                            IconButton(
+                                modifier = Modifier.align(Alignment.CenterEnd),
+                                onClick = {
+                                    viewModel.insertCategory(if (selectedIncome) "income" else "expense", addingCategory)
+                                    addingCategory = ""
+                                }
+                            ) {
                                 Icon(
-                                    modifier = Modifier.align(Alignment.CenterEnd),
                                     painter = painterResource(Icons.Plus.iconId),
                                     contentDescription = "plus"
                                 )
                             }
                         },
-                        onFooterItemClick = {  }
                     )
                 }
 
@@ -261,7 +291,7 @@ fun HistoryCreateScreen(
                     viewModel.insertHistory(
                         type = type,
                         date = selectedDate,
-                        money = enterMoney,
+                        money = if (selectedIncome) enterMoney else -enterMoney,
                         content = enterContent,
                         paymentMethod = paymentMethods.find { it.name == selectedPaymentMethod },
                         category = categories.find { it.name == selectedCategory }

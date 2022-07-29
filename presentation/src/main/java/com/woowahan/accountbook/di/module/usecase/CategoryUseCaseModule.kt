@@ -31,8 +31,8 @@ object CategoryUseCaseModule {
 
     @Provides
     @Singleton
-    fun providesGetCategoryByTypeUseCase(repository: CategoryRepository): GetCategoryByTypeUseCase {
-        return GetCategoryByTypeUseCase(repository)
+    fun providesGetAllCategoryByTypeUseCase(repository: CategoryRepository): GetAllCategoryByTypeUseCase {
+        return GetAllCategoryByTypeUseCase(repository)
     }
 
     @Provides
