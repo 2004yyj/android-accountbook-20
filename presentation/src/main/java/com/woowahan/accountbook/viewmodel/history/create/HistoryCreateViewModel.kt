@@ -1,5 +1,6 @@
 package com.woowahan.accountbook.viewmodel.history.create
 
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.woowahan.accountbook.domain.model.Category
@@ -7,12 +8,17 @@ import com.woowahan.accountbook.domain.model.PaymentMethod
 import com.woowahan.accountbook.domain.model.Result
 import com.woowahan.accountbook.domain.usecase.category.GetCategoryByNameUseCase
 import com.woowahan.accountbook.domain.usecase.category.GetAllCategoryByTypeUseCase
+import com.woowahan.accountbook.domain.usecase.category.InsertCategoryUseCase
 import com.woowahan.accountbook.domain.usecase.history.InsertHistoryUseCase
 import com.woowahan.accountbook.domain.usecase.paymentmethod.GetAllPaymentMethodsUseCase
+import com.woowahan.accountbook.domain.usecase.paymentmethod.InsertPaymentMethodUseCase
+import com.woowahan.accountbook.ui.theme.Blue1
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.random.Random
 
 
 @HiltViewModel
@@ -20,7 +26,9 @@ class HistoryCreateViewModel @Inject constructor(
     private val insertHistoryUseCase: InsertHistoryUseCase,
     private val getCategoryByNameUseCase: GetCategoryByNameUseCase,
     private val getAllCategoryByTypeUseCase: GetAllCategoryByTypeUseCase,
-    private val getAllPaymentMethodsUseCase: GetAllPaymentMethodsUseCase
+    private val getAllPaymentMethodsUseCase: GetAllPaymentMethodsUseCase,
+    private val insertCategoryUseCase: InsertCategoryUseCase,
+    private val insertPaymentMethodUseCase: InsertPaymentMethodUseCase
 ): ViewModel() {
 
     private val _isSuccess = MutableStateFlow(false)
@@ -34,6 +42,34 @@ class HistoryCreateViewModel @Inject constructor(
 
     private val _categories = MutableStateFlow<List<Category>>(emptyList())
     val categories = _categories.asStateFlow()
+
+    fun insertCategory(type: String, name: String) {
+        viewModelScope.launch {
+            val random = Random(255)
+            val randomColor = Color(random.nextFloat(), random.nextFloat(), random.nextFloat())
+            insertCategoryUseCase(type, name, randomColor.value).collect {
+                when(it) {
+                    is Result.Success<Unit> -> getCategories(type)
+                    is Result.Failure -> {
+                        it.cause.message?.let { message -> _isFailure.emit(message) }
+                    }
+                }
+            }
+        }
+    }
+
+    fun insertPaymentMethod(name: String) {
+        viewModelScope.launch {
+            insertPaymentMethodUseCase(name).collect {
+                when(it) {
+                    is Result.Success<Unit> -> getPaymentMethods()
+                    is Result.Failure -> {
+                        it.cause.message?.let { message -> _isFailure.emit(message) }
+                    }
+                }
+            }
+        }
+    }
 
     fun getPaymentMethods() {
         viewModelScope.launch {
@@ -81,15 +117,13 @@ class HistoryCreateViewModel @Inject constructor(
                             it.value,
                             paymentMethod
                         ).collect {
-                            result(it)
+                            _isSuccess.emit(true)
                         }
-                    } else {
-                        result(it)
                     }
                 }
             } else {
                 insertHistoryUseCase(date, money, filteredContent, category, paymentMethod).collect {
-                    result(it)
+                    _isSuccess.emit(true)
                 }
             }
         }
@@ -97,9 +131,6 @@ class HistoryCreateViewModel @Inject constructor(
 
     private suspend fun result(result: Result<*>) {
         when(result) {
-            is Result.Success<*> -> {
-                _isSuccess.emit(true)
-            }
             is Result.Failure -> {
                 result.cause.message?.let { _isFailure.emit(it) }
             }

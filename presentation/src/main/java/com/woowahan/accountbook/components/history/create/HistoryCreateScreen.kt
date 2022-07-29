@@ -10,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -20,8 +19,6 @@ import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.woowahan.accountbook.components.appbar.BackAppBar
@@ -36,8 +33,6 @@ import com.woowahan.accountbook.util.toLongTime
 import com.woowahan.accountbook.util.toMoneyString
 import com.woowahan.accountbook.util.toYearMonthDayDots
 import com.woowahan.accountbook.viewmodel.history.create.HistoryCreateViewModel
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.debounce
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
@@ -72,10 +67,6 @@ fun HistoryCreateScreen(
         LaunchedEffect(true) {
             navController.popBackStack()
         }
-    }
-
-    if (isFailure.isNotEmpty()) {
-        Toast.makeText(context, isFailure, Toast.LENGTH_SHORT).show()
     }
 
     val datePickerDialog = DatePickerDialog(context)
@@ -216,7 +207,10 @@ fun HistoryCreateScreen(
 
                                 IconButton(
                                     modifier = Modifier.align(Alignment.CenterEnd),
-                                    onClick = {  }
+                                    onClick = {
+                                        viewModel.insertPaymentMethod(addingPaymentMethod)
+                                        addingPaymentMethod = ""
+                                    }
                                 ) {
                                     Icon(
                                         painter = painterResource(Icons.Plus.iconId),
@@ -253,7 +247,10 @@ fun HistoryCreateScreen(
 
                             IconButton(
                                 modifier = Modifier.align(Alignment.CenterEnd),
-                                onClick = {  }
+                                onClick = {
+                                    viewModel.insertCategory(if (selectedIncome) "income" else "expense", addingCategory)
+                                    addingCategory = ""
+                                }
                             ) {
                                 Icon(
                                     painter = painterResource(Icons.Plus.iconId),
