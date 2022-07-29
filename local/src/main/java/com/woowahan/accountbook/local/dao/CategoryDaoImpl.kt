@@ -35,6 +35,7 @@ class CategoryDaoImpl @Inject constructor(
         val sql = "SELECT * FROM Category WHERE type = ?"
         return dbHelper.runSQLWithReadableTransaction {
             val cursor = rawQuery(sql, arrayOf(type))
+            cursor.moveToFirst()
             val categoryData = CategoryData(
                 cursor.getInt(0),
                 cursor.getString(1),

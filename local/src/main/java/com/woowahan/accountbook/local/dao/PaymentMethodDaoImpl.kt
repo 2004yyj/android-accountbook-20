@@ -33,6 +33,7 @@ class PaymentMethodDaoImpl @Inject constructor(
         val sql = "SELECT * FROM PaymentMethod WHERE name = ?"
         return dbHelper.runSQLWithReadableTransaction {
             val cursor = rawQuery(sql, arrayOf(name))
+            cursor.moveToFirst()
             val paymentMethodData = PaymentMethodData(
                 cursor.getInt(0),
                 cursor.getString(1),
