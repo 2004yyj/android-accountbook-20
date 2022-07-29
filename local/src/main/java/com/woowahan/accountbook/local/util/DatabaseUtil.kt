@@ -2,7 +2,6 @@ package com.woowahan.accountbook.local.util
 
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import androidx.core.database.sqlite.transaction
 import java.sql.SQLException
 
 fun SQLiteOpenHelper.runSQL(function: SQLiteDatabase.() -> Unit) {
@@ -36,4 +35,12 @@ fun <T> SQLiteOpenHelper.runSQLWithReadableTransaction(function: SQLiteDatabase.
     } finally {
         db.endTransaction()
     }
+}
+
+fun whereInSQLQueryIdList(idList: List<Int>): String {
+    var query = String()
+    idList.forEachIndexed { index, item ->
+        query += "${if(index == 0) "(" else ""}$item${if(index != idList.size - 1) ", " else ")"}"
+    }
+    return query
 }

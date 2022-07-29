@@ -19,6 +19,12 @@ object HistoryUseCaseModule {
 
     @Provides
     @Singleton
+    fun providesDeleteAllHistoryUseCase(repository: HistoryRepository): DeleteAllHistoryUseCase {
+        return DeleteAllHistoryUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
     fun providesDeleteHistoryUseCase(repository: HistoryRepository): DeleteHistoryUseCase {
         return DeleteHistoryUseCase(repository)
     }

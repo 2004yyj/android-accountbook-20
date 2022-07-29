@@ -8,6 +8,7 @@ import com.woowahan.accountbook.local.helper.DatabaseOpenHelper
 import com.woowahan.accountbook.local.util.runSQL
 import com.woowahan.accountbook.local.util.runSQLWithReadableTransaction
 import com.woowahan.accountbook.local.util.runSQLWithWritableTransaction
+import com.woowahan.accountbook.local.util.whereInSQLQueryIdList
 import javax.inject.Inject
 
 class HistoryDaoImpl @Inject constructor(
@@ -20,7 +21,7 @@ class HistoryDaoImpl @Inject constructor(
                     "ON History.category_id = Category.id " +
                     "LEFT OUTER JOIN PaymentMethod " +
                     "ON IFNULL(History.payment_method_id, -1) = PaymentMethod.id " +
-                    "WHERE (History.date >= ? OR History.date < ?) AND History.amount ${if (type == "income") ">" else "<"} 0"
+                    "WHERE History.date >= ? AND History.date < ? AND History.amount ${if (type == "income") ">" else "<"} 0"
 
         return dbHelper.runSQLWithReadableTransaction {
             var totalPay = 0L
@@ -45,7 +46,7 @@ class HistoryDaoImpl @Inject constructor(
                     "ON History.category_id = Category.id " +
                     "LEFT OUTER JOIN PaymentMethod " +
                     "ON IFNULL(History.payment_method_id, -1) = PaymentMethod.id " +
-                    "WHERE History.date >= ? OR History.date < ?"
+                    "WHERE History.date >= ? AND History.date < ?"
         return dbHelper.runSQLWithReadableTransaction {
             val cursor = rawQuery(sql, arrayOf(firstDayOfMonth.toString(), firstDayOfNextMonth.toString()))
             val list = mutableListOf<HistoryData>()
@@ -86,7 +87,7 @@ class HistoryDaoImpl @Inject constructor(
                     "ON History.category_id = Category.id " +
                     "LEFT OUTER JOIN PaymentMethod " +
                     "ON IFNULL(History.payment_method_id, -1) = PaymentMethod.id " +
-                    "WHERE (History.date >= ? OR History.date < ?) AND History.amount ${if (type == "income") ">" else "<"} 0"
+                    "WHERE History.date >= ? AND History.date < ? AND History.amount ${if (type == "income") ">" else "<"} 0"
         return dbHelper.runSQLWithReadableTransaction {
             val cursor = rawQuery(sql, arrayOf(firstDayOfMonth.toString(), firstDayOfNextMonth.toString()))
             val list = mutableListOf<HistoryData>()
@@ -181,6 +182,14 @@ class HistoryDaoImpl @Inject constructor(
 
     override suspend fun deleteHistory(id: Int) {
         val sql = "DELETE FROM History WHERE id = $id"
+        dbHelper.runSQLWithWritableTransaction {
+            val statement = compileStatement(sql)
+            statement.executeUpdateDelete()
+        }
+    }
+
+    override suspend fun deleteAllHistory(idList: List<Int>) {
+        val sql = "DELETE FROM History WHERE id IN ${whereInSQLQueryIdList(idList)}"
         dbHelper.runSQLWithWritableTransaction {
             val statement = compileStatement(sql)
             statement.executeUpdateDelete()

@@ -12,13 +12,14 @@ import com.woowahan.accountbook.ui.theme.Purple
 import com.woowahan.accountbook.ui.theme.PurpleLight
 import com.woowahan.accountbook.ui.theme.PurpleLight40
 import com.woowahan.accountbook.ui.theme.Typography
+import com.woowahan.accountbook.util.toMoneyString
 import com.woowahan.accountbook.util.toMonthDate
 
 @Composable
 fun HistoryListHeader(
     date: Long = 0L,
-    incomeTotal: String = "",
-    expenseTotal: String = ""
+    incomeTotal: Long = 0,
+    expenseTotal: Long = 0
 ) {
     Column(
         modifier =
@@ -34,29 +35,35 @@ fun HistoryListHeader(
                 color = PurpleLight
             )
             Row(modifier = Modifier.align(Alignment.CenterEnd)) {
-                Text(
-                    text = "수입",
-                    fontWeight = FontWeight.Bold,
-                    color = PurpleLight
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-                Text(
-                    text = incomeTotal,
-                    fontWeight = FontWeight.Bold,
-                    color = PurpleLight
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-                Text(
-                    text = "지출",
-                    fontWeight = FontWeight.Bold,
-                    color = PurpleLight
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-                Text(
-                    text = expenseTotal,
-                    fontWeight = FontWeight.Bold,
-                    color = PurpleLight
-                )
+                if (incomeTotal != 0L) {
+                    Text(
+                        text = "수입",
+                        fontWeight = FontWeight.Bold,
+                        color = PurpleLight
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = incomeTotal.toMoneyString(),
+                        fontWeight = FontWeight.Bold,
+                        color = PurpleLight
+                    )
+                }
+                if (incomeTotal != 0L && expenseTotal != 0L) {
+                    Spacer(modifier = Modifier.width(10.dp))
+                }
+                if (expenseTotal != 0L) {
+                    Text(
+                        text = "지출",
+                        fontWeight = FontWeight.Bold,
+                        color = PurpleLight
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = expenseTotal.toMoneyString(),
+                        fontWeight = FontWeight.Bold,
+                        color = PurpleLight
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
