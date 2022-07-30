@@ -1,8 +1,10 @@
 package com.woowahan.accountbook.components.calendar.datelist
 
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.woowahan.accountbook.state.CalendarState
@@ -16,6 +18,9 @@ private class CalendarDate(
 
 @Composable
 fun AccountBookCalendar(
+    modifier: Modifier = Modifier,
+    calendarState: CalendarState,
+    content: @Composable (date: Int, isCurrentMonth: Boolean) -> Unit,
 ) {
     val calendarDates = ArrayList<CalendarDate>()
 
@@ -41,4 +46,21 @@ fun AccountBookCalendar(
         }
     }
 
+    LazyHorizontalGrid(
+        modifier = modifier.fillMaxSize(),
+        rows = GridCells.Fixed(7),
+        content = {
+            itemsIndexed(calendarDates) { index, item ->
+                Row(modifier = Modifier.fillMaxSize()) {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        content(item.date, item.isCurrentMonth)
+                        Divider(modifier = Modifier.fillMaxSize())
+                    }
+                    if ((index + 1) % 7 != 0) {
+                        Divider(modifier = Modifier.fillMaxHeight())
+                    }
+                }
+            }
+        }
+    )
 }
