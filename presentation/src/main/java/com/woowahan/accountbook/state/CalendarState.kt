@@ -6,7 +6,7 @@ import java.util.*
 @Stable
 class CalendarState(
     private val initialTime: Long,
-) {
+): State<Long> {
     val prevLastDay = Calendar.getInstance(Locale.KOREA).apply {
         time = Date(initialTime)
         set(Calendar.DATE, 1)
@@ -26,13 +26,15 @@ class CalendarState(
         clear(Calendar.SECOND)
         clear(Calendar.MILLISECOND)
     }
+    override val value: Long
+        get() = initialTime
 }
 
 @Composable
 fun rememberCalendarState(
     currentMonth: Long
-): State<CalendarState> {
+): CalendarState {
     return CalendarState(currentMonth).let {
-        remember { mutableStateOf(it) }.apply { value = it }
+        remember { mutableStateOf(it) }.apply { value = it }.value
     }
 }
