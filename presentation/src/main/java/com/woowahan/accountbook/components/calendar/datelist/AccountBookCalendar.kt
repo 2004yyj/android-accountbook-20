@@ -44,7 +44,7 @@ fun AccountBookCalendar(
         }
 
         for (i in 1..curLastDate) {
-            calendarDates.add(CalendarDate(i, false))
+            calendarDates.add(CalendarDate(i, true))
         }
 
         for (i in 1 until 8 - curLastDayOfWeek) {
