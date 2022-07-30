@@ -3,10 +3,13 @@ package com.woowahan.accountbook.components.calendar.datelist
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.woowahan.accountbook.state.CalendarState
 import java.util.*
 import kotlin.collections.ArrayList
@@ -20,7 +23,7 @@ private class CalendarDate(
 fun AccountBookCalendar(
     modifier: Modifier = Modifier,
     calendarState: CalendarState,
-    content: @Composable (date: Int, isCurrentMonth: Boolean) -> Unit,
+    content: @Composable BoxScope.(date: Int, isCurrentMonth: Boolean) -> Unit,
 ) {
     val calendarDates = ArrayList<CalendarDate>()
 
@@ -46,18 +49,31 @@ fun AccountBookCalendar(
         }
     }
 
-    LazyHorizontalGrid(
+    LazyVerticalGrid(
         modifier = modifier.fillMaxSize(),
-        rows = GridCells.Fixed(7),
+        columns = GridCells.Fixed(7),
         content = {
             itemsIndexed(calendarDates) { index, item ->
-                Row(modifier = Modifier.fillMaxSize()) {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        content(item.date, item.isCurrentMonth)
-                        Divider(modifier = Modifier.fillMaxSize())
+                Row(Modifier.height(IntrinsicSize.Min)) {
+                    Column(Modifier.weight(1f),horizontalAlignment = Alignment.CenterHorizontally) {
+                        Box(
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .fillMaxSize()
+                                .weight(1f)
+                        ) {
+                            content(item.date, item.isCurrentMonth)
+                        }
+                        Divider(modifier = Modifier.fillMaxWidth())
                     }
                     if ((index + 1) % 7 != 0) {
-                        Divider(modifier = Modifier.fillMaxHeight())
+                        Column {
+                            Divider(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .width(1.dp)
+                            )
+                        }
                     }
                 }
             }
