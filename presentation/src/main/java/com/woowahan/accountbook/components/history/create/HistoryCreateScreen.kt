@@ -1,7 +1,6 @@
 package com.woowahan.accountbook.components.history.create
 
 import android.app.DatePickerDialog
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -28,13 +27,8 @@ import com.woowahan.accountbook.components.history.create.radio.TypeRadioButton
 import com.woowahan.accountbook.components.spinner.CustomDropDownMenu
 import com.woowahan.accountbook.components.textfield.CustomTextField
 import com.woowahan.accountbook.ui.theme.*
-import com.woowahan.accountbook.util.parseMoneyLong
-import com.woowahan.accountbook.util.toLongTime
-import com.woowahan.accountbook.util.toMoneyString
-import com.woowahan.accountbook.util.toYearMonthDayDots
+import com.woowahan.accountbook.util.*
 import com.woowahan.accountbook.viewmodel.history.create.HistoryCreateViewModel
-import java.time.Instant
-import java.time.temporal.ChronoUnit
 
 @Composable
 fun HistoryCreateScreen(
@@ -51,7 +45,7 @@ fun HistoryCreateScreen(
 
     var selectedIncome by remember { mutableStateOf(true) }
     var selectedExpense by remember { mutableStateOf(false) }
-    var selectedDate by remember { mutableStateOf(Instant.now().truncatedTo(ChronoUnit.DAYS).epochSecond * 1000) }
+    var selectedDate by remember { mutableStateOf(System.currentTimeMillis().getCurrentDateMidNightMillis()) }
     var enterMoney by remember { mutableStateOf(0L) }
     var enterContent by remember { mutableStateOf("") }
     var selectedPaymentMethod by remember { mutableStateOf("") }
@@ -60,8 +54,8 @@ fun HistoryCreateScreen(
     val paymentMethods by viewModel.paymentMethods.collectAsState()
     val categories by viewModel.categories.collectAsState()
 
-    viewModel.getPaymentMethods()
-    viewModel.getCategories(if (selectedIncome) "income" else "expense")
+    viewModel.getPaymentMethods()x
+            viewModel.getCategories(if (selectedIncome) "income" else "expense")
 
     if (isSuccess) {
         LaunchedEffect(true) {
