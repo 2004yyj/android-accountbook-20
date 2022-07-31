@@ -1,6 +1,7 @@
 package com.woowahan.accountbook.components.calendar
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -13,10 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.woowahan.accountbook.components.appbar.MonthAppBar
 import com.woowahan.accountbook.components.calendar.datelist.AccountBookCalendar
 import com.woowahan.accountbook.state.rememberCalendarState
-import com.woowahan.accountbook.ui.theme.Error
-import com.woowahan.accountbook.ui.theme.Purple
-import com.woowahan.accountbook.ui.theme.PurpleLight40
-import com.woowahan.accountbook.ui.theme.Success
+import com.woowahan.accountbook.ui.theme.*
 import com.woowahan.accountbook.util.*
 import com.woowahan.accountbook.viewmodel.calendar.CalendarViewModel
 
@@ -27,9 +25,24 @@ fun CalendarScreen(
     val history by viewModel.history.collectAsState()
     var currentMonth by remember { mutableStateOf(System.currentTimeMillis().getCurrentMonthFirstDayMillis()) }
     val calendarState = rememberCalendarState(currentMonth = currentMonth)
+
+    val incomeTotal by viewModel.incomeTotal.collectAsState()
+    val expenseTotal by viewModel.expenseTotal.collectAsState()
+
     viewModel.getAllHistoriesByMonth(
         currentMonth,
         currentMonth.getForwardMonthMillis()
+    )
+
+    viewModel.getTotal(
+        currentMonth,
+        currentMonth.getForwardMonthMillis()
+    )
+
+    viewModel.getTotal(
+        currentMonth,
+        currentMonth.getForwardMonthMillis(),
+        "expense"
     )
 
     Scaffold(
@@ -53,7 +66,91 @@ fun CalendarScreen(
             AccountBookCalendar(
                 modifier = Modifier.fillMaxSize(),
                 calendarState = calendarState,
-                dividerColor = PurpleLight40
+                dividerColor = PurpleLight40,
+                footer = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 24.dp)
+                    ) {
+                        Text(
+                            text = "수입",
+                            color = Purple,
+                            style = Typography.subtitle1,
+                            modifier = Modifier.align(Alignment.CenterStart)
+                        )
+
+                        Text(
+                            text = incomeTotal.toMoneyString(),
+                            color = Success,
+                            fontWeight = FontWeight.Bold,
+                            style = Typography.subtitle1,
+                            modifier = Modifier.align(Alignment.CenterEnd)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Divider(
+                        modifier = Modifier
+                            .height(1.dp)
+                            .fillMaxWidth(),
+                        color = PurpleLight40
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp)
+                    ) {
+                        Text(
+                            text = "지출",
+                            color = Purple,
+                            style = Typography.subtitle1,
+                            modifier = Modifier.align(Alignment.CenterStart)
+                        )
+
+                        Text(
+                            text = "-${expenseTotal.toMoneyString()}",
+                            color = Error,
+                            fontWeight = FontWeight.Bold,
+                            style = Typography.subtitle1,
+                            modifier = Modifier.align(Alignment.CenterEnd)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Divider(
+                        modifier = Modifier
+                            .height(1.dp)
+                            .fillMaxWidth(),
+                        color = PurpleLight40
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp)
+                    ) {
+                        Text(
+                            text = "총합",
+                            color = Purple,
+                            style = Typography.subtitle1,
+                            modifier = Modifier.align(Alignment.CenterStart)
+                        )
+
+                        Text(
+                            text = (incomeTotal - expenseTotal).toMoneyString(),
+                            color = Purple,
+                            fontWeight = FontWeight.Bold,
+                            style = Typography.subtitle1,
+                            modifier = Modifier.align(Alignment.CenterEnd)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
             ) { date, isCurrentMonth ->
                 Column(
                     modifier = Modifier

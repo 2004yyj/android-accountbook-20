@@ -1,12 +1,10 @@
 package com.woowahan.accountbook.components.calendar.datelist
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
@@ -29,7 +27,8 @@ fun AccountBookCalendar(
     modifier: Modifier = Modifier,
     calendarState: CalendarState,
     dividerColor: Color = MaterialTheme.colors.onSurface.copy(alpha = 0.12f),
-    content: @Composable() (BoxScope.(date: Int, isCurrentMonth: Boolean) -> Unit),
+    footer: @Composable() ColumnScope.() -> Unit,
+    content: @Composable() (BoxScope.(date: Int, isCurrentMonth: Boolean) -> Unit)
 ) {
     val calendarDates = remember { mutableStateListOf<CalendarDate>() }
 
@@ -58,38 +57,52 @@ fun AccountBookCalendar(
         }
     }
 
-    LazyVerticalGrid(
-        modifier = modifier.fillMaxSize(),
-        columns = GridCells.Fixed(7),
-        content = {
-            itemsIndexed(calendarDates) { index, item ->
-                Row(Modifier.height(IntrinsicSize.Min)) {
-                    Column(Modifier.weight(1f),horizontalAlignment = Alignment.CenterHorizontally) {
-                        Box(
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .fillMaxSize()
-                                .weight(1f)
+    Column(modifier = modifier.fillMaxSize()) {
+        LazyVerticalGrid(
+            modifier = Modifier.weight(2f),
+            columns = GridCells.Fixed(7),
+            content = {
+                itemsIndexed(calendarDates) { index, item ->
+                    Row(Modifier.height(IntrinsicSize.Min)) {
+                        Column(
+                            Modifier.weight(1f),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            content(item.date, item.isCurrentMonth)
-                        }
-                        Divider(
-                            modifier = Modifier.fillMaxWidth(),
-                            color = dividerColor
-                        )
-                    }
-                    if ((index + 1) % 7 != 0) {
-                        Column {
-                            Divider(
+                            Box(
                                 modifier = Modifier
-                                    .fillMaxHeight()
-                                    .width(1.dp),
+                                    .padding(4.dp)
+                                    .fillMaxSize()
+                                    .weight(1f)
+                            ) {
+                                content(item.date, item.isCurrentMonth)
+                            }
+                            Divider(
+                                modifier = Modifier.fillMaxWidth(),
                                 color = dividerColor
                             )
+                        }
+                        if ((index + 1) % 7 != 0) {
+                            Column {
+                                Divider(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .width(1.dp),
+                                    color = dividerColor
+                                )
+                            }
                         }
                     }
                 }
             }
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(horizontal = 16.dp)
+        ) {
+            footer()
         }
-    )
+    }
 }
