@@ -51,15 +51,23 @@ fun CalendarScreen() {
                         .fillMaxSize()
                         .align(Alignment.Center)
                 ) {
-                    Column(modifier = Modifier.align(Alignment.Start)) {
-                        Text(text = "-1000", fontSize = 10.sp)
-                        Text(text = "-1000", fontSize = 10.sp)
+                    Column(
+                        modifier = Modifier
+                            .weight(2f)
+                            .align(Alignment.Start)
+                    ) {
+                        if (isCurrentMonth) {
+                            Text(text = "-1,000", fontSize = 10.sp)
+                            Text(text = "1,100", fontSize = 10.sp)
+                        }
                     }
                     Spacer(modifier = Modifier.height(24.dp))
                     Text(
                         text = date.toString(),
                         fontSize = 10.sp,
-                        modifier = Modifier.align(Alignment.End),
+                        modifier = Modifier
+                            .weight(1f)
+                            .align(Alignment.End),
                         fontWeight = FontWeight.Bold,
                         color = if (isCurrentMonth) Purple else PurpleLight40
                     )
