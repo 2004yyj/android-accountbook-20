@@ -25,6 +25,18 @@ fun Long.getCurrentMonthFirstDayMillis(): Long {
     return calendar.timeInMillis
 }
 
+
+fun Long.getCurrentDateMillis(date: Int): Long {
+    val calendar = Calendar.getInstance()
+    calendar.time = Date(this)
+    calendar.set(Calendar.HOUR_OF_DAY, 0)
+    calendar.clear(Calendar.MINUTE)
+    calendar.clear(Calendar.SECOND)
+    calendar.clear(Calendar.MILLISECOND)
+    calendar.set(Calendar.DAY_OF_MONTH, date)
+    return calendar.timeInMillis
+}
+
 fun Long.getForwardMonthMillis(): Long {
     val calendar = Calendar.getInstance()
     calendar.time = Date(this)
