@@ -54,8 +54,8 @@ fun HistoryCreateScreen(
     val paymentMethods by viewModel.paymentMethods.collectAsState()
     val categories by viewModel.categories.collectAsState()
 
-    viewModel.getPaymentMethods()x
-            viewModel.getCategories(if (selectedIncome) "income" else "expense")
+    viewModel.getPaymentMethods()
+    viewModel.getCategories(if (selectedIncome) "income" else "expense")
 
     if (isSuccess) {
         LaunchedEffect(true) {
