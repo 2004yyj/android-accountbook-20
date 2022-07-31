@@ -37,7 +37,7 @@ fun AccountBookCalendar(
         val curLastDate = curLastDay.get(Calendar.DATE)
         val curLastDayOfWeek = curLastDay.get(Calendar.DAY_OF_WEEK)
 
-        if (prevLastDayOfWeek != 6) {
+        if (prevLastDayOfWeek != 7) {
             for (i in prevLastDayOfWeek - 1 downTo 0) {
                 calendarDates.add(CalendarDate(prevLastDate-i, false))
             }
@@ -47,7 +47,7 @@ fun AccountBookCalendar(
             calendarDates.add(CalendarDate(i, true))
         }
 
-        for (i in 1 until 8 - curLastDayOfWeek) {
+        for (i in 1..(7 - curLastDayOfWeek)) {
             calendarDates.add(CalendarDate(i, false))
         }
     }
