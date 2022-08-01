@@ -1,8 +1,6 @@
 package com.woowahan.accountbook
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Row
@@ -50,7 +48,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Main(mainViewModel: MainViewModel = viewModel()) {
+fun Main(viewModel: MainViewModel = viewModel()) {
     val navController = rememberNavController()
     val navList =
         listOf(
@@ -61,7 +59,7 @@ fun Main(mainViewModel: MainViewModel = viewModel()) {
         )
     val context = LocalContext.current
 
-    mainViewModel.createTables()
+    viewModel.createTables()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
