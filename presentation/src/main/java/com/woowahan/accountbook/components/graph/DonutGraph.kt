@@ -3,6 +3,7 @@ package com.woowahan.accountbook.components.graph
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -20,17 +21,18 @@ fun DonutGraph(
     modifier: Modifier = Modifier,
     strokeWidth: Dp = 60.dp
 ) {
-    val currentState = remember { MutableTransitionState(false).apply { targetState = true } }
     val stroke = with(LocalDensity.current) { Stroke(strokeWidth.toPx()) }
-    val transition = updateTransition(currentState, label = "")
-    val angleOffset by transition.animateFloat(
-        transitionSpec = {
-            tween(
+    val angleOffset = remember { Animatable(initialValue = 0f) }
+    LaunchedEffect(key1 = entries.toString()) {
+        angleOffset.snapTo(0f)
+        angleOffset.animateTo(
+            targetValue = 360f,
+            animationSpec = tween(
                 durationMillis = 500,
                 easing = LinearOutSlowInEasing
             )
-        }, label = ""
-    ) { if (!it) 0f else 360f }
+        )
+    }
 
     Canvas(modifier) {
         val innerRadius = (size.minDimension - stroke.width) / 2
@@ -42,7 +44,7 @@ fun DonutGraph(
         val size = Size(innerRadius * 2, innerRadius * 2)
         var startAngle = -90f
         entries.forEachIndexed { index, entries ->
-            val sweep = entries.percent * angleOffset
+            val sweep = entries.percent * angleOffset.value
             drawArc(
                 color = entries.color,
                 startAngle = startAngle,
