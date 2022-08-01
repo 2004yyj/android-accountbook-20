@@ -8,28 +8,25 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.woowahan.accountbook.components.appbar.MonthAppBar
 import com.woowahan.accountbook.components.graph.DonutGraph
 import com.woowahan.accountbook.components.graph.entry.color.DonutEntry
-import com.woowahan.accountbook.ui.theme.Blue1
-import com.woowahan.accountbook.ui.theme.Green5
-import com.woowahan.accountbook.ui.theme.Purple1
-import com.woowahan.accountbook.ui.theme.Yellow1
 import com.woowahan.accountbook.util.getBackMonthMillis
 import com.woowahan.accountbook.util.getCurrentMonthFirstDayMillis
 import com.woowahan.accountbook.util.getForwardMonthMillis
 import com.woowahan.accountbook.util.toYearMonth
+import com.woowahan.accountbook.viewmodel.StatisticsViewModel
 
 @Composable
-fun StatisticsScreen() {
+fun StatisticsScreen(
+    viewModel: StatisticsViewModel = hiltViewModel()
+) {
 
-    val entries = remember { mutableStateListOf(
-        DonutEntry(0.3f, "생활", Blue1),
-        DonutEntry(0.3f, "생활", Purple1),
-        DonutEntry(0.3f, "생활", Green5),
-        DonutEntry(0.1f, "생활", Yellow1)
-    ) }
+    val entries by viewModel.entries.collectAsState()
     var currentMonth by remember { mutableStateOf(System.currentTimeMillis().getCurrentMonthFirstDayMillis()) }
+
+    viewModel.getAllStatistics(currentMonth, currentMonth.getForwardMonthMillis())
     
     Scaffold(
         topBar = {
