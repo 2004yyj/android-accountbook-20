@@ -3,6 +3,7 @@ package com.woowahan.accountbook.data.datasource
 import com.woowahan.accountbook.domain.model.Category
 import com.woowahan.accountbook.domain.model.History
 import com.woowahan.accountbook.domain.model.PaymentMethod
+import com.woowahan.accountbook.domain.model.Statistic
 
 interface HistoryDataSource {
     suspend fun getTotalPayByMonthAndType(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: String): Long
@@ -14,4 +15,5 @@ interface HistoryDataSource {
     suspend fun updateHistory(id: Int, date: Long, amount: Long, content: String, category: Category, paymentMethod: PaymentMethod?)
     suspend fun deleteHistory(id: Int)
     suspend fun deleteAllHistory(idList: List<Int>)
+    suspend fun getAllStatisticsByCategoryType(firstDayOfMonth: Long, firstDayOfNextMonth: Long,): List<Statistic>
 }
