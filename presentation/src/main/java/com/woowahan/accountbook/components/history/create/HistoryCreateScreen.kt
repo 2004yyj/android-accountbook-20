@@ -1,6 +1,7 @@
 package com.woowahan.accountbook.components.history.create
 
 import android.app.DatePickerDialog
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -74,7 +75,13 @@ fun HistoryCreateScreen(
 
     val datePickerDialog = DatePickerDialog(context)
     datePickerDialog.setOnDateSetListener { _, year, month, dayOfMonth ->
-        selectedDate = "$year.${month + 1}.$dayOfMonth".toLongTime("yyyy.MM.dd")
+        val today = System.currentTimeMillis().getCurrentDateMidNightMillis()
+        val pickedDay = "$year.${month + 1}.$dayOfMonth".toLongTime("yyyy.MM.dd")
+        if (today >= pickedDay) {
+            selectedDate = pickedDay
+        } else {
+            Toast.makeText(context, "오늘 이후 날짜는 선택할 수 없습니다.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     Scaffold(
