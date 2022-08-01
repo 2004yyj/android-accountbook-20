@@ -14,6 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.woowahan.accountbook.state.CalendarState
+import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Color.Companion.Transparent
+import com.woowahan.accountbook.ui.theme.White
+import com.woowahan.accountbook.util.getCurrentDateMillis
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -63,7 +67,16 @@ fun AccountBookCalendar(
             columns = GridCells.Fixed(7),
             content = {
                 itemsIndexed(calendarDates) { index, item ->
-                    Row(Modifier.height(IntrinsicSize.Min)) {
+                    Row(
+                        Modifier
+                            .height(IntrinsicSize.Min)
+                            .background(
+                                if (calendarState.value == calendarState.value.getCurrentDateMillis(item.date) && item.isCurrentMonth)
+                                    White
+                                else
+                                    Transparent
+                            )
+                    ) {
                         Column(
                             Modifier.weight(1f),
                             horizontalAlignment = Alignment.CenterHorizontally
