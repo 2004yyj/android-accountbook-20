@@ -50,66 +50,79 @@ fun StatisticsScreen(
         }
     ) {
         Column(Modifier.padding(it)) {
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 9.dp)
-            ) {
-                Text(
-                    modifier = Modifier.align(Alignment.CenterStart),
-                    text = "이번 달 총 지출 금액",
-                    color = Purple,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Text(
-                    modifier = Modifier.align(Alignment.CenterEnd),
-                    text = (total * -1).toMoneyString(),
-                    color = Error,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Divider(
-                modifier = Modifier.fillMaxWidth(),
-                thickness = 1.dp,
-                color = PurpleLight
-            )
-
-            DonutGraph(
-                modifier = Modifier
-                    .size(350.dp),
-                entries = entries
-            ) { index, item ->
-                Row(
+            if (entries.isEmpty()) {
+                Box(
                     Modifier
-                        .align(Alignment.CenterStart)
                         .fillMaxSize()
+                        .padding(horizontal = 16.dp, vertical = 9.dp)
                 ) {
-                    CategoryChip(
-                        text = {
-                            Text(
-                                text = item.label,
-                                fontWeight = FontWeight.Bold
-                            )
-                        },
-                        color = item.color,
+                    Text(
+                        modifier = Modifier.align(Alignment.Center),
+                        text = "내역이 없습니다."
+                    )
+                }
+            } else {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 9.dp)
+                ) {
+                    Text(
+                        modifier = Modifier.align(Alignment.CenterStart),
+                        text = "이번 달 총 지출 금액",
+                        color = Purple,
+                        fontWeight = FontWeight.Bold
                     )
 
-                    Spacer(modifier = Modifier.width(8.dp))
-
                     Text(
-                        text = item.value.toMoneyString(),
-                        color = Purple
+                        modifier = Modifier.align(Alignment.CenterEnd),
+                        text = (total * -1).toMoneyString(),
+                        color = Error,
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
-                Text(
-                    modifier = Modifier.align(Alignment.CenterEnd),
-                    text = "${round(item.percent * 100).toInt()}%",
-                    color = Purple,
-                    fontWeight = FontWeight.Bold
+                Divider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = 1.dp,
+                    color = PurpleLight
                 )
+
+                DonutGraph(
+                    modifier = Modifier
+                        .size(350.dp),
+                    entries = entries
+                ) { index, item ->
+                    Row(
+                        Modifier
+                            .align(Alignment.CenterStart)
+                            .fillMaxSize()
+                    ) {
+                        CategoryChip(
+                            text = {
+                                Text(
+                                    text = item.label,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            },
+                            color = item.color,
+                        )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Text(
+                            text = item.value.toMoneyString(),
+                            color = Purple
+                        )
+                    }
+
+                    Text(
+                        modifier = Modifier.align(Alignment.CenterEnd),
+                        text = "${round(item.percent * 100).toInt()}%",
+                        color = Purple,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     }
