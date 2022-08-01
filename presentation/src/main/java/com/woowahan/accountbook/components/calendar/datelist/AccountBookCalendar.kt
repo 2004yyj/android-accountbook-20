@@ -17,6 +17,7 @@ import com.woowahan.accountbook.state.CalendarState
 import androidx.compose.foundation.background
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import com.woowahan.accountbook.ui.theme.White
+import com.woowahan.accountbook.util.getCurrentDateMidNightMillis
 import com.woowahan.accountbook.util.getCurrentDateMillis
 import java.util.*
 import kotlin.collections.ArrayList
@@ -71,7 +72,11 @@ fun AccountBookCalendar(
                         Modifier
                             .height(IntrinsicSize.Min)
                             .background(
-                                if (calendarState.value == calendarState.value.getCurrentDateMillis(item.date) && item.isCurrentMonth)
+                                if (
+                                    System.currentTimeMillis().getCurrentDateMidNightMillis() ==
+                                    calendarState.value.getCurrentDateMillis(item.date) &&
+                                    item.isCurrentMonth
+                                )
                                     White
                                 else
                                     Transparent
