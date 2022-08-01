@@ -31,7 +31,7 @@ fun StatisticsScreen(
 ) {
     val entries by viewModel.entries.collectAsState()
     val total by viewModel.total.collectAsState()
-    var currentMonth by remember { mutableStateOf(System.currentTimeMillis().getCurrentMonthFirstDayMillis()) }
+    val currentMonth by sharedViewModel.currentMonth.collectAsState()
 
     viewModel.getAllStatistics(currentMonth, currentMonth.getForwardMonthMillis())
     viewModel.getTotalPayExpense(currentMonth, currentMonth.getForwardMonthMillis())
@@ -43,10 +43,10 @@ fun StatisticsScreen(
                     Text(text = currentMonth.toYearMonth())
                 },
                 onClickMonthForward = {
-                    currentMonth = currentMonth.getForwardMonthMillis()
+                    sharedViewModel.changeToNextMonth()
                 },
                 onClickMonthBack = {
-                    currentMonth = currentMonth.getBackMonthMillis()
+                    sharedViewModel.changeToBackMonth()
                 }
             )
         }

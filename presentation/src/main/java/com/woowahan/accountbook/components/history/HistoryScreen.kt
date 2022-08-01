@@ -43,8 +43,6 @@ fun HistoryScreen(
     val historyChecked = remember { mutableStateListOf<History>() }
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val isFailure by viewModel.isFailure.collectAsState(initial = "")
-    var currentMonthFirstDayLong by remember { mutableStateOf(System.currentTimeMillis().getCurrentMonthFirstDayMillis()) }
-    var forwardMonthFirstDayLong by remember { mutableStateOf(System.currentTimeMillis().getForwardMonthMillis()) }
 
     val incomeTotal by viewModel.incomeTotal.collectAsState()
     val expenseTotal by viewModel.expenseTotal.collectAsState()
@@ -53,6 +51,8 @@ fun HistoryScreen(
     var isCheckedExpense by rememberSaveable { mutableStateOf(false) }
     var isModifyModeEnabled by rememberSaveable { mutableStateOf(false) }
 
+    val currentMonth by sharedViewModel.currentMonth.collectAsState()
+
     if (isFailure.isNotEmpty()) {
         Toast.makeText(context, isFailure, Toast.LENGTH_SHORT).show()
     }
@@ -60,8 +60,8 @@ fun HistoryScreen(
     fun initial(refreshState: Boolean = false) = run {
         isModifyModeEnabled = false
         viewModel.getHistory(
-            currentMonthFirstDayLong,
-            forwardMonthFirstDayLong,
+            currentMonth,
+            currentMonth.getForwardMonthMillis(),
             when {
                 isCheckedIncome && isCheckedExpense -> "all"
                 isCheckedIncome && !isCheckedExpense -> "income"
@@ -72,15 +72,15 @@ fun HistoryScreen(
         )
 
         viewModel.getTotalPay(
-            currentMonthFirstDayLong,
-            forwardMonthFirstDayLong,
+            currentMonth,
+            currentMonth.getForwardMonthMillis(),
             "income",
             refreshState
         )
 
         viewModel.getTotalPay(
-            currentMonthFirstDayLong,
-            forwardMonthFirstDayLong,
+            currentMonth,
+            currentMonth.getForwardMonthMillis(),
             "expense",
             refreshState
         )
@@ -92,15 +92,13 @@ fun HistoryScreen(
         topBar = {
             if (!isModifyModeEnabled) {
                 MonthAppBar(
-                    title = { Text(text = currentMonthFirstDayLong.toYearMonth()) },
+                    title = { Text(text = currentMonth.toYearMonth()) },
                     modifier = Modifier.fillMaxWidth(),
                     onClickMonthBack = {
-                        currentMonthFirstDayLong = currentMonthFirstDayLong.getBackMonthMillis()
-                        forwardMonthFirstDayLong = currentMonthFirstDayLong.getForwardMonthMillis()
+                        sharedViewModel.changeToBackMonth()
                     },
                     onClickMonthForward = {
-                        currentMonthFirstDayLong = currentMonthFirstDayLong.getForwardMonthMillis()
-                        forwardMonthFirstDayLong = currentMonthFirstDayLong.getForwardMonthMillis()
+                        sharedViewModel.changeToNextMonth()
                     }
                 )
             } else {

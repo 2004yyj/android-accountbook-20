@@ -25,7 +25,7 @@ fun CalendarScreen(
     viewModel: CalendarViewModel = hiltViewModel()
 ) {
     val history by viewModel.history.collectAsState()
-    var currentMonth by remember { mutableStateOf(System.currentTimeMillis().getCurrentMonthFirstDayMillis()) }
+    val currentMonth by sharedViewModel.currentMonth.collectAsState()
     val calendarState = rememberCalendarState(currentMonth = currentMonth)
 
     val incomeTotal by viewModel.incomeTotal.collectAsState()
@@ -52,10 +52,10 @@ fun CalendarScreen(
             MonthAppBar(
                 title = { Text(text = currentMonth.toYearMonth()) },
                 onClickMonthBack = {
-                    currentMonth = currentMonth.getBackMonthMillis()
+                    sharedViewModel.changeToBackMonth()
                 },
                 onClickMonthForward = {
-                    currentMonth = currentMonth.getForwardMonthMillis()
+                    sharedViewModel.changeToNextMonth()
                 }
             )
         }
