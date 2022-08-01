@@ -12,9 +12,7 @@ import com.woowahan.accountbook.domain.usecase.category.InsertCategoryUseCase
 import com.woowahan.accountbook.domain.usecase.history.InsertHistoryUseCase
 import com.woowahan.accountbook.domain.usecase.paymentmethod.GetAllPaymentMethodsUseCase
 import com.woowahan.accountbook.domain.usecase.paymentmethod.InsertPaymentMethodUseCase
-import com.woowahan.accountbook.ui.theme.Blue1
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -43,13 +41,25 @@ class HistoryCreateViewModel @Inject constructor(
     private val _categories = MutableStateFlow<List<Category>>(emptyList())
     val categories = _categories.asStateFlow()
 
+    private val _isInsertCategorySuccess = MutableStateFlow("")
+    val isSuccessInsertCategory = _isInsertCategorySuccess.asStateFlow()
+
+    private val _isInsertPaymentMethodSuccess = MutableStateFlow("")
+    val isSuccessInsertPaymentMethod = _isInsertPaymentMethodSuccess.asStateFlow()
+
     fun insertCategory(type: String, name: String) {
         viewModelScope.launch {
-            val random = Random(255)
-            val randomColor = Color(random.nextFloat(), random.nextFloat(), random.nextFloat())
+            val randomColor = Color(
+                Random.nextInt(256),
+                Random.nextInt(256),
+                Random.nextInt(256)
+            )
             insertCategoryUseCase(type, name, randomColor.value).collect {
                 when(it) {
-                    is Result.Success<Unit> -> getCategories(type)
+                    is Result.Success<Unit> -> {
+                        getCategories(type)
+                        _isInsertCategorySuccess.emit(name)
+                    }
                     is Result.Failure -> {
                         it.cause.message?.let { message -> _isFailure.emit(message) }
                     }
@@ -62,7 +72,10 @@ class HistoryCreateViewModel @Inject constructor(
         viewModelScope.launch {
             insertPaymentMethodUseCase(name).collect {
                 when(it) {
-                    is Result.Success<Unit> -> getPaymentMethods()
+                    is Result.Success<Unit> -> {
+                        getPaymentMethods()
+                        _isInsertPaymentMethodSuccess.emit(name)
+                    }
                     is Result.Failure -> {
                         it.cause.message?.let { message -> _isFailure.emit(message) }
                     }

@@ -27,8 +27,9 @@ fun CustomDropDownMenu(
     items: List<String>,
     footerItem: @Composable BoxScope.() -> Unit,
     modifier: Modifier = Modifier,
+    expended: Boolean = false,
+    onExpendedChanged: () -> Unit,
 ) {
-    var expended by remember { mutableStateOf(false) }
     val arrowAnim by animateFloatAsState(
         animationSpec = tween(400),
         targetValue = if (expended) 180f else 0f
@@ -37,9 +38,7 @@ fun CustomDropDownMenu(
     Column {
         TransparentButton(
             modifier = modifier.fillMaxWidth(),
-            onClick = {
-                expended = !expended
-            }
+            onClick = onExpendedChanged
         ) {
             Text(
                 modifier = Modifier.align(Alignment.CenterStart),
@@ -71,14 +70,14 @@ fun CustomDropDownMenu(
                     ),
                 expanded = expended,
                 onDismissRequest = {
-                    expended = false
                     onDismissRequest()
+                    onExpendedChanged()
                 }
             ) {
                 items.forEach {
                     DropdownMenuItem(onClick = {
                         onChangedValue(it)
-                        expended = false
+                        onExpendedChanged()
                     }) {
                         Text(text = it, color = Purple)
                     }

@@ -1,6 +1,7 @@
 package com.woowahan.accountbook.components.history.create
 
 import android.app.DatePickerDialog
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -51,8 +52,17 @@ fun HistoryCreateScreen(
     var selectedPaymentMethod by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf("") }
 
+    var expendedPaymentMethod by remember { mutableStateOf(false) }
+    var expendedCategory by remember { mutableStateOf(false) }
+
     val paymentMethods by viewModel.paymentMethods.collectAsState()
     val categories by viewModel.categories.collectAsState()
+
+    val isSuccessInsertPaymentMethod by viewModel.isSuccessInsertPaymentMethod.collectAsState()
+    val isSuccessInsertCategory by viewModel.isSuccessInsertCategory.collectAsState()
+
+    selectedPaymentMethod = isSuccessInsertPaymentMethod
+    selectedCategory = isSuccessInsertCategory
 
     viewModel.getPaymentMethods()
     viewModel.getCategories(if (selectedIncome) "income" else "expense")
@@ -65,7 +75,13 @@ fun HistoryCreateScreen(
 
     val datePickerDialog = DatePickerDialog(context)
     datePickerDialog.setOnDateSetListener { _, year, month, dayOfMonth ->
-        selectedDate = "$year.${month + 1}.$dayOfMonth".toLongTime("yyyy.MM.dd")
+        val today = System.currentTimeMillis().getCurrentDateMidNightMillis()
+        val pickedDay = "$year.${month + 1}.$dayOfMonth".toLongTime("yyyy.MM.dd")
+        if (today >= pickedDay) {
+            selectedDate = pickedDay
+        } else {
+            Toast.makeText(context, "오늘 이후 날짜는 선택할 수 없습니다.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     Scaffold(
@@ -185,6 +201,10 @@ fun HistoryCreateScreen(
                             onDismissRequest = {
                                 addingPaymentMethod = ""
                             },
+                            onExpendedChanged = {
+                                expendedPaymentMethod = !expendedPaymentMethod
+                            },
+                            expended = expendedPaymentMethod,
                             items = paymentMethods.map { it.name },
                             footerItem = {
                                 CustomTextField(
@@ -204,6 +224,7 @@ fun HistoryCreateScreen(
                                     onClick = {
                                         viewModel.insertPaymentMethod(addingPaymentMethod)
                                         addingPaymentMethod = ""
+                                        expendedPaymentMethod = !expendedPaymentMethod
                                     }
                                 ) {
                                     Icon(
@@ -225,6 +246,10 @@ fun HistoryCreateScreen(
                         onDismissRequest = {
                             addingCategory = ""
                         },
+                        onExpendedChanged = {
+                            expendedCategory = !expendedCategory
+                        },
+                        expended = expendedCategory,
                         items = categories.map { it.name },
                         footerItem = {
                             CustomTextField(
@@ -244,6 +269,7 @@ fun HistoryCreateScreen(
                                 onClick = {
                                     viewModel.insertCategory(if (selectedIncome) "income" else "expense", addingCategory)
                                     addingCategory = ""
+                                    expendedCategory = !expendedCategory
                                 }
                             ) {
                                 Icon(
