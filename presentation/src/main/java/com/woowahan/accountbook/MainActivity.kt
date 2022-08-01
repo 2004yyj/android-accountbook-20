@@ -14,6 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.*
 import com.woowahan.accountbook.components.calendar.CalendarScreen
 import com.woowahan.accountbook.components.history.HistoryScreen
@@ -72,7 +73,13 @@ fun Main(viewModel: MainViewModel = viewModel()) {
                         unselectedContentColor = White80,
                         selected = currentRoute?.hierarchy?.any { it.route == screen.route } == true,
                         label = { Text(screen.label) },
-                        onClick = { navController.navigate(screen.route) },
+                        onClick = { navController.navigate(screen.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        } },
                         icon = {
                             Icon(
                                 painter = painterResource(screen.iconId),
