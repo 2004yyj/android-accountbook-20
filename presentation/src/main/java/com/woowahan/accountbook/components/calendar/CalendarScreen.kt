@@ -111,7 +111,7 @@ fun CalendarScreen(
                         )
 
                         Text(
-                            text = "-${expenseTotal.toMoneyString()}",
+                            text = (expenseTotal * -1).toMoneyString(),
                             color = Error,
                             fontWeight = FontWeight.Bold,
                             style = Typography.subtitle1,
