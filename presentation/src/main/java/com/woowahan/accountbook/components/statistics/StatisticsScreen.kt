@@ -20,16 +20,18 @@ import com.woowahan.accountbook.ui.theme.PurpleLight
 import com.woowahan.accountbook.ui.theme.PurpleLight40
 import com.woowahan.accountbook.util.*
 import com.woowahan.accountbook.viewmodel.StatisticsViewModel
+import com.woowahan.accountbook.viewmodel.main.MainViewModel
 import kotlin.math.nextUp
 import kotlin.math.round
 
 @Composable
 fun StatisticsScreen(
+    sharedViewModel: MainViewModel,
     viewModel: StatisticsViewModel = hiltViewModel()
 ) {
     val entries by viewModel.entries.collectAsState()
     val total by viewModel.total.collectAsState()
-    var currentMonth by remember { mutableStateOf(System.currentTimeMillis().getCurrentMonthFirstDayMillis()) }
+    val currentMonth by sharedViewModel.currentMonth.collectAsState()
 
     viewModel.getAllStatistics(currentMonth, currentMonth.getForwardMonthMillis())
     viewModel.getTotalPayExpense(currentMonth, currentMonth.getForwardMonthMillis())
@@ -41,10 +43,10 @@ fun StatisticsScreen(
                     Text(text = currentMonth.toYearMonth())
                 },
                 onClickMonthForward = {
-                    currentMonth = currentMonth.getForwardMonthMillis()
+                    sharedViewModel.changeToNextMonth()
                 },
                 onClickMonthBack = {
-                    currentMonth = currentMonth.getBackMonthMillis()
+                    sharedViewModel.changeToBackMonth()
                 }
             )
         }

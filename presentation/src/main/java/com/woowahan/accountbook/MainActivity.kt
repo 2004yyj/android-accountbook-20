@@ -1,8 +1,6 @@
 package com.woowahan.accountbook
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Row
@@ -16,6 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.*
 import com.woowahan.accountbook.components.calendar.CalendarScreen
 import com.woowahan.accountbook.components.history.HistoryScreen
@@ -50,7 +49,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Main(mainViewModel: MainViewModel = viewModel()) {
+fun Main(viewModel: MainViewModel = viewModel()) {
     val navController = rememberNavController()
     val navList =
         listOf(
@@ -61,7 +60,7 @@ fun Main(mainViewModel: MainViewModel = viewModel()) {
         )
     val context = LocalContext.current
 
-    mainViewModel.createTables()
+    viewModel.createTables()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -74,7 +73,13 @@ fun Main(mainViewModel: MainViewModel = viewModel()) {
                         unselectedContentColor = White80,
                         selected = currentRoute?.hierarchy?.any { it.route == screen.route } == true,
                         label = { Text(screen.label) },
-                        onClick = { navController.navigate(screen.route) },
+                        onClick = { navController.navigate(screen.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        } },
                         icon = {
                             Icon(
                                 painter = painterResource(screen.iconId),
@@ -95,20 +100,20 @@ fun Main(mainViewModel: MainViewModel = viewModel()) {
                     route = BottomNavigationRoute.History.route,
                     startDestination = Screen.HistoryIndex.route
                 ) {
-                    composable(route = Screen.HistoryIndex.route) { HistoryScreen(navController) }
+                    composable(route = Screen.HistoryIndex.route) { HistoryScreen(navController, viewModel) }
                     composable(route = Screen.HistoryIndex.HistoryCreate.route) { HistoryCreateScreen(navController) }
                 }
                 navigation(
                     route = BottomNavigationRoute.Calendar.route,
                     startDestination = Screen.CalendarIndex.route
                 ) {
-                    composable(route = Screen.CalendarIndex.route) { CalendarScreen() }
+                    composable(route = Screen.CalendarIndex.route) { CalendarScreen(viewModel) }
                 }
                 navigation(
                     route = BottomNavigationRoute.Statistics.route,
                     startDestination = Screen.StatisticsIndex.route
                 ) {
-                    composable(route = Screen.StatisticsIndex.route) { StatisticsScreen() }
+                    composable(route = Screen.StatisticsIndex.route) { StatisticsScreen(viewModel) }
                 }
                 navigation(
                     route = BottomNavigationRoute.Setting.route,

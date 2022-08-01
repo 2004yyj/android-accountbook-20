@@ -2,6 +2,7 @@ package com.woowahan.accountbook.viewmodel.main
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.woowahan.accountbook.domain.model.Result
@@ -11,11 +12,15 @@ import com.woowahan.accountbook.domain.usecase.history.CreateHistoryTableUseCase
 import com.woowahan.accountbook.domain.usecase.history.InsertHistoryUseCase
 import com.woowahan.accountbook.domain.usecase.paymentmethod.CreatePaymentMethodTableUseCase
 import com.woowahan.accountbook.ui.theme.Blue1
+import com.woowahan.accountbook.util.getBackMonthMillis
+import com.woowahan.accountbook.util.getCurrentMonthFirstDayMillis
+import com.woowahan.accountbook.util.getForwardMonthMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.exp
+import kotlin.random.Random
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -24,6 +29,12 @@ class MainViewModel @Inject constructor(
     private val createHistoryTableUseCase: CreateHistoryTableUseCase,
     private val insertCategoryUseCase: InsertCategoryUseCase
 ): ViewModel() {
+
+    private val _currentMonth =
+        MutableStateFlow(
+            System.currentTimeMillis().getCurrentMonthFirstDayMillis()
+        )
+    val currentMonth = _currentMonth.asStateFlow()
 
     private val _isFailure = MutableStateFlow("")
     val isFailure = _isFailure.asStateFlow()
@@ -56,9 +67,22 @@ class MainViewModel @Inject constructor(
 
     private fun insertDefaultData() {
         viewModelScope.launch {
-            println(Blue1.value)
-            val incomeResult = insertCategoryUseCase.invoke("income", "미분류/수입", Blue1.value).last()
-            val expenseResult = insertCategoryUseCase.invoke("expense", "미분류/지출", Blue1.value).last()
+            val incomeColor = Color(Random.nextInt(256), Random.nextInt(256), Random.nextInt(256))
+            val expenseColor = Color(Random.nextInt(256), Random.nextInt(256), Random.nextInt(256))
+            insertCategoryUseCase.invoke("income", "미분류/수입", incomeColor.value).last()
+            insertCategoryUseCase.invoke("expense", "미분류/지출", expenseColor.value).last()
+        }
+    }
+
+    fun changeToBackMonth() {
+        viewModelScope.launch {
+            _currentMonth.emit(_currentMonth.value.getBackMonthMillis())
+        }
+    }
+
+    fun changeToNextMonth() {
+        viewModelScope.launch {
+            _currentMonth.emit(_currentMonth.value.getForwardMonthMillis())
         }
     }
 }

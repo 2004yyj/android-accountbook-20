@@ -17,13 +17,15 @@ import com.woowahan.accountbook.state.rememberCalendarState
 import com.woowahan.accountbook.ui.theme.*
 import com.woowahan.accountbook.util.*
 import com.woowahan.accountbook.viewmodel.calendar.CalendarViewModel
+import com.woowahan.accountbook.viewmodel.main.MainViewModel
 
 @Composable
 fun CalendarScreen(
+    sharedViewModel: MainViewModel,
     viewModel: CalendarViewModel = hiltViewModel()
 ) {
     val history by viewModel.history.collectAsState()
-    var currentMonth by remember { mutableStateOf(System.currentTimeMillis().getCurrentMonthFirstDayMillis()) }
+    val currentMonth by sharedViewModel.currentMonth.collectAsState()
     val calendarState = rememberCalendarState(currentMonth = currentMonth)
 
     val incomeTotal by viewModel.incomeTotal.collectAsState()
@@ -50,10 +52,10 @@ fun CalendarScreen(
             MonthAppBar(
                 title = { Text(text = currentMonth.toYearMonth()) },
                 onClickMonthBack = {
-                    currentMonth = currentMonth.getBackMonthMillis()
+                    sharedViewModel.changeToBackMonth()
                 },
                 onClickMonthForward = {
-                    currentMonth = currentMonth.getForwardMonthMillis()
+                    sharedViewModel.changeToNextMonth()
                 }
             )
         }
