@@ -48,7 +48,6 @@ class CalendarViewModel @Inject constructor(
                 when(it) {
                     is Result.Success<List<History>> -> {
                         _history.emit(it.value)
-                        println(it.value)
                     }
                     is Result.Failure -> {
                         it.cause.printStackTrace()
