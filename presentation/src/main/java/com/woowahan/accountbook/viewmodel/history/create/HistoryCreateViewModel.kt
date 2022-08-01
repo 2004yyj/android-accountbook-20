@@ -45,8 +45,11 @@ class HistoryCreateViewModel @Inject constructor(
 
     fun insertCategory(type: String, name: String) {
         viewModelScope.launch {
-            val random = Random(255)
-            val randomColor = Color(random.nextFloat(), random.nextFloat(), random.nextFloat())
+            val randomColor = Color(
+                Random.nextInt(256),
+                Random.nextInt(256),
+                Random.nextInt(256)
+            )
             insertCategoryUseCase(type, name, randomColor.value).collect {
                 when(it) {
                     is Result.Success<Unit> -> getCategories(type)
