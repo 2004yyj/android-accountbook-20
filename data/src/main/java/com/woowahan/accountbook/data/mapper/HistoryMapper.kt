@@ -9,6 +9,8 @@ fun HistoryData.toModel(): History {
         date,
         amount,
         content,
+        incomeTotalByDate,
+        expenseTotalByDate,
         category.toModel(),
         paymentMethod?.toModel()
     )
@@ -20,6 +22,8 @@ fun History.toEntity(): HistoryData {
         date,
         amount,
         content,
+        incomeTotalByDate,
+        expenseTotalByDate,
         category.toEntity(),
         paymentMethod?.toEntity()
     )

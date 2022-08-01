@@ -27,8 +27,6 @@ import com.woowahan.accountbook.util.toMoneyString
 @Composable
 fun HistoryListItem(
     item: History,
-    index: Int = 0,
-    count: Int = 0,
     isChecked: Boolean,
     isCheckable: Boolean,
     onCheckedChange: (Boolean) -> Unit = {},
@@ -116,25 +114,6 @@ fun HistoryListItem(
                         fontWeight = FontWeight.Bold,
                     )
                 }
-            }
-
-            if (index == count - 1) {
-                Divider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp),
-                    thickness = 1.dp,
-                    color = PurpleLight,
-                )
-            } else {
-                Divider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp)
-                        .padding(horizontal = 16.dp),
-                    thickness = 1.dp,
-                    color = PurpleLight40,
-                )
             }
         }
     }
