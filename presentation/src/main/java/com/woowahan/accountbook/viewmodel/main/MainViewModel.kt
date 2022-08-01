@@ -56,9 +56,8 @@ class MainViewModel @Inject constructor(
 
     private fun insertDefaultData() {
         viewModelScope.launch {
-            println(Blue1.value)
-            val incomeResult = insertCategoryUseCase.invoke("income", "미분류/수입", Blue1.value).last()
-            val expenseResult = insertCategoryUseCase.invoke("expense", "미분류/지출", Blue1.value).last()
+            insertCategoryUseCase.invoke("income", "미분류/수입", Blue1.value).last()
+            insertCategoryUseCase.invoke("expense", "미분류/지출", Blue1.value).last()
         }
     }
 }
