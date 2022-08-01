@@ -51,6 +51,9 @@ fun HistoryCreateScreen(
     var selectedPaymentMethod by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf("") }
 
+    var expendedPaymentMethod by remember { mutableStateOf(false) }
+    var expendedCategory by remember { mutableStateOf(false) }
+
     val paymentMethods by viewModel.paymentMethods.collectAsState()
     val categories by viewModel.categories.collectAsState()
 
@@ -185,6 +188,10 @@ fun HistoryCreateScreen(
                             onDismissRequest = {
                                 addingPaymentMethod = ""
                             },
+                            onExpendedChanged = {
+                                expendedPaymentMethod = !expendedPaymentMethod
+                            },
+                            expended = expendedPaymentMethod,
                             items = paymentMethods.map { it.name },
                             footerItem = {
                                 CustomTextField(
@@ -204,6 +211,7 @@ fun HistoryCreateScreen(
                                     onClick = {
                                         viewModel.insertPaymentMethod(addingPaymentMethod)
                                         addingPaymentMethod = ""
+                                        expendedPaymentMethod = !expendedPaymentMethod
                                     }
                                 ) {
                                     Icon(
@@ -225,6 +233,10 @@ fun HistoryCreateScreen(
                         onDismissRequest = {
                             addingCategory = ""
                         },
+                        onExpendedChanged = {
+                            expendedCategory = !expendedCategory
+                        },
+                        expended = expendedCategory,
                         items = categories.map { it.name },
                         footerItem = {
                             CustomTextField(
@@ -244,6 +256,7 @@ fun HistoryCreateScreen(
                                 onClick = {
                                     viewModel.insertCategory(if (selectedIncome) "income" else "expense", addingCategory)
                                     addingCategory = ""
+                                    expendedCategory = !expendedCategory
                                 }
                             ) {
                                 Icon(
