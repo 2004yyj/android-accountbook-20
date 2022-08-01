@@ -24,7 +24,7 @@ fun HistoryListHeader(
         Modifier
             .padding(horizontal = 16.dp)
             .fillMaxWidth()
-            .background(White)
+            .background(OffWhite)
     ) {
         Spacer(modifier = Modifier.height(20.dp))
         Box(modifier = Modifier.fillMaxWidth()) {
