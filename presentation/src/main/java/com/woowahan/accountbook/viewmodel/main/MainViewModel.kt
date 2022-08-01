@@ -2,6 +2,7 @@ package com.woowahan.accountbook.viewmodel.main
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.woowahan.accountbook.domain.model.Result
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.exp
+import kotlin.random.Random
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -56,8 +58,10 @@ class MainViewModel @Inject constructor(
 
     private fun insertDefaultData() {
         viewModelScope.launch {
-            insertCategoryUseCase.invoke("income", "미분류/수입", Blue1.value).last()
-            insertCategoryUseCase.invoke("expense", "미분류/지출", Blue1.value).last()
+            val incomeColor = Color(Random.nextInt(256), Random.nextInt(256), Random.nextInt(256))
+            val expenseColor = Color(Random.nextInt(256), Random.nextInt(256), Random.nextInt(256))
+            insertCategoryUseCase.invoke("income", "미분류/수입", incomeColor.value).last()
+            insertCategoryUseCase.invoke("expense", "미분류/지출", expenseColor.value).last()
         }
     }
 }
