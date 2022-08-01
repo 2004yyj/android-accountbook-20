@@ -4,6 +4,7 @@ import com.woowahan.accountbook.data.datasource.HistoryDataSource
 import com.woowahan.accountbook.domain.model.Category
 import com.woowahan.accountbook.domain.model.History
 import com.woowahan.accountbook.domain.model.PaymentMethod
+import com.woowahan.accountbook.domain.model.Statistic
 import com.woowahan.accountbook.domain.repository.HistoryRepository
 import javax.inject.Inject
 
@@ -68,5 +69,12 @@ class HistoryRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAllHistory(idList: List<Int>) {
         return dataSource.deleteAllHistory(idList)
+    }
+
+    override suspend fun getAllStatisticsByCategoryType(
+        firstDayOfMonth: Long,
+        firstDayOfNextMonth: Long
+    ): List<Statistic> {
+        return dataSource.getAllStatisticsByCategoryType(firstDayOfMonth, firstDayOfNextMonth)
     }
 }

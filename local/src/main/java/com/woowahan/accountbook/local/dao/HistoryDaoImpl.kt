@@ -3,6 +3,7 @@ package com.woowahan.accountbook.local.dao
 import com.woowahan.accountbook.data.entity.CategoryData
 import com.woowahan.accountbook.data.entity.HistoryData
 import com.woowahan.accountbook.data.entity.PaymentMethodData
+import com.woowahan.accountbook.data.entity.StatisticData
 import com.woowahan.accountbook.data.local.HistoryDao
 import com.woowahan.accountbook.local.helper.DatabaseOpenHelper
 import com.woowahan.accountbook.local.util.runSQL
@@ -193,6 +194,41 @@ class HistoryDaoImpl @Inject constructor(
         dbHelper.runSQLWithWritableTransaction {
             val statement = compileStatement(sql)
             statement.executeUpdateDelete()
+        }
+    }
+
+    override suspend fun getAllStatisticsByCategoryType(
+        firstDayOfMonth: Long,
+        firstDayOfNextMonth: Long
+    ): List<StatisticData> {
+        val sql = "SELECT C.name, total(H.amount), " +
+                "total(H.amount)/(SELECT total(amount) FROM History WHERE amount < 0 AND date >= ? AND date < ?), " +
+                "C.color " +
+                "FROM History AS H " +
+                "INNER JOIN Category AS C " +
+                "ON H.category_id = C.id " +
+                "WHERE H.amount < 0 AND H.date >= ? AND H.date < ? GROUP BY C.id"
+        return dbHelper.runSQLWithReadableTransaction {
+            val cursor = rawQuery(sql,
+                arrayOf(
+                    firstDayOfMonth.toString(),
+                    firstDayOfNextMonth.toString(),
+                    firstDayOfMonth.toString(),
+                    firstDayOfNextMonth.toString()
+                )
+            )
+            val list = mutableListOf<StatisticData>()
+            while (cursor.moveToNext()) {
+                list.add(
+                    StatisticData(
+                        cursor.getString(0),
+                        cursor.getLong(1),
+                        cursor.getFloat(2),
+                        cursor.getString(3).toULong()
+                    )
+                )
+            }
+            list
         }
     }
 }

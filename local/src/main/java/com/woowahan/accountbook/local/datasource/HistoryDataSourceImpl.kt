@@ -7,6 +7,7 @@ import com.woowahan.accountbook.data.mapper.toModel
 import com.woowahan.accountbook.domain.model.Category
 import com.woowahan.accountbook.domain.model.History
 import com.woowahan.accountbook.domain.model.PaymentMethod
+import com.woowahan.accountbook.domain.model.Statistic
 import javax.inject.Inject
 
 class HistoryDataSourceImpl @Inject constructor(
@@ -74,5 +75,12 @@ class HistoryDataSourceImpl @Inject constructor(
 
     override suspend fun deleteAllHistory(idList: List<Int>) {
         return dao.deleteAllHistory(idList)
+    }
+
+    override suspend fun getAllStatisticsByCategoryType(
+        firstDayOfMonth: Long,
+        firstDayOfNextMonth: Long
+    ): List<Statistic> {
+        return dao.getAllStatisticsByCategoryType(firstDayOfMonth, firstDayOfNextMonth).map { it.toModel() }
     }
 }

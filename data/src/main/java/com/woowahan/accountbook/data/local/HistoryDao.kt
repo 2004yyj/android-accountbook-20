@@ -3,6 +3,7 @@ package com.woowahan.accountbook.data.local
 import com.woowahan.accountbook.data.entity.CategoryData
 import com.woowahan.accountbook.data.entity.HistoryData
 import com.woowahan.accountbook.data.entity.PaymentMethodData
+import com.woowahan.accountbook.data.entity.StatisticData
 
 interface HistoryDao {
     suspend fun getTotalPayByMonthAndType(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: String): Long
@@ -14,4 +15,5 @@ interface HistoryDao {
     suspend fun updateHistory(id: Int, date: Long, amount: Long, content: String, category: CategoryData, paymentMethod: PaymentMethodData?)
     suspend fun deleteHistory(id: Int)
     suspend fun deleteAllHistory(idList: List<Int>)
+    suspend fun getAllStatisticsByCategoryType(firstDayOfMonth: Long, firstDayOfNextMonth: Long,): List<StatisticData>
 }
