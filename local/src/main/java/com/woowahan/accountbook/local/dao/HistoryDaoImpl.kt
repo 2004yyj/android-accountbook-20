@@ -41,13 +41,21 @@ class HistoryDaoImpl @Inject constructor(
     }
 
     override suspend fun getAllHistoriesByMonthAndType(firstDayOfMonth: Long, firstDayOfNextMonth: Long): List<HistoryData> {
-        val sql =
-            "SELECT History.*, Category.*, PaymentMethod.* FROM History " +
-                    "INNER JOIN Category " +
-                    "ON History.category_id = Category.id " +
-                    "LEFT OUTER JOIN PaymentMethod " +
-                    "ON IFNULL(History.payment_method_id, -1) = PaymentMethod.id " +
-                    "WHERE History.date >= ? AND History.date < ?"
+        val sql ="SELECT History.*, " +
+                "IFNULL(income.amount, 0), " +
+                "IFNULL(expense.amount, 0), " +
+                "Category.*, PaymentMethod.* " +
+                "FROM History " +
+                "LEFT OUTER JOIN (SELECT total(amount) as amount, date FROM History WHERE amount > 0 GROUP BY date) as income " +
+                "ON History.date = income.date " +
+                "LEFT OUTER JOIN (SELECT total(amount) as amount, date FROM History WHERE amount < 0 GROUP BY date) as expense " +
+                "ON income.date = expense.date " +
+                "INNER JOIN Category " +
+                "ON History.category_id = Category.id " +
+                "LEFT OUTER JOIN PaymentMethod " +
+                "ON IFNULL(History.payment_method_id, -1) = PaymentMethod.id " +
+                "WHERE History.date >= ? AND History.date < ? " +
+                "ORDER BY History.date"
         return dbHelper.runSQLWithReadableTransaction {
             val cursor = rawQuery(sql, arrayOf(firstDayOfMonth.toString(), firstDayOfNextMonth.toString()))
             val list = mutableListOf<HistoryData>()
@@ -58,16 +66,18 @@ class HistoryDaoImpl @Inject constructor(
                         cursor.getLong(1),
                         cursor.getLong(2),
                         cursor.getString(3),
+                        cursor.getLong(6),
+                        cursor.getLong(7),
                         CategoryData(
-                            cursor.getInt(6),
-                            cursor.getString(7),
-                            cursor.getString(8),
-                            cursor.getString(9).toULong()
+                            cursor.getInt(8),
+                            cursor.getString(9),
+                            cursor.getString(10),
+                            cursor.getString(11).toULong()
                         ),
-                        if (cursor.getString(7) == "income") null
+                        if (cursor.getString(9) == "income") null
                         else PaymentMethodData(
-                            cursor.getInt(10),
-                            cursor.getString(11),
+                            cursor.getInt(12),
+                            cursor.getString(13),
                         )
                     )
                 )
@@ -82,13 +92,23 @@ class HistoryDaoImpl @Inject constructor(
         firstDayOfNextMonth: Long,
         type: String
     ): List<HistoryData> {
-        val sql =
-            "SELECT History.*, Category.*, PaymentMethod.* FROM History " +
-                    "INNER JOIN Category " +
-                    "ON History.category_id = Category.id " +
-                    "LEFT OUTER JOIN PaymentMethod " +
-                    "ON IFNULL(History.payment_method_id, -1) = PaymentMethod.id " +
-                    "WHERE History.date >= ? AND History.date < ? AND History.amount ${if (type == "income") ">" else "<"} 0"
+
+        val sql ="SELECT History.*, " +
+                "IFNULL(income.amount, 0), " +
+                "IFNULL(expense.amount, 0), " +
+                "Category.*, PaymentMethod.* " +
+                "FROM History " +
+                "LEFT OUTER JOIN (SELECT total(amount) as amount, date FROM History WHERE amount > 0 GROUP BY date) as income " +
+                "ON History.date = income.date " +
+                "LEFT OUTER JOIN (SELECT total(amount) as amount, date FROM History WHERE amount < 0 GROUP BY date) as expense " +
+                "ON income.date = expense.date " +
+                "INNER JOIN Category " +
+                "ON History.category_id = Category.id " +
+                "LEFT OUTER JOIN PaymentMethod " +
+                "ON IFNULL(History.payment_method_id, -1) = PaymentMethod.id " +
+                "WHERE History.date >= ? AND History.date < ? AND History.amount ${if (type == "income") ">" else "<"} 0 " +
+                "ORDER BY History.date"
+
         return dbHelper.runSQLWithReadableTransaction {
             val cursor = rawQuery(sql, arrayOf(firstDayOfMonth.toString(), firstDayOfNextMonth.toString()))
             val list = mutableListOf<HistoryData>()
@@ -99,16 +119,18 @@ class HistoryDaoImpl @Inject constructor(
                         cursor.getLong(1),
                         cursor.getLong(2),
                         cursor.getString(3),
+                        cursor.getLong(6),
+                        cursor.getLong(7),
                         CategoryData(
-                            cursor.getInt(6),
-                            cursor.getString(7),
-                            cursor.getString(8),
-                            cursor.getString(9).toULong()
+                            cursor.getInt(8),
+                            cursor.getString(9),
+                            cursor.getString(10),
+                            cursor.getString(11).toULong()
                         ),
-                        if (cursor.getString(7) == "income") null
+                        if (cursor.getString(9) == "income") null
                         else PaymentMethodData(
-                            cursor.getInt(10),
-                            cursor.getString(11),
+                            cursor.getInt(12),
+                            cursor.getString(13),
                         )
                     )
                 )

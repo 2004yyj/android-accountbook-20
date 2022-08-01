@@ -193,42 +193,54 @@ fun HistoryScreen(
                         }
                     }
 
-                    history.groupBy { it.date }.forEach { (manufacturer, models) ->
-
-                        val groupIncomeTotal = models.sumOf {
-                            if (it.amount > 0) it.amount else 0
-                        }
-                        val groupExpenseTotal = models.sumOf {
-                            if (it.amount < 0) (it.amount * -1) else 0
-                        }
-
-                        stickyHeader {
-                            HistoryListHeader(
-                                date = manufacturer,
-                                incomeTotal = groupIncomeTotal,
-                                expenseTotal = groupExpenseTotal,
-                            )
+                    history.forEachIndexed { index, item ->
+                        if (index == 0 || history[index - 1].date != item.date) {
+                            stickyHeader {
+                                HistoryListHeader(
+                                    date = item.date,
+                                    incomeTotal = item.incomeTotalByDate,
+                                    expenseTotal = item.expenseTotalByDate,
+                                )
+                            }
                         }
 
-                        items(models.count()) { index ->
-                            val realIndex = history.indexOf(models[index])
-                            HistoryListItem(
-                                item = models[index],
-                                index = index,
-                                count = models.count(),
-                                isCheckable = isModifyModeEnabled,
-                                isChecked = historyChecked.contains(history[realIndex]),
-                                onCheckedChange = {
-                                    if (it) historyChecked.add(history[realIndex])
-                                    else historyChecked.remove(history[realIndex])
-                                    if (historyChecked.size == 0 && isModifyModeEnabled)
-                                        isModifyModeEnabled = false
-                                },
-                                onCheckableChange = {
-                                    historyChecked.clear()
-                                    isModifyModeEnabled = it
+                        item {
+                            Column {
+                                HistoryListItem(
+                                    item = item,
+                                    isCheckable = isModifyModeEnabled,
+                                    isChecked = historyChecked.contains(item),
+                                    onCheckedChange = {
+                                        if (it) historyChecked.add(item)
+                                        else historyChecked.remove(item)
+                                        if (historyChecked.size == 0 && isModifyModeEnabled)
+                                            isModifyModeEnabled = false
+                                    },
+                                    onCheckableChange = {
+                                        historyChecked.clear()
+                                        isModifyModeEnabled = it
+                                    }
+                                )
+
+                                if (index != history.size - 1 && history[index + 1].date != item.date) {
+                                    Divider(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 10.dp),
+                                        thickness = 1.dp,
+                                        color = PurpleLight,
+                                    )
+                                } else {
+                                    Divider(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 10.dp)
+                                            .padding(horizontal = 16.dp),
+                                        thickness = 1.dp,
+                                        color = PurpleLight40,
+                                    )
                                 }
-                            )
+                            }
                         }
                     }
                 }
