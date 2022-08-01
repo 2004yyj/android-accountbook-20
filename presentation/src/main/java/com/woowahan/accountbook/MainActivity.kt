@@ -93,20 +93,20 @@ fun Main(viewModel: MainViewModel = viewModel()) {
                     route = BottomNavigationRoute.History.route,
                     startDestination = Screen.HistoryIndex.route
                 ) {
-                    composable(route = Screen.HistoryIndex.route) { HistoryScreen(navController) }
+                    composable(route = Screen.HistoryIndex.route) { HistoryScreen(navController, viewModel) }
                     composable(route = Screen.HistoryIndex.HistoryCreate.route) { HistoryCreateScreen(navController) }
                 }
                 navigation(
                     route = BottomNavigationRoute.Calendar.route,
                     startDestination = Screen.CalendarIndex.route
                 ) {
-                    composable(route = Screen.CalendarIndex.route) { CalendarScreen() }
+                    composable(route = Screen.CalendarIndex.route) { CalendarScreen(viewModel) }
                 }
                 navigation(
                     route = BottomNavigationRoute.Statistics.route,
                     startDestination = Screen.StatisticsIndex.route
                 ) {
-                    composable(route = Screen.StatisticsIndex.route) { StatisticsScreen() }
+                    composable(route = Screen.StatisticsIndex.route) { StatisticsScreen(viewModel) }
                 }
                 navigation(
                     route = BottomNavigationRoute.Setting.route,

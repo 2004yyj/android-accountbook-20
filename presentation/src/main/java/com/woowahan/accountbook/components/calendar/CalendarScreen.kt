@@ -17,9 +17,11 @@ import com.woowahan.accountbook.state.rememberCalendarState
 import com.woowahan.accountbook.ui.theme.*
 import com.woowahan.accountbook.util.*
 import com.woowahan.accountbook.viewmodel.calendar.CalendarViewModel
+import com.woowahan.accountbook.viewmodel.main.MainViewModel
 
 @Composable
 fun CalendarScreen(
+    sharedViewModel: MainViewModel,
     viewModel: CalendarViewModel = hiltViewModel()
 ) {
     val history by viewModel.history.collectAsState()

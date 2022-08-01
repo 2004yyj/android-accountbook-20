@@ -28,11 +28,13 @@ import com.woowahan.accountbook.navigation.Screen
 import com.woowahan.accountbook.ui.theme.*
 import com.woowahan.accountbook.util.*
 import com.woowahan.accountbook.viewmodel.history.HistoryViewModel
+import com.woowahan.accountbook.viewmodel.main.MainViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HistoryScreen(
     navController: NavController,
+    sharedViewModel: MainViewModel,
     viewModel: HistoryViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -252,5 +254,5 @@ fun HistoryScreen(
 @Preview(showBackground = true)
 @Composable
 fun PreviewHistoryScreen() {
-    HistoryScreen(navController = rememberNavController())
+    HistoryScreen(navController = rememberNavController(), hiltViewModel())
 }
