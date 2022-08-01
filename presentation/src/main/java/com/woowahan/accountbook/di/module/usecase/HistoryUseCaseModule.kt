@@ -52,4 +52,10 @@ object HistoryUseCaseModule {
     fun providesUpdateHistoryUseCase(repository: HistoryRepository): UpdateHistoryUseCase {
         return UpdateHistoryUseCase(repository)
     }
+
+    @Provides
+    @Singleton
+    fun providesGetAllStatisticsByCategoryTypeUseCase(repository: HistoryRepository): GetAllStatisticsByCategoryTypeUseCase {
+        return GetAllStatisticsByCategoryTypeUseCase(repository)
+    }
 }
