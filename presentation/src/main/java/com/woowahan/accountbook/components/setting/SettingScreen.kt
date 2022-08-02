@@ -1,5 +1,6 @@
 package com.woowahan.accountbook.components.setting
 
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,6 +38,8 @@ fun SettingScreen(
     navController: NavController,
     viewModel: SettingViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
     val paymentMethods by viewModel.paymentMethods.collectAsState()
     val incomeCategories by viewModel.incomeCategories.collectAsState()
     val expenseCategories by viewModel.expenseCategories.collectAsState()
@@ -71,15 +75,22 @@ fun SettingScreen(
                     CategoryExpenseTab -> {
                         items(expenseCategories) { item ->
                             CategoryListItem(category = item) {
-                                navController.navigate("${Screen.SettingIndex.CategoryCreate.route}?settingMode=$settingMode&paymentMode=${PaymentType.Income}&id=${item.id}")
+                                if (item.name != "미분류/지출") {
+                                    navController.navigate("${Screen.SettingIndex.CategoryCreate.route}?settingMode=$settingMode&paymentType=${PaymentType.Expense}&id=${item.id}")
+                                } else {
+                                    Toast.makeText(context, "기본값은 수정할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                                }
                             }
                         }
-
                     }
                     CategoryIncomeTab -> {
                         items(incomeCategories) { item ->
                             CategoryListItem(category = item) {
-                                navController.navigate("${Screen.SettingIndex.CategoryCreate.route}?settingMode=$settingMode&paymentMode=${PaymentType.Expense}&id=${item.id}")
+                                if (item.name != "미분류/수입") {
+                                    navController.navigate("${Screen.SettingIndex.CategoryCreate.route}?settingMode=$settingMode&paymentType=${PaymentType.Income}&id=${item.id}")
+                                } else {
+                                    Toast.makeText(context, "기본값은 수정할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                                }
                             }
                         }
                     }

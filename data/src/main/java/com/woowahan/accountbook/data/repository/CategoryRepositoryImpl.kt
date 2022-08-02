@@ -21,6 +21,10 @@ class CategoryRepositoryImpl @Inject constructor(
         return dataSource.getCategoryByName(name)
     }
 
+    override suspend fun getCategoryById(id: Int): Category {
+        return dataSource.getCategoryById(id)
+    }
+
     override suspend fun createCategoryTable() {
         return dataSource.createCategoryTable()
     }

@@ -8,6 +8,7 @@ interface CategoryDataSource {
     suspend fun getAllCategories(): List<Category>
     suspend fun getAllCategoryByType(type: PaymentType): List<Category>
     suspend fun getCategoryByName(name: String): Category
+    suspend fun getCategoryById(id: Int): Category
     suspend fun createCategoryTable()
     suspend fun dropCategoryTable()
     suspend fun insertCategory(type: PaymentType, name: String, color: ULong)

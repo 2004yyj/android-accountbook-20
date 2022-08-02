@@ -43,6 +43,12 @@ object CategoryUseCaseModule {
 
     @Provides
     @Singleton
+    fun providesGetCategoryByIdUseCase(repository: CategoryRepository): GetCategoryByIdUseCase {
+        return GetCategoryByIdUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
     fun providesInsertCategoryUseCase(repository: CategoryRepository): InsertCategoryUseCase {
         return InsertCategoryUseCase(repository)
     }
