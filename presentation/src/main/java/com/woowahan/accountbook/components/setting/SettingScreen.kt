@@ -71,15 +71,14 @@ fun SettingScreen(
                     CategoryExpenseTab -> {
                         items(expenseCategories) { item ->
                             CategoryListItem(category = item) {
-                                navController.navigate("${Screen.SettingIndex.CategoryCreate.route}?settingMode=$settingMode&paymentMode=${PaymentType.Expense}&id=${item.id}")
+                                navController.navigate("${Screen.SettingIndex.CategoryCreate.route}?settingMode=$settingMode&paymentType=${PaymentType.Expense}&id=${item.id}")
                             }
                         }
-
                     }
                     CategoryIncomeTab -> {
                         items(incomeCategories) { item ->
                             CategoryListItem(category = item) {
-                                navController.navigate("${Screen.SettingIndex.CategoryCreate.route}?settingMode=$settingMode&paymentMode=${PaymentType.Income}&id=${item.id}")
+                                navController.navigate("${Screen.SettingIndex.CategoryCreate.route}?settingMode=$settingMode&paymentType=${PaymentType.Income}&id=${item.id}")
                             }
                         }
                     }
