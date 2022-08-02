@@ -22,8 +22,8 @@ fun ColorPicker(
 ) {
     LazyVerticalGrid(
         modifier = modifier.fillMaxWidth(),
-        columns = GridCells.Fixed(10),
-        contentPadding = PaddingValues(horizontal = 10.dp)
+        columns = GridCells.Fixed(5),
+        contentPadding = PaddingValues(horizontal = 20.dp)
     ) {
         items(colors) { item ->
             content(item)
@@ -38,15 +38,15 @@ fun ColorPickerItem(
     isChecked: Boolean = false,
 ) {
     val animationState by animateFloatAsState(
-        targetValue = if (isChecked) 24.dp.value else 20.dp.value,
+        targetValue = if (isChecked) 48.dp.value else 40.dp.value,
         animationSpec = tween(300)
     )
 
     Column(modifier = Modifier.wrapContentSize()) {
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         Box(
             modifier = Modifier
-                .size(24.dp)
+                .size(48.dp)
         ) {
             TransparentButton(
                 modifier = Modifier
