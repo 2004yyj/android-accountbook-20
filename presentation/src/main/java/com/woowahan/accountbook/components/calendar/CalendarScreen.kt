@@ -166,15 +166,16 @@ fun CalendarScreen(
                         Spacer(modifier = Modifier.height(10.dp))
                     }
                 ) { date, isCurrentMonth ->
-                    Column(
+                    Box(
                         modifier = Modifier
-                            .fillMaxSize()
+                            .height(85.dp)
+                            .width(50.dp)
                             .align(Alignment.Center)
                     ) {
                         Column(
-                            modifier = Modifier
-                                .weight(2f)
-                                .align(Alignment.Start)
+                            Modifier
+                                .wrapContentSize()
+                                .align(Alignment.TopStart)
                         ) {
                             if (isCurrentMonth) {
                                 val filter = history.filter { it.date == currentMonth.getCurrentDateMillis(date) }
@@ -195,22 +196,29 @@ fun CalendarScreen(
                                         )
                                     if (expense != 0L)
                                         Text(
-                                            text = (expense * -1).toMoneyString(),
+                                            text = expense.toMoneyString(),
                                             fontSize = 10.sp,
                                             color = Error,
+                                            maxLines = 1,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    if ((income != 0L || expense != 0L) && income + expense != 0L)
+                                        Text(
+                                            text = (expense + income).toMoneyString(),
+                                            fontSize = 10.sp,
+                                            color = Purple,
                                             maxLines = 1,
                                             fontWeight = FontWeight.Bold
                                         )
                                 }
                             }
                         }
-                        Spacer(modifier = Modifier.height(24.dp))
                         Text(
                             text = date.toString(),
                             fontSize = 10.sp,
                             modifier = Modifier
-                                .weight(1f)
-                                .align(Alignment.End),
+                                .wrapContentSize()
+                                .align(Alignment.BottomEnd),
                             fontWeight = FontWeight.Bold,
                             color = if (isCurrentMonth) Purple else PurpleLight40
                         )
