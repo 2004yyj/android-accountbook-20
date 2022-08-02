@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.woowahan.accountbook.components.appbar.BackAppBar
 import com.woowahan.accountbook.components.setting.mode.SettingMode
@@ -17,7 +18,7 @@ fun PaymentMethodCreateScreen(
     settingMode: String,
     id: Int,
     navController: NavController,
-    viewModel: CreatePaymentMethodViewModel
+    viewModel: CreatePaymentMethodViewModel = hiltViewModel()
 ) {
     val settingMode = SettingMode.valueOf(settingMode)
     val modeTitle = if (settingMode == SettingMode.Create) "추가" else "수정"
