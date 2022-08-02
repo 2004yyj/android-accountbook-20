@@ -1,5 +1,6 @@
 package com.woowahan.accountbook.domain.usecase.category
 
+import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.domain.model.Result
 import com.woowahan.accountbook.domain.repository.CategoryRepository
 import kotlinx.coroutines.Dispatchers
@@ -10,7 +11,7 @@ import java.lang.Exception
 class UpdateCategoryUseCase(
     private val repository: CategoryRepository
 ) {
-    operator fun invoke(id: Int, type: String, name: String, color: ULong) = flow {
+    operator fun invoke(id: Int, type: PaymentType, name: String, color: ULong) = flow {
         emit(Result.Loading)
         try {
             repository.updateCategory(id, type, name, color)

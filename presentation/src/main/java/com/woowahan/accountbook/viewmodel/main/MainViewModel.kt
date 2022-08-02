@@ -5,6 +5,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.domain.model.Result
 import com.woowahan.accountbook.domain.usecase.category.CreateCategoryTableUseCase
 import com.woowahan.accountbook.domain.usecase.category.InsertCategoryUseCase
@@ -69,8 +70,8 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             val incomeColor = Color(Random.nextInt(256), Random.nextInt(256), Random.nextInt(256))
             val expenseColor = Color(Random.nextInt(256), Random.nextInt(256), Random.nextInt(256))
-            insertCategoryUseCase.invoke("income", "미분류/수입", incomeColor.value).last()
-            insertCategoryUseCase.invoke("expense", "미분류/지출", expenseColor.value).last()
+            insertCategoryUseCase.invoke(PaymentType.Income, "미분류/수입", incomeColor.value).last()
+            insertCategoryUseCase.invoke(PaymentType.Expense, "미분류/지출", expenseColor.value).last()
         }
     }
 

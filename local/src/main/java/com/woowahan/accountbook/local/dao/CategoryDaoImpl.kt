@@ -1,6 +1,7 @@
 package com.woowahan.accountbook.local.dao
 
 import com.woowahan.accountbook.data.entity.CategoryData
+import com.woowahan.accountbook.data.entity.PaymentTypeData
 import com.woowahan.accountbook.data.local.CategoryDao
 import com.woowahan.accountbook.local.helper.DatabaseOpenHelper
 import com.woowahan.accountbook.local.util.runSQL
@@ -20,7 +21,7 @@ class CategoryDaoImpl @Inject constructor(
                 list.add(
                     CategoryData(
                         cursor.getInt(0),
-                        cursor.getString(1),
+                        PaymentTypeData.valueOf(cursor.getString(1)),
                         cursor.getString(2),
                         cursor.getString(3).toULong()
                     )
@@ -40,7 +41,7 @@ class CategoryDaoImpl @Inject constructor(
                 list.add(
                     CategoryData(
                         cursor.getInt(0),
-                        cursor.getString(1),
+                        PaymentTypeData.valueOf(cursor.getString(1)),
                         cursor.getString(2),
                         cursor.getString(3).toULong()
                     )
@@ -58,7 +59,7 @@ class CategoryDaoImpl @Inject constructor(
             cursor.moveToFirst()
             val categoryData = CategoryData(
                 cursor.getInt(0),
-                cursor.getString(1),
+                PaymentTypeData.valueOf(cursor.getString(1)),
                 cursor.getString(2),
                 cursor.getString(3).toULong()
             )
@@ -83,22 +84,22 @@ class CategoryDaoImpl @Inject constructor(
         }
     }
 
-    override suspend fun insertCategory(type: String, name: String, color: ULong) {
+    override suspend fun insertCategory(type: PaymentTypeData, name: String, color: ULong) {
         val sql = "INSERT INTO Category (type, name, color) VALUES (?, ?, ?)"
         dbHelper.runSQLWithWritableTransaction {
             val statement = compileStatement(sql)
-            statement.bindString(1, type)
+            statement.bindString(1, type.toString())
             statement.bindString(2, name)
             statement.bindString(3, color.toString())
             statement.executeInsert()
         }
     }
 
-    override suspend fun updateCategory(id: Int, type: String, name: String, color: ULong) {
+    override suspend fun updateCategory(id: Int, type: PaymentTypeData, name: String, color: ULong) {
         val sql = "UPDATE Category SET type = ?, name = ?, color = ? WHERE id = $id"
         dbHelper.runSQLWithWritableTransaction {
             val statement = compileStatement(sql)
-            statement.bindString(1, type)
+            statement.bindString(1, type.toString())
             statement.bindString(2, name)
             statement.bindString(3, color.toString())
             statement.executeUpdateDelete()

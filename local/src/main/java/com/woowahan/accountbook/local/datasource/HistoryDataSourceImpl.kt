@@ -4,10 +4,7 @@ import com.woowahan.accountbook.data.datasource.HistoryDataSource
 import com.woowahan.accountbook.data.local.HistoryDao
 import com.woowahan.accountbook.data.mapper.toEntity
 import com.woowahan.accountbook.data.mapper.toModel
-import com.woowahan.accountbook.domain.model.Category
-import com.woowahan.accountbook.domain.model.History
-import com.woowahan.accountbook.domain.model.PaymentMethod
-import com.woowahan.accountbook.domain.model.Statistic
+import com.woowahan.accountbook.domain.model.*
 import javax.inject.Inject
 
 class HistoryDataSourceImpl @Inject constructor(
@@ -16,9 +13,9 @@ class HistoryDataSourceImpl @Inject constructor(
     override suspend fun getTotalPayByMonthAndType(
         firstDayOfMonth: Long,
         firstDayOfNextMonth: Long,
-        type: String
+        type: PaymentType
     ): Long {
-        return dao.getTotalPayByMonthAndType(firstDayOfMonth, firstDayOfNextMonth, type)
+        return dao.getTotalPayByMonthAndType(firstDayOfMonth, firstDayOfNextMonth, type.toEntity())
     }
 
     override suspend fun getAllHistoriesByMonthAndType(
@@ -33,9 +30,9 @@ class HistoryDataSourceImpl @Inject constructor(
     override suspend fun getAllHistoriesByMonthAndType(
         firstDayOfMonth: Long,
         firstDayOfNextMonth: Long,
-        type: String
+        type: PaymentType
     ): List<History> {
-        return dao.getAllHistoriesByMonthAndType(firstDayOfMonth, firstDayOfNextMonth, type).map {
+        return dao.getAllHistoriesByMonthAndType(firstDayOfMonth, firstDayOfNextMonth, type.toEntity()).map {
             it.toModel()
         }
     }

@@ -1,9 +1,6 @@
 package com.woowahan.accountbook.local.dao
 
-import com.woowahan.accountbook.data.entity.CategoryData
-import com.woowahan.accountbook.data.entity.HistoryData
-import com.woowahan.accountbook.data.entity.PaymentMethodData
-import com.woowahan.accountbook.data.entity.StatisticData
+import com.woowahan.accountbook.data.entity.*
 import com.woowahan.accountbook.data.local.HistoryDao
 import com.woowahan.accountbook.local.helper.DatabaseOpenHelper
 import com.woowahan.accountbook.local.util.runSQL
@@ -15,22 +12,22 @@ import javax.inject.Inject
 class HistoryDaoImpl @Inject constructor(
     private val dbHelper: DatabaseOpenHelper
 ): HistoryDao {
-    override suspend fun getTotalPayByMonthAndType(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: String): Long {
+    override suspend fun getTotalPayByMonthAndType(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: PaymentTypeData): Long {
         val sql =
             "SELECT History.*, Category.*, PaymentMethod.* FROM History " +
                     "INNER JOIN Category " +
                     "ON History.category_id = Category.id " +
                     "LEFT OUTER JOIN PaymentMethod " +
                     "ON IFNULL(History.payment_method_id, -1) = PaymentMethod.id " +
-                    "WHERE History.date >= ? AND History.date < ? AND History.amount ${if (type == "income") ">" else "<"} 0"
+                    "WHERE History.date >= ? AND History.date < ? AND History.amount ${if (type == PaymentTypeData.Income) ">" else "<"} 0"
 
         return dbHelper.runSQLWithReadableTransaction {
             var totalPay = 0L
             val cursor = rawQuery(sql, arrayOf(firstDayOfMonth.toString(), firstDayOfNextMonth.toString()))
             while(cursor.moveToNext()) {
-                if (cursor.getString(7) == type) {
+                if (PaymentTypeData.valueOf(cursor.getString(7)) == type) {
                     totalPay +=
-                        if (cursor.getString(7) == "income")
+                        if (PaymentTypeData.valueOf(cursor.getString(7)) == PaymentTypeData.Income)
                             cursor.getLong(2)
                         else cursor.getLong(2) * -1
                 }
@@ -70,11 +67,11 @@ class HistoryDaoImpl @Inject constructor(
                         cursor.getLong(7),
                         CategoryData(
                             cursor.getInt(8),
-                            cursor.getString(9),
+                            PaymentTypeData.valueOf(cursor.getString(9)),
                             cursor.getString(10),
                             cursor.getString(11).toULong()
                         ),
-                        if (cursor.getString(9) == "income") null
+                        if (PaymentTypeData.valueOf(cursor.getString(9)) == PaymentTypeData.Income) null
                         else PaymentMethodData(
                             cursor.getInt(12),
                             cursor.getString(13),
@@ -90,7 +87,7 @@ class HistoryDaoImpl @Inject constructor(
     override suspend fun getAllHistoriesByMonthAndType(
         firstDayOfMonth: Long,
         firstDayOfNextMonth: Long,
-        type: String
+        type: PaymentTypeData
     ): List<HistoryData> {
 
         val sql ="SELECT History.*, " +
@@ -106,7 +103,7 @@ class HistoryDaoImpl @Inject constructor(
                 "ON History.category_id = Category.id " +
                 "LEFT OUTER JOIN PaymentMethod " +
                 "ON IFNULL(History.payment_method_id, -1) = PaymentMethod.id " +
-                "WHERE History.date >= ? AND History.date < ? AND History.amount ${if (type == "income") ">" else "<"} 0 " +
+                "WHERE History.date >= ? AND History.date < ? AND History.amount ${if (type == PaymentTypeData.Income) ">" else "<"} 0 " +
                 "ORDER BY History.date"
 
         return dbHelper.runSQLWithReadableTransaction {
@@ -123,11 +120,11 @@ class HistoryDaoImpl @Inject constructor(
                         cursor.getLong(7),
                         CategoryData(
                             cursor.getInt(8),
-                            cursor.getString(9),
+                            PaymentTypeData.valueOf(cursor.getString(9)),
                             cursor.getString(10),
                             cursor.getString(11).toULong()
                         ),
-                        if (cursor.getString(9) == "income") null
+                        if (PaymentTypeData.valueOf(cursor.getString(9)) == PaymentTypeData.Income) null
                         else PaymentMethodData(
                             cursor.getInt(12),
                             cursor.getString(13),

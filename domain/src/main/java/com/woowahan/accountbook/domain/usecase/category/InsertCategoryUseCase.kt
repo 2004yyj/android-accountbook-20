@@ -1,5 +1,6 @@
 package com.woowahan.accountbook.domain.usecase.category
 
+import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.domain.model.Result
 import com.woowahan.accountbook.domain.repository.CategoryRepository
 import kotlinx.coroutines.Dispatchers
@@ -10,7 +11,7 @@ import java.lang.Exception
 class InsertCategoryUseCase(
     private val repository: CategoryRepository
 ) {
-    operator fun invoke(type: String, name: String, color: ULong) = flow {
+    operator fun invoke(type: PaymentType, name: String, color: ULong) = flow {
         emit(Result.Loading)
         try {
             repository.insertCategory(type, name, color)

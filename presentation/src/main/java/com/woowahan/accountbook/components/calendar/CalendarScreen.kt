@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.woowahan.accountbook.components.appbar.MonthAppBar
 import com.woowahan.accountbook.components.calendar.datelist.AccountBookCalendar
+import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.state.rememberCalendarState
 import com.woowahan.accountbook.ui.theme.*
 import com.woowahan.accountbook.util.*
@@ -38,13 +39,14 @@ fun CalendarScreen(
 
     viewModel.getTotal(
         currentMonth,
-        currentMonth.getForwardMonthMillis()
+        currentMonth.getForwardMonthMillis(),
+        PaymentType.Income
     )
 
     viewModel.getTotal(
         currentMonth,
         currentMonth.getForwardMonthMillis(),
-        "expense"
+        PaymentType.Expense
     )
 
     Scaffold(

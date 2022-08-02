@@ -24,6 +24,7 @@ import com.woowahan.accountbook.components.setting.SettingTabs.CategoryExpenseTa
 import com.woowahan.accountbook.components.setting.item.AddItemFooter
 import com.woowahan.accountbook.components.setting.item.CategoryListItem
 import com.woowahan.accountbook.components.setting.item.PaymentMethodListItem
+import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.navigation.Screen
 import com.woowahan.accountbook.ui.theme.Purple
 import com.woowahan.accountbook.viewmodel.setting.SettingViewModel
@@ -39,8 +40,8 @@ fun SettingScreen(
     val expenseCategories by viewModel.expenseCategories.collectAsState()
 
     viewModel.getAllPaymentMethods()
-    viewModel.getAllCategoriesByType("income")
-    viewModel.getAllCategoriesByType("expense")
+    viewModel.getAllCategoriesByType(PaymentType.Income)
+    viewModel.getAllCategoriesByType(PaymentType.Expense)
 
     Scaffold(
         topBar = {
