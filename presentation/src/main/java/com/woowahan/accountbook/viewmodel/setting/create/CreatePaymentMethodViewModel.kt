@@ -31,6 +31,18 @@ class CreatePaymentMethodViewModel @Inject constructor(
     val isFailure = _isFailure.asStateFlow()
 
     fun getPaymentById(id: Int) {
+        viewModelScope.launch {
+            getPaymentMethodByIdUseCase(id).collect {
+                when(it) {
+                    is Result.Success<PaymentMethod> -> {
+                        _paymentMethod.emit(it.value)
+                    }
+                    is Result.Failure -> {
+                        it.cause.message?.let { message -> _isFailure.emit(message) }
+                    }
+                }
+            }
+        }
     }
 
     fun insertPaymentMethod(name: String) {
