@@ -1,9 +1,14 @@
 package com.woowahan.accountbook.components.setting.create
 
-import androidx.compose.runtime.Composable
-import com.woowahan.accountbook.domain.model.PaymentMethod
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.woowahan.accountbook.components.appbar.BackAppBar
 import com.woowahan.accountbook.components.setting.mode.SettingMode
 import com.woowahan.accountbook.ui.theme.*
 
@@ -33,6 +38,26 @@ fun PaymentMethodCreateScreen(
 
     if (modifyData != null) {
         enterName = modifyData!!.name
+    }
+
+    Scaffold(
+        topBar = {
+            BackAppBar(
+                modifier = Modifier.fillMaxWidth(),
+                title = { Text(text = "결제 수단 ${modeTitle}하기") },
+                onClickBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+    ) {
+        Box(
+            Modifier
+                .padding(it)
+                .fillMaxSize()
+        ) {
+
+        }
     }
 
 }
