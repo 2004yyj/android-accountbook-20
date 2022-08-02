@@ -134,3 +134,35 @@ fun BackAppBar(
         )
     }
 }
+
+@Composable
+fun SimpleAppBar(
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = White,
+    title: @Composable () -> Unit,
+) {
+    Column {
+        TopAppBar(
+            modifier = modifier.fillMaxWidth(),
+            backgroundColor = backgroundColor,
+        ) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Box(modifier = Modifier.align(Alignment.Center)) {
+                    ProvideTextStyle(value = Typography.h6) {
+                        CompositionLocalProvider(
+                            LocalContentAlpha provides ContentAlpha.high,
+                            LocalContentColor provides Purple,
+                            content = title
+                        )
+                    }
+                }
+            }
+        }
+
+        Divider(
+            modifier = Modifier.fillMaxWidth(),
+            thickness = 1.dp,
+            color = Purple
+        )
+    }
+}
