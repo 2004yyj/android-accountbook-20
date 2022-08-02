@@ -68,6 +68,22 @@ class CategoryDaoImpl @Inject constructor(
         }
     }
 
+    override suspend fun getCategoryById(id: Int): CategoryData {
+        val sql = "SELECT * FROM Category WHERE id = ?"
+        return dbHelper.runSQLWithReadableTransaction {
+            val cursor = rawQuery(sql, arrayOf(id.toString()))
+            cursor.moveToFirst()
+            val categoryData = CategoryData(
+                cursor.getInt(0),
+                PaymentTypeData.valueOf(cursor.getString(1)),
+                cursor.getString(2),
+                cursor.getString(3).toULong()
+            )
+            cursor.close()
+            return@runSQLWithReadableTransaction categoryData
+        }
+    }
+
     override suspend fun createCategoryTable() {
         val sql = "CREATE TABLE IF NOT EXISTS Category (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, name TEXT NOT NULL UNIQUE, color TEXT NOT NULL);"
         dbHelper.runSQL {

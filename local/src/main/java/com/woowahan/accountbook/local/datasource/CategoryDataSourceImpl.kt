@@ -23,6 +23,10 @@ class CategoryDataSourceImpl @Inject constructor(
         return dao.getCategoryByName(name).toModel()
     }
 
+    override suspend fun getCategoryById(id: Int): Category {
+        return dao.getCategoryById(id).toModel()
+    }
+
     override suspend fun createCategoryTable() {
         return dao.createCategoryTable()
     }
