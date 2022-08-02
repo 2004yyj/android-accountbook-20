@@ -37,6 +37,12 @@ object PaymentMethodUseCaseModule {
 
     @Provides
     @Singleton
+    fun providesGetPaymentMethodByIdUseCase(repository: PaymentMethodRepository): GetPaymentMethodByIdUseCase {
+        return GetPaymentMethodByIdUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
     fun providesInsertPaymentMethodUseCase(repository: PaymentMethodRepository): InsertPaymentMethodUseCase {
         return InsertPaymentMethodUseCase(repository)
     }

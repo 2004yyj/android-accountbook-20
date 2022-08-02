@@ -43,6 +43,20 @@ class PaymentMethodDaoImpl @Inject constructor(
         }
     }
 
+    override suspend fun getPaymentMethodById(id: Int): PaymentMethodData {
+        val sql = "SELECT * FROM PaymentMethod WHERE id = ?"
+        return dbHelper.runSQLWithReadableTransaction {
+            val cursor = rawQuery(sql, arrayOf(id.toString()))
+            cursor.moveToFirst()
+            val paymentMethodData = PaymentMethodData(
+                cursor.getInt(0),
+                cursor.getString(1),
+            )
+            cursor.close()
+            return@runSQLWithReadableTransaction paymentMethodData
+        }
+    }
+
     override suspend fun createPaymentMethodTable() {
         val sql = "CREATE TABLE IF NOT EXISTS PaymentMethod (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE);"
         dbHelper.runSQL {

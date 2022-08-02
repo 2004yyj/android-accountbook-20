@@ -17,6 +17,10 @@ class PaymentMethodDataSourceImpl @Inject constructor(
         return dao.getPaymentMethodByName(name).toModel()
     }
 
+    override suspend fun getPaymentMethodById(id: Int): PaymentMethod {
+        return dao.getPaymentMethodById(id).toModel()
+    }
+
     override suspend fun createPaymentMethodTable() {
         return dao.createPaymentMethodTable()
     }

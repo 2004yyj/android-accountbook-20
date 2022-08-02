@@ -5,6 +5,7 @@ import com.woowahan.accountbook.domain.model.PaymentMethod
 interface PaymentMethodRepository {
     suspend fun getAllPaymentMethods(): List<PaymentMethod>
     suspend fun getPaymentMethodByName(name: String): PaymentMethod
+    suspend fun getPaymentMethodById(id: Int): PaymentMethod
     suspend fun createPaymentMethodTable()
     suspend fun dropPaymentMethodTable()
     suspend fun insertPaymentMethod(name: String)
