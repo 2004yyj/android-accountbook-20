@@ -149,7 +149,8 @@ fun Main(viewModel: MainViewModel = viewModel()) {
                     ) { navBackStackEntry ->
                         PaymentMethodCreateScreen(
                             navBackStackEntry.arguments?.getString("settingMode") ?: SettingMode.Create.toString(),
-                            navBackStackEntry.arguments?.getInt("id") ?: 0
+                            navBackStackEntry.arguments?.getInt("id") ?: 0,
+                            navController
                         )
                     }
                 }
