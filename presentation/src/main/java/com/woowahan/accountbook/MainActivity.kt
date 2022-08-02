@@ -126,11 +126,11 @@ fun Main(viewModel: MainViewModel = viewModel()) {
                 ) {
                     composable(route = Screen.SettingIndex.route) { SettingScreen(navController) }
                     composable(
-                        route = "${Screen.SettingIndex.CategoryCreate.route}?settingMode={settingMode}?paymentType={paymentType}?id={id}",
+                        route = "${Screen.SettingIndex.CategoryCreate.route}?settingMode={settingMode}&paymentType={paymentType}&id={id}",
                         arguments = listOf(
-                            navArgument("settingMode") { this.type = NavType.StringType },
-                            navArgument("paymentType") { this.type = NavType.StringType },
-                            navArgument("id") { this.type = NavType.IntType },
+                            navArgument("settingMode") { defaultValue = SettingMode.Create.toString() },
+                            navArgument("paymentType") { defaultValue = PaymentType.Income.toString() },
+                            navArgument("id") { defaultValue = 0 },
                         ),
                     ) { navBackStackEntry ->
                         CategoryCreateScreen(
@@ -140,11 +140,11 @@ fun Main(viewModel: MainViewModel = viewModel()) {
                         )
                     }
                     composable(
-                        route = "${Screen.SettingIndex.PaymentMethodCreate.route}?settingMode={settingMode}?id={id}",
+                        route = "${Screen.SettingIndex.PaymentMethodCreate.route}?settingMode={settingMode}&id={id}",
                         arguments = listOf(
-                            navArgument("settingMode") { this.type = NavType.StringType },
-                                    navArgument("id") { this.type = NavType.IntType },
-                        )
+                            navArgument("settingMode") { defaultValue = SettingMode.Create.toString() },
+                            navArgument("id") { defaultValue = 0 },
+                        ),
                     ) { navBackStackEntry ->
                         PaymentMethodCreateScreen(
                             navBackStackEntry.arguments?.getString("settingMode") ?: SettingMode.Create.toString(),
