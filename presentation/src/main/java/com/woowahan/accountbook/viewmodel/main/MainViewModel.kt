@@ -12,6 +12,7 @@ import com.woowahan.accountbook.domain.usecase.category.InsertCategoryUseCase
 import com.woowahan.accountbook.domain.usecase.history.CreateHistoryTableUseCase
 import com.woowahan.accountbook.domain.usecase.history.InsertHistoryUseCase
 import com.woowahan.accountbook.domain.usecase.paymentmethod.CreatePaymentMethodTableUseCase
+import com.woowahan.accountbook.local.helper.DatabaseOpenHelper
 import com.woowahan.accountbook.ui.theme.Blue1
 import com.woowahan.accountbook.util.getBackMonthMillis
 import com.woowahan.accountbook.util.getCurrentMonthFirstDayMillis
@@ -25,11 +26,17 @@ import kotlin.random.Random
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
+    dbHelper: DatabaseOpenHelper,
     private val createCategoryTableUseCase: CreateCategoryTableUseCase,
     private val createPaymentMethodTableUseCase: CreatePaymentMethodTableUseCase,
     private val createHistoryTableUseCase: CreateHistoryTableUseCase,
     private val insertCategoryUseCase: InsertCategoryUseCase
 ): ViewModel() {
+    init {
+        dbHelper.setOnUpgradeListener { oldVersion, newVersion ->
+            createTables()
+        }
+    }
 
     private val _currentMonth =
         MutableStateFlow(
