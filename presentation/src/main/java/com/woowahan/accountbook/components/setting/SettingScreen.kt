@@ -24,6 +24,7 @@ import com.woowahan.accountbook.components.setting.SettingTabs.CategoryExpenseTa
 import com.woowahan.accountbook.components.setting.item.AddItemFooter
 import com.woowahan.accountbook.components.setting.item.CategoryListItem
 import com.woowahan.accountbook.components.setting.item.PaymentMethodListItem
+import com.woowahan.accountbook.components.setting.mode.SettingMode
 import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.navigation.Screen
 import com.woowahan.accountbook.ui.theme.Purple
@@ -57,31 +58,47 @@ fun SettingScreen(
                     SettingListHeader(settingTab.title)
                 }
 
+                val settingMode = SettingMode.Modify
+
                 when (settingTab) {
                     PaymentMethodTab -> {
                         items(paymentMethods) { item ->
-                            PaymentMethodListItem(paymentMethod = item)
+                            PaymentMethodListItem(paymentMethod = item) {
+                                navController.navigate("${Screen.SettingIndex.PaymentMethodCreate.route}?settingMode=$settingMode&id=${item.id}")
+                            }
                         }
                     }
                     CategoryExpenseTab -> {
                         items(expenseCategories) { item ->
-                            CategoryListItem(category = item)
+                            CategoryListItem(category = item) {
+                                navController.navigate("${Screen.SettingIndex.PaymentMethodCreate.route}?settingMode=$settingMode&paymentMode=${PaymentType.Income}&id=${item.id}")
+                            }
                         }
 
                     }
                     CategoryIncomeTab -> {
                         items(incomeCategories) { item ->
-                            CategoryListItem(category = item)
+                            CategoryListItem(category = item) {
+                                navController.navigate("${Screen.SettingIndex.PaymentMethodCreate.route}?settingMode=$settingMode&paymentMode=${PaymentType.Expense}&id=${item.id}")
+                            }
                         }
                     }
                 }
 
                 item {
                     AddItemFooter(settingTab = settingTab) {
-                        if (settingTab == PaymentMethodTab) {
-                            navController.navigate(Screen.SettingIndex.PaymentMethodCreate.route)
-                        } else if (settingTab == CategoryIncomeTab || settingTab == CategoryExpenseTab) {
-                            navController.navigate(Screen.SettingIndex.CategoryCreate.route)
+                        val settingMode = SettingMode.Create
+                        when (settingTab) {
+                            PaymentMethodTab ->
+                                navController.navigate("${Screen.SettingIndex.PaymentMethodCreate.route}?settingMode=$settingMode")
+                            CategoryIncomeTab, CategoryExpenseTab -> {
+                                val type =
+                                    if (settingTab == CategoryIncomeTab)
+                                        PaymentType.Income
+                                    else
+                                        PaymentType.Expense
+                                navController.navigate("${Screen.SettingIndex.CategoryCreate.route}?settingMode=$settingMode&paymentType=$type")
+                            }
                         }
                     }
                 }
