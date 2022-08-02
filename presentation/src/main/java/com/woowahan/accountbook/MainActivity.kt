@@ -119,7 +119,7 @@ fun Main(viewModel: MainViewModel = viewModel()) {
                     route = BottomNavigationRoute.Setting.route,
                     startDestination = Screen.SettingIndex.route
                 ) {
-                    composable(route = Screen.SettingIndex.route) { SettingScreen() }
+                    composable(route = Screen.SettingIndex.route) { SettingScreen(navController) }
                     composable(route = Screen.SettingIndex.CategoryCreate.route) { CategoryCreateScreen() }
                     composable(route = Screen.SettingIndex.PaymentMethodCreate.route) { PaymentMethodCreateScreen() }
                 }
