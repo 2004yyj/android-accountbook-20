@@ -17,6 +17,7 @@ import com.woowahan.accountbook.components.editable.Editable
 import com.woowahan.accountbook.components.setting.mode.SettingMode
 import com.woowahan.accountbook.components.textfield.CustomTextField
 import com.woowahan.accountbook.ui.theme.*
+import com.woowahan.accountbook.viewmodel.setting.create.CreatePaymentMethodViewModel
 
 @Composable
 fun PaymentMethodCreateScreen(

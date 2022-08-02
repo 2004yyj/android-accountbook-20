@@ -1,9 +1,11 @@
-package com.woowahan.accountbook.components.setting.create
+package com.woowahan.accountbook.viewmodel.setting.create
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.woowahan.accountbook.domain.model.Category
 import com.woowahan.accountbook.domain.model.PaymentMethod
 import com.woowahan.accountbook.domain.model.Result
+import com.woowahan.accountbook.domain.usecase.paymentmethod.GetPaymentMethodByIdUseCase
 import com.woowahan.accountbook.domain.usecase.paymentmethod.InsertPaymentMethodUseCase
 import com.woowahan.accountbook.domain.usecase.paymentmethod.UpdatePaymentMethodUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,6 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreatePaymentMethodViewModel @Inject constructor(
+    private val getPaymentMethodByIdUseCase: GetPaymentMethodByIdUseCase,
     private val insertPaymentMethodUseCase: InsertPaymentMethodUseCase,
     private val updatePaymentMethodUseCase: UpdatePaymentMethodUseCase
 ) : ViewModel() {
@@ -24,8 +27,10 @@ class CreatePaymentMethodViewModel @Inject constructor(
     private val _paymentMethod = MutableStateFlow<PaymentMethod?>(null)
     val paymentMethod = _paymentMethod.asStateFlow()
 
-    fun getPaymentById(id: Int) {
+    private val _isFailure = MutableStateFlow("")
+    val isFailure = _isFailure.asStateFlow()
 
+    fun getPaymentById(id: Int) {
     }
 
     fun insertPaymentMethod(name: String) {
