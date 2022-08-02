@@ -126,22 +126,30 @@ fun Main(viewModel: MainViewModel = viewModel()) {
                 ) {
                     composable(route = Screen.SettingIndex.route) { SettingScreen(navController) }
                     composable(
-                        route = "${Screen.SettingIndex.CategoryCreate.route}?settingMode={settingMode}?paymentType={paymentType}",
+                        route = "${Screen.SettingIndex.CategoryCreate.route}?settingMode={settingMode}?paymentType={paymentType}?id={id}",
                         arguments = listOf(
                             navArgument("settingMode") { this.type = NavType.StringType },
-                            navArgument("paymentType") { this.type = NavType.StringType }
+                            navArgument("paymentType") { this.type = NavType.StringType },
+                            navArgument("id") { this.type = NavType.IntType },
                         ),
                     ) { navBackStackEntry ->
                         CategoryCreateScreen(
                             navBackStackEntry.arguments?.getString("settingMode") ?: SettingMode.Create.toString(),
-                            navBackStackEntry.arguments?.getString("paymentType") ?: PaymentType.Nothing.toString()
+                            navBackStackEntry.arguments?.getString("paymentType") ?: PaymentType.Nothing.toString(),
+                            navBackStackEntry.arguments?.getInt("id") ?: 0
                         )
                     }
                     composable(
-                        route = "${Screen.SettingIndex.PaymentMethodCreate.route}?settingMode={settingMode}",
-                        arguments = listOf(navArgument("settingMode") { this.type = NavType.StringType })
+                        route = "${Screen.SettingIndex.PaymentMethodCreate.route}?settingMode={settingMode}?id={id}",
+                        arguments = listOf(
+                            navArgument("settingMode") { this.type = NavType.StringType },
+                                    navArgument("id") { this.type = NavType.IntType },
+                        )
                     ) { navBackStackEntry ->
-                        PaymentMethodCreateScreen(navBackStackEntry.arguments?.getString("settingMode") ?: SettingMode.Create.toString())
+                        PaymentMethodCreateScreen(
+                            navBackStackEntry.arguments?.getString("settingMode") ?: SettingMode.Create.toString(),
+                            navBackStackEntry.arguments?.getInt("id") ?: 0
+                        )
                     }
                 }
             }
