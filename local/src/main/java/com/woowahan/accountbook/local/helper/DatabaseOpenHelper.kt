@@ -11,6 +11,20 @@ class DatabaseOpenHelper(
     version: Int
 ): SQLiteOpenHelper(context, dbName, null, version) {
     init { writableDatabase }
+    private lateinit var onUpgradeListener: OnUpgradeListener
+    fun setOnUpgradeListener(onUpgrade: (oldVersion: Int, newVersion: Int) -> Unit) {
+        onUpgradeListener = object : OnUpgradeListener {
+            override fun onUpgrade(oldVersion: Int, newVersion: Int) {
+                onUpgrade(oldVersion, newVersion)
+            }
+        }
+    }
     override fun onCreate(db: SQLiteDatabase?) {}
-    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {}
+    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        onUpgradeListener.onUpgrade(oldVersion, newVersion)
+    }
+}
+
+private interface OnUpgradeListener {
+    fun onUpgrade(oldVersion: Int, newVersion: Int)
 }
