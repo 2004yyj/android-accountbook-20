@@ -34,14 +34,14 @@
 
 ## Github Branch 구조
 |title|description|
-|:---:|:---------:|
+|:---------:|:---------:|
 |main|현재 릴리즈 된 코드의 브랜치|
-|release/<version>|릴리즈를 준비하는 브랜치|
+|release|릴리즈를 준비하는 브랜치|
 |dev|개발용으로 사용하는 브랜치|
 |hotfix|릴리즈 완료 이후 버그 발생 시 사용하는 브랜치|
-|feature/<name>|기능별 개발 시 사용하는 브랜치|
-|fix/<name>|버그 수정 시 사용하는 브랜치|
-|add/<name>|기능 추가 시 사용하는 브랜치|
+|feature|기능별 개발 시 사용하는 브랜치|
+|fix|버그 수정 시 사용하는 브랜치|
+|add|기능 추가 시 사용하는 브랜치|
 
 ## 개발자
 |<img src="https://github.com/2004yyj.png" width="200"/>|
