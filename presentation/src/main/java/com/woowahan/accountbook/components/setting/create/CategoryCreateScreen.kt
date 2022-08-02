@@ -58,6 +58,13 @@ fun CategoryCreateScreen(
     var selectedColor by remember { mutableStateOf(if (paymentType == PaymentType.Income) Olive1 else Blue1) }
 
     val modifyData by viewModel.category.collectAsState()
+    val isSuccess by viewModel.isSuccess.collectAsState()
+
+    LaunchedEffect(key1 = isSuccess) {
+        if (isSuccess.isNotEmpty()) {
+            navController.popBackStack()
+        }
+    }
 
     if (settingMode == SettingMode.Modify) {
         viewModel.getCategoryById(id)
@@ -118,22 +125,34 @@ fun CategoryCreateScreen(
                 }
             }
 
-            Button(
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Yellow,
-                    disabledBackgroundColor = Yellow80
-                ),
-                enabled = enterName.isNotEmpty(),
-                shape = SubmitShape,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-                    .align(Alignment.BottomCenter),
-                onClick = {
-                }
+            Row(
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 16.dp)
             ) {
-                Text(text = "${modeTitle}하기", color = White)
+                Button(
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Yellow,
+                        disabledBackgroundColor = Yellow80
+                    ),
+                    enabled = enterName.isNotEmpty(),
+                    shape = SubmitShape,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    onClick = {
+                        if (settingMode == SettingMode.Create) {
+                            viewModel.insertCategory(paymentType, enterName, selectedColor.value)
+                        } else {
+                            viewModel.updateCategory(id, paymentType, enterName, selectedColor.value)
+                        }
+                    }
+                ) {
+                    Text(text = "${modeTitle}하기", color = White)
+                }
             }
+
         }
     }
 
