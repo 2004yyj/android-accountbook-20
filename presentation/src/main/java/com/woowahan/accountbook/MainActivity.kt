@@ -136,7 +136,8 @@ fun Main(viewModel: MainViewModel = viewModel()) {
                         CategoryCreateScreen(
                             navBackStackEntry.arguments?.getString("settingMode") ?: SettingMode.Create.toString(),
                             navBackStackEntry.arguments?.getString("paymentType") ?: PaymentType.Nothing.toString(),
-                            navBackStackEntry.arguments?.getInt("id") ?: 0
+                            navBackStackEntry.arguments?.getInt("id") ?: 0,
+                            navController
                         )
                     }
                     composable(
