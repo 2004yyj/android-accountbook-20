@@ -13,7 +13,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.core.os.bundleOf
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.woowahan.accountbook.components.appbar.SimpleAppBar
 import com.woowahan.accountbook.components.setting.header.SettingListHeader
 import com.woowahan.accountbook.components.setting.SettingTabs.PaymentMethodTab
@@ -22,12 +24,14 @@ import com.woowahan.accountbook.components.setting.SettingTabs.CategoryExpenseTa
 import com.woowahan.accountbook.components.setting.item.AddItemFooter
 import com.woowahan.accountbook.components.setting.item.CategoryListItem
 import com.woowahan.accountbook.components.setting.item.PaymentMethodListItem
+import com.woowahan.accountbook.navigation.Screen
 import com.woowahan.accountbook.ui.theme.Purple
 import com.woowahan.accountbook.viewmodel.setting.SettingViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SettingScreen(
+    navController: NavController,
     viewModel: SettingViewModel = hiltViewModel()
 ) {
     val paymentMethods by viewModel.paymentMethods.collectAsState()
@@ -73,7 +77,11 @@ fun SettingScreen(
 
                 item {
                     AddItemFooter(settingTab = settingTab) {
-                        //* OnClick *//
+                        if (settingTab == PaymentMethodTab) {
+                            navController.navigate(Screen.SettingIndex.PaymentMethodCreate.route)
+                        } else if (settingTab == CategoryIncomeTab || settingTab == CategoryExpenseTab) {
+                            navController.navigate(Screen.SettingIndex.CategoryCreate.route)
+                        }
                     }
                 }
 
