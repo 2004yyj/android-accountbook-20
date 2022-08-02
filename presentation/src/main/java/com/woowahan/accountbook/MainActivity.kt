@@ -7,7 +7,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -15,14 +16,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.*
+import androidx.navigation.navArgument
 import com.woowahan.accountbook.components.calendar.CalendarScreen
 import com.woowahan.accountbook.components.history.HistoryScreen
 import com.woowahan.accountbook.components.history.create.HistoryCreateScreen
 import com.woowahan.accountbook.components.setting.SettingScreen
 import com.woowahan.accountbook.components.setting.create.CategoryCreateScreen
 import com.woowahan.accountbook.components.setting.create.PaymentMethodCreateScreen
+import com.woowahan.accountbook.components.setting.mode.SettingMode
 import com.woowahan.accountbook.components.statistics.StatisticsScreen
+import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.navigation.BottomNavigationRoute
 import com.woowahan.accountbook.navigation.Screen
 import com.woowahan.accountbook.ui.theme.AccountBookTheme
@@ -120,8 +125,24 @@ fun Main(viewModel: MainViewModel = viewModel()) {
                     startDestination = Screen.SettingIndex.route
                 ) {
                     composable(route = Screen.SettingIndex.route) { SettingScreen(navController) }
-                    composable(route = Screen.SettingIndex.CategoryCreate.route) { CategoryCreateScreen() }
-                    composable(route = Screen.SettingIndex.PaymentMethodCreate.route) { PaymentMethodCreateScreen() }
+                    composable(
+                        route = "${Screen.SettingIndex.CategoryCreate.route}?settingMode={settingMode}?paymentType={paymentType}",
+                        arguments = listOf(
+                            navArgument("settingMode") { this.type = NavType.StringType },
+                            navArgument("paymentType") { this.type = NavType.StringType }
+                        ),
+                    ) { navBackStackEntry ->
+                        CategoryCreateScreen(
+                            navBackStackEntry.arguments?.getString("settingMode") ?: SettingMode.Create.toString(),
+                            navBackStackEntry.arguments?.getString("paymentType") ?: PaymentType.Nothing.toString()
+                        )
+                    }
+                    composable(
+                        route = "${Screen.SettingIndex.PaymentMethodCreate.route}?settingMode={settingMode}",
+                        arguments = listOf(navArgument("settingMode") { this.type = NavType.StringType })
+                    ) { navBackStackEntry ->
+                        PaymentMethodCreateScreen(navBackStackEntry.arguments?.getString("settingMode") ?: SettingMode.Create.toString())
+                    }
                 }
             }
         }
