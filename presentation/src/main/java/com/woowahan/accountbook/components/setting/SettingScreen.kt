@@ -58,21 +58,29 @@ fun SettingScreen(
                     SettingListHeader(settingTab.title)
                 }
 
+                val settingMode = SettingMode.Modify
+
                 when (settingTab) {
                     PaymentMethodTab -> {
                         items(paymentMethods) { item ->
-                            PaymentMethodListItem(paymentMethod = item)
+                            PaymentMethodListItem(paymentMethod = item) {
+                                navController.navigate("${Screen.SettingIndex.PaymentMethodCreate.route}?settingMode=$settingMode&id=${item.id}")
+                            }
                         }
                     }
                     CategoryExpenseTab -> {
                         items(expenseCategories) { item ->
-                            CategoryListItem(category = item)
+                            CategoryListItem(category = item) {
+                                navController.navigate("${Screen.SettingIndex.PaymentMethodCreate.route}?settingMode=$settingMode&paymentMode=${PaymentType.Income}&id=${item.id}")
+                            }
                         }
 
                     }
                     CategoryIncomeTab -> {
                         items(incomeCategories) { item ->
-                            CategoryListItem(category = item)
+                            CategoryListItem(category = item) {
+                                navController.navigate("${Screen.SettingIndex.PaymentMethodCreate.route}?settingMode=$settingMode&paymentMode=${PaymentType.Expense}&id=${item.id}")
+                            }
                         }
                     }
                 }
