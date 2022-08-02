@@ -1,5 +1,6 @@
 package com.woowahan.accountbook.components.setting.item
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
@@ -16,9 +17,14 @@ import com.woowahan.accountbook.ui.theme.PurpleLight40
 
 @Composable
 fun CategoryListItem(
-    category: Category
+    category: Category,
+    onClick: () -> Unit = {}
 ) {
-    Column(Modifier.padding(horizontal = 16.dp)) {
+    Column(
+        Modifier
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp)
+    ) {
         Spacer(modifier = Modifier.height(10.dp))
         Box(Modifier.fillMaxSize()) {
             Text(
