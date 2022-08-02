@@ -27,6 +27,7 @@ import com.woowahan.accountbook.components.editable.Editable
 import com.woowahan.accountbook.components.history.create.radio.TypeRadioButton
 import com.woowahan.accountbook.components.spinner.CustomDropDownMenu
 import com.woowahan.accountbook.components.textfield.CustomTextField
+import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.ui.theme.*
 import com.woowahan.accountbook.util.*
 import com.woowahan.accountbook.viewmodel.history.create.HistoryCreateViewModel
@@ -44,8 +45,7 @@ fun HistoryCreateScreen(
     var addingPaymentMethod by remember { mutableStateOf("") }
     var addingCategory by remember { mutableStateOf("") }
 
-    var selectedIncome by remember { mutableStateOf(true) }
-    var selectedExpense by remember { mutableStateOf(false) }
+    var selectedType by remember { mutableStateOf(PaymentType.Income) }
     var selectedDate by remember { mutableStateOf(System.currentTimeMillis().getCurrentDateMidNightMillis()) }
     var enterMoney by remember { mutableStateOf(0L) }
     var enterContent by remember { mutableStateOf("") }
@@ -65,7 +65,7 @@ fun HistoryCreateScreen(
     selectedCategory = isSuccessInsertCategory
 
     viewModel.getPaymentMethods()
-    viewModel.getCategories(if (selectedIncome) "income" else "expense")
+    viewModel.getCategories(selectedType)
 
     if (isSuccess) {
         LaunchedEffect(true) {
@@ -112,15 +112,16 @@ fun HistoryCreateScreen(
                         modifier = Modifier.weight(1f),
                         title = { Text("수입") },
                         shape = RadioLeftOption,
-                        checked = selectedIncome,
+                        checked = selectedType == PaymentType.Income,
                         onCheckedChange = {
                             if (it) {
-                                selectedIncome = it
-                                selectedExpense = !it
+                                selectedType = PaymentType.Income
                                 selectedPaymentMethod = ""
                                 selectedCategory = ""
                                 addingPaymentMethod = ""
                                 addingCategory = ""
+                            } else {
+                                selectedType = PaymentType.Expense
                             }
                         }
                     )
@@ -129,15 +130,16 @@ fun HistoryCreateScreen(
                         modifier = Modifier.weight(1f),
                         title = { Text("지출") },
                         shape = RadioRightOption,
-                        checked = selectedExpense,
+                        checked = selectedType == PaymentType.Expense,
                         onCheckedChange = {
                             if (it) {
-                                selectedExpense = it
-                                selectedIncome = !it
+                                selectedType = PaymentType.Expense
                                 selectedPaymentMethod = ""
                                 selectedCategory = ""
                                 addingPaymentMethod = ""
                                 addingCategory = ""
+                            } else {
+                                selectedType = PaymentType.Income
                             }
                         }
                     )
@@ -191,7 +193,7 @@ fun HistoryCreateScreen(
                     )
                 }
 
-                if (selectedExpense) {
+                if (selectedType == PaymentType.Expense) {
                     Editable(
                         text = { Text(text = "결제 수단") }
                     ) {
@@ -267,7 +269,7 @@ fun HistoryCreateScreen(
                             IconButton(
                                 modifier = Modifier.align(Alignment.CenterEnd),
                                 onClick = {
-                                    viewModel.insertCategory(if (selectedIncome) "income" else "expense", addingCategory)
+                                    viewModel.insertCategory(selectedType, addingCategory)
                                     addingCategory = ""
                                     expendedCategory = !expendedCategory
                                 }
@@ -300,18 +302,17 @@ fun HistoryCreateScreen(
                     backgroundColor = Yellow,
                     disabledBackgroundColor = Yellow80
                 ),
-                enabled = enterMoney != 0L && (selectedPaymentMethod != "" || selectedIncome),
+                enabled = enterMoney != 0L && (selectedType == PaymentType.Income || selectedPaymentMethod != ""),
                 shape = SubmitShape,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp)
                     .align(Alignment.BottomCenter),
                 onClick = {
-                    val type = if (selectedIncome) "income" else "expense"
                     viewModel.insertHistory(
-                        type = type,
+                        type = selectedType,
                         date = selectedDate,
-                        money = if (selectedIncome) enterMoney else -enterMoney,
+                        money = if (selectedType == PaymentType.Income) enterMoney else -enterMoney,
                         content = enterContent,
                         paymentMethod = paymentMethods.find { it.name == selectedPaymentMethod },
                         category = categories.find { it.name == selectedCategory }

@@ -1,10 +1,10 @@
 package com.woowahan.accountbook.viewmodel
 
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.woowahan.accountbook.components.graph.entry.color.DonutEntry
+import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.domain.model.Result
 import com.woowahan.accountbook.domain.model.Statistic
 import com.woowahan.accountbook.domain.usecase.history.GetAllStatisticsByCategoryTypeUseCase
@@ -32,7 +32,7 @@ class StatisticsViewModel @Inject constructor(
 
     fun getTotalPayExpense(firstDayOfMonth: Long, firstDayOfNextMonth: Long) {
         viewModelScope.launch {
-            getTotalPayByMonthAndTypeUseCase(firstDayOfMonth, firstDayOfNextMonth, "expense").collect {
+            getTotalPayByMonthAndTypeUseCase(firstDayOfMonth, firstDayOfNextMonth, PaymentType.Expense).collect {
                 when(it) {
                     is Result.Success<Long> -> {
                         _total.emit(it.value)

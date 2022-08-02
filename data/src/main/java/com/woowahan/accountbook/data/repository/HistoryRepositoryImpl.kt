@@ -1,10 +1,7 @@
 package com.woowahan.accountbook.data.repository
 
 import com.woowahan.accountbook.data.datasource.HistoryDataSource
-import com.woowahan.accountbook.domain.model.Category
-import com.woowahan.accountbook.domain.model.History
-import com.woowahan.accountbook.domain.model.PaymentMethod
-import com.woowahan.accountbook.domain.model.Statistic
+import com.woowahan.accountbook.domain.model.*
 import com.woowahan.accountbook.domain.repository.HistoryRepository
 import javax.inject.Inject
 
@@ -14,7 +11,7 @@ class HistoryRepositoryImpl @Inject constructor(
     override suspend fun getTotalPayByMonthAndType(
         firstDayOfMonth: Long,
         firstDayOfNextMonth: Long,
-        type: String
+        type: PaymentType
     ): Long {
         return dataSource.getTotalPayByMonthAndType(firstDayOfMonth, firstDayOfNextMonth, type)
     }
@@ -29,7 +26,7 @@ class HistoryRepositoryImpl @Inject constructor(
     override suspend fun getAllHistoriesByMonthAndType(
         firstDayOfMonth: Long,
         firstDayOfNextMonth: Long,
-        type: String
+        type: PaymentType
     ): List<History> {
         return dataSource.getAllHistoriesByMonthAndType(firstDayOfMonth, firstDayOfNextMonth, type)
     }

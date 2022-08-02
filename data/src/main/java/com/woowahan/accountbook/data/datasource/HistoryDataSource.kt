@@ -1,14 +1,11 @@
 package com.woowahan.accountbook.data.datasource
 
-import com.woowahan.accountbook.domain.model.Category
-import com.woowahan.accountbook.domain.model.History
-import com.woowahan.accountbook.domain.model.PaymentMethod
-import com.woowahan.accountbook.domain.model.Statistic
+import com.woowahan.accountbook.domain.model.*
 
 interface HistoryDataSource {
-    suspend fun getTotalPayByMonthAndType(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: String): Long
+    suspend fun getTotalPayByMonthAndType(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: PaymentType): Long
     suspend fun getAllHistoriesByMonthAndType(firstDayOfMonth: Long, firstDayOfNextMonth: Long): List<History>
-    suspend fun getAllHistoriesByMonthAndType(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: String): List<History>
+    suspend fun getAllHistoriesByMonthAndType(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: PaymentType): List<History>
     suspend fun createHistoryTable()
     suspend fun dropHistoryTable()
     suspend fun insertHistory(date: Long, amount: Long, content: String, category: Category, paymentMethod: PaymentMethod?)

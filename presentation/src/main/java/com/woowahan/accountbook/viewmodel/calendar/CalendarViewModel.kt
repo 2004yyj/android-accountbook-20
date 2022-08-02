@@ -3,13 +3,13 @@ package com.woowahan.accountbook.viewmodel.calendar
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.woowahan.accountbook.domain.model.History
+import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.domain.model.Result
 import com.woowahan.accountbook.domain.usecase.history.GetAllHistoriesByMonthAndTypeUseCase
 import com.woowahan.accountbook.domain.usecase.history.GetTotalPayByMonthAndTypeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,15 +27,15 @@ class CalendarViewModel @Inject constructor(
     private val _expenseTotal = MutableStateFlow<Long>(0)
     val expenseTotal = _expenseTotal.asStateFlow()
 
-    fun getTotal(currentMonth: Long, nextMonth: Long, type: String = "income") {
+    fun getTotal(currentMonth: Long, nextMonth: Long, type: PaymentType) {
         viewModelScope.launch {
             getTotalPayByMonthAndTypeUseCase(currentMonth, nextMonth, type).collect {
                 when(it) {
                     is Result.Success<Long> -> {
-                        if (type == "income")
-                            _incomeTotal.emit(it.value)
-                        else
-                            _expenseTotal.emit(it.value)
+                        when(type) {
+                            PaymentType.Income -> _incomeTotal.emit(it.value)
+                            PaymentType.Expense -> _expenseTotal .emit(it.value)
+                        }
                     }
                 }
             }
@@ -44,7 +44,7 @@ class CalendarViewModel @Inject constructor(
 
     fun getAllHistoriesByMonth(currentMonth: Long, nextMonth: Long) {
         viewModelScope.launch {
-            getAllHistoriesByMonthAndTypeUseCase(currentMonth, nextMonth, "all").collect {
+            getAllHistoriesByMonthAndTypeUseCase(currentMonth, nextMonth, PaymentType.All).collect {
                 when(it) {
                     is Result.Success<List<History>> -> {
                         _history.emit(it.value)

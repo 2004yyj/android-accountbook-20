@@ -6,12 +6,12 @@ import com.woowahan.accountbook.domain.model.PaymentType
 
 fun CategoryData.toModel(): Category {
     return Category(
-        id, PaymentType.valueOf(type), name, color
+        id, type.toModel(), name, color
     )
 }
 
 fun Category.toEntity(): CategoryData {
     return CategoryData(
-        id, type.toString(), name, color
+        id, type.toEntity(), name, color
     )
 }

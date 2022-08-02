@@ -1,5 +1,6 @@
 package com.woowahan.accountbook.domain.usecase.history
 
+import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.domain.model.Result
 import com.woowahan.accountbook.domain.repository.HistoryRepository
 import kotlinx.coroutines.Dispatchers
@@ -10,11 +11,11 @@ import java.lang.Exception
 class GetAllHistoriesByMonthAndTypeUseCase(
     private val repository: HistoryRepository
 ) {
-    operator fun invoke(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: String = "") = flow {
+    operator fun invoke(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: PaymentType) = flow {
         try {
             val list = when (type) {
-                "all" -> repository.getAllHistoriesByMonthAndType(firstDayOfMonth, firstDayOfNextMonth)
-                "income", "expense" -> repository.getAllHistoriesByMonthAndType(firstDayOfMonth, firstDayOfNextMonth, type)
+                PaymentType.All -> repository.getAllHistoriesByMonthAndType(firstDayOfMonth, firstDayOfNextMonth)
+                PaymentType.Expense, PaymentType.Income -> repository.getAllHistoriesByMonthAndType(firstDayOfMonth, firstDayOfNextMonth, type)
                 else -> emptyList()
             }
             emit(Result.Success(list))

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.woowahan.accountbook.domain.model.Category
 import com.woowahan.accountbook.domain.model.PaymentMethod
+import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.domain.model.Result
 import com.woowahan.accountbook.domain.usecase.category.GetAllCategoriesUseCase
 import com.woowahan.accountbook.domain.usecase.category.GetAllCategoryByTypeUseCase
@@ -50,15 +51,14 @@ class SettingViewModel @Inject constructor(
         }
     }
 
-    fun getAllCategoriesByType(type: String) {
+    fun getAllCategoriesByType(type: PaymentType) {
         viewModelScope.launch {
             getAllCategoryByTypeUseCase(type).collect {
                 when(it) {
                     is Result.Success<List<Category>> -> {
-                        if (type == "expense") {
-                            _expenseCategories.emit(it.value)
-                        } else {
-                            _incomeCategories.emit(it.value)
+                        when(type) {
+                            PaymentType.Income -> _incomeCategories.emit(it.value)
+                            PaymentType.Expense -> _expenseCategories.emit(it.value)
                         }
                     }
                     is Result.Failure -> {

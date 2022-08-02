@@ -24,6 +24,7 @@ import com.woowahan.accountbook.components.checkbox.TypeCheckbox
 import com.woowahan.accountbook.components.history.list.HistoryListHeader
 import com.woowahan.accountbook.components.history.list.HistoryListItem
 import com.woowahan.accountbook.domain.model.History
+import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.navigation.Screen
 import com.woowahan.accountbook.ui.theme.*
 import com.woowahan.accountbook.util.*
@@ -63,10 +64,10 @@ fun HistoryScreen(
             currentMonth,
             currentMonth.getForwardMonthMillis(),
             when {
-                isCheckedIncome && isCheckedExpense -> "all"
-                isCheckedIncome && !isCheckedExpense -> "income"
-                isCheckedExpense && !isCheckedIncome -> "expense"
-                else -> ""
+                isCheckedIncome && isCheckedExpense -> PaymentType.All
+                isCheckedIncome && !isCheckedExpense -> PaymentType.Income
+                isCheckedExpense && !isCheckedIncome -> PaymentType.Expense
+                else -> PaymentType.Nothing
             },
             refreshState
         )
@@ -74,14 +75,14 @@ fun HistoryScreen(
         viewModel.getTotalPay(
             currentMonth,
             currentMonth.getForwardMonthMillis(),
-            "income",
+            PaymentType.Income,
             refreshState
         )
 
         viewModel.getTotalPay(
             currentMonth,
             currentMonth.getForwardMonthMillis(),
-            "expense",
+            PaymentType.Expense,
             refreshState
         )
     }

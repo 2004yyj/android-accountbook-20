@@ -2,8 +2,10 @@ package com.woowahan.accountbook.local.datasource
 
 import com.woowahan.accountbook.data.datasource.CategoryDataSource
 import com.woowahan.accountbook.data.local.CategoryDao
+import com.woowahan.accountbook.data.mapper.toEntity
 import com.woowahan.accountbook.data.mapper.toModel
 import com.woowahan.accountbook.domain.model.Category
+import com.woowahan.accountbook.domain.model.PaymentType
 import javax.inject.Inject
 
 class CategoryDataSourceImpl @Inject constructor(
@@ -13,8 +15,8 @@ class CategoryDataSourceImpl @Inject constructor(
         return dao.getAllCategories().map { it.toModel() }
     }
 
-    override suspend fun getAllCategoryByType(type: String): List<Category> {
-        return dao.getAllCategoryByType(type).map { it.toModel() }
+    override suspend fun getAllCategoryByType(type: PaymentType): List<Category> {
+        return dao.getAllCategoryByType(type.toString()).map { it.toModel() }
     }
 
     override suspend fun getCategoryByName(name: String): Category {
@@ -29,12 +31,12 @@ class CategoryDataSourceImpl @Inject constructor(
         return dao.dropCategoryTable()
     }
 
-    override suspend fun insertCategory(type: String, name: String, color: ULong) {
-        return dao.insertCategory(type, name, color)
+    override suspend fun insertCategory(type: PaymentType, name: String, color: ULong) {
+        return dao.insertCategory(type.toEntity(), name, color)
     }
 
-    override suspend fun updateCategory(id: Int, type: String, name: String, color: ULong) {
-        return dao.updateCategory(id, type, name, color)
+    override suspend fun updateCategory(id: Int, type: PaymentType, name: String, color: ULong) {
+        return dao.updateCategory(id, type.toEntity(), name, color)
     }
 
     override suspend fun deleteCategory(id: Int) {

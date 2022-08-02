@@ -5,8 +5,8 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.woowahan.accountbook.domain.model.Category
 import com.woowahan.accountbook.domain.model.History
+import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.domain.model.Result
 import com.woowahan.accountbook.domain.usecase.history.DeleteAllHistoryUseCase
 import com.woowahan.accountbook.domain.usecase.history.GetAllHistoriesByMonthAndTypeUseCase
@@ -57,7 +57,7 @@ class HistoryViewModel @Inject constructor(
         }
     }
 
-    fun getHistory(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: String = "income", refreshState: Boolean = false) {
+    fun getHistory(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: PaymentType, refreshState: Boolean = false) {
         viewModelScope.launch {
             if (refreshState) {
                 _isRefreshing.emit(true)
@@ -70,6 +70,7 @@ class HistoryViewModel @Inject constructor(
                     }
                     is Result.Failure -> {
                         it.cause.message?.let { message -> _isFailure.emit(message) }
+                        it.cause.printStackTrace()
                         _isRefreshing.emit(false)
                     }
                 }
@@ -77,7 +78,7 @@ class HistoryViewModel @Inject constructor(
         }
     }
 
-    fun getTotalPay(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: String, refreshState: Boolean = false) {
+    fun getTotalPay(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: PaymentType, refreshState: Boolean = false) {
         viewModelScope.launch {
             if (refreshState) {
                 _isRefreshing.emit(true)
@@ -89,8 +90,10 @@ class HistoryViewModel @Inject constructor(
             ).collect {
                 when (it) {
                     is Result.Success<Long> -> {
-                        if (type == "income") _incomeTotal.emit(it.value.toInt())
-                        else if (type == "expense") _expenseTotal.emit(it.value.toInt())
+                        when(type) {
+                            PaymentType.Income -> _incomeTotal.emit(it.value.toInt())
+                            PaymentType.Expense -> _expenseTotal.emit(it.value.toInt())
+                        }
                         _isRefreshing.emit(false)
                     }
                     is Result.Failure -> {

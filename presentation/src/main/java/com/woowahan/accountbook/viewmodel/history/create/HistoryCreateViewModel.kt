@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.woowahan.accountbook.domain.model.Category
 import com.woowahan.accountbook.domain.model.PaymentMethod
+import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.domain.model.Result
 import com.woowahan.accountbook.domain.usecase.category.GetCategoryByNameUseCase
 import com.woowahan.accountbook.domain.usecase.category.GetAllCategoryByTypeUseCase
@@ -47,7 +48,7 @@ class HistoryCreateViewModel @Inject constructor(
     private val _isInsertPaymentMethodSuccess = MutableStateFlow("")
     val isSuccessInsertPaymentMethod = _isInsertPaymentMethodSuccess.asStateFlow()
 
-    fun insertCategory(type: String, name: String) {
+    fun insertCategory(type: PaymentType, name: String) {
         viewModelScope.launch {
             val randomColor = Color(
                 Random.nextInt(256),
@@ -97,7 +98,7 @@ class HistoryCreateViewModel @Inject constructor(
         }
     }
 
-    fun getCategories(type: String) {
+    fun getCategories(type: PaymentType) {
         viewModelScope.launch {
             getAllCategoryByTypeUseCase(type).collect {
                 when(it) {
@@ -111,7 +112,7 @@ class HistoryCreateViewModel @Inject constructor(
     }
 
     fun insertHistory(
-        type: String,
+        type: PaymentType,
         date: Long,
         money: Long,
         content: String,
@@ -121,7 +122,12 @@ class HistoryCreateViewModel @Inject constructor(
         viewModelScope.launch {
             val filteredContent = content.ifEmpty { "무제" }
             if (category == null) {
-                getCategoryByNameUseCase(if (type == "income") "미분류/수입" else "미분류/지출").collect {
+                val name = when (type) {
+                    PaymentType.Expense -> "미분류/지출"
+                    PaymentType.Income -> "미분류/수입"
+                    else -> ""
+                }
+                getCategoryByNameUseCase(name).collect {
                     if (it is Result.Success<Category>) {
                         insertHistoryUseCase(
                             date,
