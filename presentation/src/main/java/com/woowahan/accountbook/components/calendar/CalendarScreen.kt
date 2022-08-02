@@ -196,9 +196,17 @@ fun CalendarScreen(
                                         )
                                     if (expense != 0L)
                                         Text(
-                                            text = (expense * -1).toMoneyString(),
+                                            text = expense.toMoneyString(),
                                             fontSize = 10.sp,
                                             color = Error,
+                                            maxLines = 1,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    if ((income != 0L || expense != 0L) && income + expense != 0L)
+                                        Text(
+                                            text = (expense + income).toMoneyString(),
+                                            fontSize = 10.sp,
+                                            color = Purple,
                                             maxLines = 1,
                                             fontWeight = FontWeight.Bold
                                         )
