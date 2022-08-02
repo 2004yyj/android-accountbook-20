@@ -1,16 +1,21 @@
 package com.woowahan.accountbook.components.setting.create
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.woowahan.accountbook.components.appbar.BackAppBar
+import com.woowahan.accountbook.components.editable.Editable
 import com.woowahan.accountbook.components.setting.mode.SettingMode
+import com.woowahan.accountbook.components.textfield.CustomTextField
 import com.woowahan.accountbook.ui.theme.*
 
 @Composable
@@ -57,6 +62,50 @@ fun PaymentMethodCreateScreen(
                 .padding(it)
                 .fillMaxSize()
         ) {
+            Column(modifier = Modifier.align(Alignment.TopCenter)) {
+                Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+                    Editable(
+                        text = { Text(text = "이름") }
+                    ) {
+                        CustomTextField(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            placeholder = { Text(text = "입력하세요", fontWeight = FontWeight.Bold) },
+                            singleLine = true,
+                            value = enterName,
+                            onValueChange = { enterName = it },
+                        )
+                    }
+                }
+            }
+
+            Row(
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 16.dp)
+            ) {
+                Button(
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Yellow,
+                        disabledBackgroundColor = Yellow80
+                    ),
+                    enabled = enterName.isNotEmpty(),
+                    shape = SubmitShape,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    onClick = {
+                        if (settingMode == SettingMode.Create) {
+                            viewModel.insertPaymentMethod(enterName)
+                        } else {
+                            viewModel.updatePaymentMethod(id, enterName)
+                        }
+                    }
+                ) {
+                    Text(text = "${modeTitle}하기", color = White)
+                }
+            }
 
         }
     }
