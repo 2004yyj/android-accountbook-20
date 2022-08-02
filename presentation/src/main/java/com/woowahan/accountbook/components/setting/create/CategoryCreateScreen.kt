@@ -1,6 +1,5 @@
 package com.woowahan.accountbook.components.setting.create
 
-import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -9,6 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.woowahan.accountbook.components.appbar.BackAppBar
+import com.woowahan.accountbook.components.colorpicker.ColorPicker
+import com.woowahan.accountbook.components.colorpicker.ColorPickerItem
 import com.woowahan.accountbook.components.setting.mode.SettingMode
 import com.woowahan.accountbook.domain.model.Category
 import com.woowahan.accountbook.domain.model.PaymentType
@@ -41,10 +43,32 @@ fun CategoryCreateScreen(
     val typeTitle = if (paymentType == PaymentType.Income) "수입" else "지출"
     val modeTitle = if (settingMode == SettingMode.Create) "추가" else "수정"
 
+    val colors = if (paymentType == PaymentType.Income) IncomeColors else ExpenseColors
+    var selectedItem by remember { mutableStateOf(if (paymentType == PaymentType.Income) Olive1 else Blue1) }
+
     val modifyData by viewModel.category.collectAsState()
 
     if (settingMode == SettingMode.Modify) {
         viewModel.getCategoryById(id)
+    }
+
+    Scaffold(
+        topBar = {
+            BackAppBar(
+                modifier = Modifier.fillMaxWidth(),
+                title = { Text(text = "$typeTitle 카테고리 $modeTitle") },
+                onClickBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+    ) {
+        Column(
+            Modifier
+                .padding(it)
+                .fillMaxSize()
+        ) {
+        }
     }
 
 }
