@@ -1,6 +1,7 @@
 package com.woowahan.accountbook.data.repository
 
 import com.woowahan.accountbook.data.datasource.PaymentMethodDataSource
+import com.woowahan.accountbook.data.mapper.toModel
 import com.woowahan.accountbook.domain.model.PaymentMethod
 import com.woowahan.accountbook.domain.repository.PaymentMethodRepository
 import javax.inject.Inject
@@ -14,6 +15,10 @@ class PaymentMethodRepositoryImpl @Inject constructor(
 
     override suspend fun getPaymentMethodByName(name: String): PaymentMethod {
         return dataSource.getPaymentMethodByName(name)
+    }
+
+    override suspend fun getPaymentMethodById(id: Int): PaymentMethod {
+        return dataSource.getPaymentMethodById(id)
     }
 
     override suspend fun createPaymentMethodTable() {
