@@ -23,3 +23,9 @@ fun SettingScreen() {
         }
     }
 }
+
+enum class SettingTabs(val title: String) {
+    PaymentMethodTab("결제수단"),
+    CategoryExpenseTab("지출 카테고리"),
+    CategoryIncomeTab("수입 카테고리")
+}
