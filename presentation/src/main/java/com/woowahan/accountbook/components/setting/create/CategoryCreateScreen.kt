@@ -68,6 +68,15 @@ fun CategoryCreateScreen(
                 .padding(it)
                 .fillMaxSize()
         ) {
+            ColorPicker(colors = colors) { item ->
+                ColorPickerItem(
+                    color = item,
+                    isChecked = selectedItem == item,
+                    onClick = {
+                        selectedItem = item
+                    }
+                )
+            }
         }
     }
 
