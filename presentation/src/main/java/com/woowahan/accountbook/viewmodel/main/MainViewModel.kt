@@ -44,9 +44,6 @@ class MainViewModel @Inject constructor(
         )
     val currentMonth = _currentMonth.asStateFlow()
 
-    private val _isFailure = MutableStateFlow("")
-    val isFailure = _isFailure.asStateFlow()
-
     fun createTables() {
         viewModelScope.launch {
             val categoryResult = createCategoryTableUseCase().last()
@@ -57,17 +54,6 @@ class MainViewModel @Inject constructor(
                         paymentMethodResult is Result.Success<Unit> &&
                         historyResult is Result.Success<Unit> -> {
                     insertDefaultData()
-                }
-                categoryResult is Result.Failure -> {
-                    categoryResult.cause.message?.let { _isFailure.emit(it) }
-                }
-
-                paymentMethodResult is Result.Failure -> {
-                    paymentMethodResult.cause.message?.let { _isFailure.emit(it) }
-                }
-
-                historyResult is Result.Failure -> {
-                    historyResult.cause.message?.let { _isFailure.emit(it) }
                 }
             }
         }
