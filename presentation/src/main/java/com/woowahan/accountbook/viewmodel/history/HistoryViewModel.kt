@@ -70,7 +70,6 @@ class HistoryViewModel @Inject constructor(
                     }
                     is Result.Failure -> {
                         it.cause.message?.let { message -> _isFailure.emit(message) }
-                        it.cause.printStackTrace()
                         _isRefreshing.emit(false)
                     }
                 }

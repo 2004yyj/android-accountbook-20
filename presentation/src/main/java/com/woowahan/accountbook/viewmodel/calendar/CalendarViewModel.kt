@@ -49,9 +49,6 @@ class CalendarViewModel @Inject constructor(
                     is Result.Success<List<History>> -> {
                         _history.emit(it.value)
                     }
-                    is Result.Failure -> {
-                        it.cause.printStackTrace()
-                    }
                 }
             }
         }
