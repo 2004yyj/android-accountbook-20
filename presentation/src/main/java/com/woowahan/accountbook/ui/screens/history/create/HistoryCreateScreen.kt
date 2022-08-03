@@ -249,9 +249,13 @@ fun HistoryCreateScreen(
                                 IconButton(
                                     modifier = Modifier.align(Alignment.CenterEnd),
                                     onClick = {
-                                        viewModel.insertPaymentMethod(addingPaymentMethod)
-                                        addingPaymentMethod = ""
-                                        expendedPaymentMethod = !expendedPaymentMethod
+                                        if (addingPaymentMethod != "") {
+                                            viewModel.insertPaymentMethod(addingPaymentMethod)
+                                            addingPaymentMethod = ""
+                                            expendedPaymentMethod = !expendedPaymentMethod
+                                        } else {
+                                            Toast.makeText(context, "값이 비어 있습니다.", Toast.LENGTH_SHORT).show()
+                                        }
                                     }
                                 ) {
                                     Icon(
@@ -294,9 +298,13 @@ fun HistoryCreateScreen(
                             IconButton(
                                 modifier = Modifier.align(Alignment.CenterEnd),
                                 onClick = {
-                                    viewModel.insertCategory(selectedType, addingCategory)
-                                    addingCategory = ""
-                                    expendedCategory = !expendedCategory
+                                    if (addingCategory != "") {
+                                        viewModel.insertCategory(selectedType, addingCategory)
+                                        addingCategory = ""
+                                        expendedCategory = !expendedCategory
+                                    } else {
+                                        Toast.makeText(context, "값이 비어 있습니다.", Toast.LENGTH_SHORT).show()
+                                    }
                                 }
                             ) {
                                 Icon(
