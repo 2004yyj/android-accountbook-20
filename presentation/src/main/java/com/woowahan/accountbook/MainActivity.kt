@@ -105,7 +105,21 @@ fun Main(viewModel: MainViewModel = viewModel()) {
                     startDestination = Screen.HistoryIndex.route
                 ) {
                     composable(route = Screen.HistoryIndex.route) { HistoryScreen(navController, viewModel) }
-                    composable(route = Screen.HistoryIndex.HistoryCreate.route) { HistoryCreateScreen(navController) }
+                    composable(
+                        route = "${Screen.HistoryIndex.HistoryCreate.route}?settingMode={settingMode}&paymentType={paymentType}&id={id}",
+                        arguments = listOf(
+                            navArgument("settingMode") { defaultValue = SettingMode.Create.toString() },
+                            navArgument("paymentType") { defaultValue = PaymentType.Income.toString() },
+                            navArgument("id") { defaultValue = 0 },
+                        ),
+                    ) { navBackStackEntry ->
+                        HistoryCreateScreen(
+                            navBackStackEntry.arguments?.getString("settingMode") ?: SettingMode.Create.toString(),
+                            navBackStackEntry.arguments?.getString("paymentType") ?: PaymentType.Nothing.toString(),
+                            navBackStackEntry.arguments?.getInt("id") ?: 0,
+                            navController
+                        )
+                    }
                 }
                 navigation(
                     route = BottomNavigationRoute.Calendar.route,
