@@ -49,7 +49,7 @@ fun LineGraph(
                         for (i in entries.indices) {
                             val realY = maxHeight - ((entries[i].value / maxOfPoints) * maxHeight)
                             val currentX = spacing + i * spacePerHour
-                            val currentY = if (realY > 300) 100f else realY.toFloat()
+                            val currentY = if (realY > 300) 100f else if (realY < 0) 10f else realY.toFloat()
                             if (i == 0) {
                                 moveTo(currentX, currentY)
                             } else {
