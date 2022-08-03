@@ -1,6 +1,7 @@
 package com.woowahan.accountbook.data.repository
 
 import com.woowahan.accountbook.data.datasource.HistoryDataSource
+import com.woowahan.accountbook.data.mapper.toModel
 import com.woowahan.accountbook.domain.model.*
 import com.woowahan.accountbook.domain.repository.HistoryRepository
 import javax.inject.Inject
@@ -66,6 +67,10 @@ class HistoryRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAllHistory(idList: List<Int>) {
         return dataSource.deleteAllHistory(idList)
+    }
+
+    override suspend fun getTotalListByCategoryNameGroupByDate(name: String): List<Total> {
+        return dataSource.getTotalListByCategoryNameGroupByDate(name)
     }
 
     override suspend fun getAllStatisticsByCategoryType(

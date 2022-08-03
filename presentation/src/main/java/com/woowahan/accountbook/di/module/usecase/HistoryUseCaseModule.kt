@@ -58,4 +58,10 @@ object HistoryUseCaseModule {
     fun providesGetAllStatisticsByCategoryTypeUseCase(repository: HistoryRepository): GetAllStatisticsByCategoryTypeUseCase {
         return GetAllStatisticsByCategoryTypeUseCase(repository)
     }
+
+    @Provides
+    @Singleton
+    fun providesGetTotalListByCategoryNameGroupByDateUseCase(repository: HistoryRepository): GetTotalListByCategoryNameGroupByDateUseCase {
+        return GetTotalListByCategoryNameGroupByDateUseCase(repository)
+    }
 }

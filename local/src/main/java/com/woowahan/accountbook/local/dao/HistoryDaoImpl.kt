@@ -216,6 +216,28 @@ class HistoryDaoImpl @Inject constructor(
         }
     }
 
+    override suspend fun getTotalListByCategoryNameGroupByDate(name: String): List<TotalData> {
+        val sql = "SELECT total(amount), date FROM History AS H " +
+                "INNER JOIN Category AS C ON H.category_id = C.id " +
+                "WHERE C.name = ? " +
+                "GROUP BY strftime('%Y-%m', date / 1000, 'unixepoch') " +
+                "HAVING amount < 0 ORDER BY date"
+
+        return dbHelper.runSQLWithReadableTransaction {
+            val cursor = rawQuery(sql, arrayOf(name))
+            val list = mutableListOf<TotalData>()
+            while (cursor.moveToNext() && list.size != 7) {
+                list.add(
+                    TotalData(
+                        cursor.getLong(0),
+                        cursor.getLong(1)
+                    )
+                )
+            }
+            list
+        }
+    }
+
     override suspend fun getAllStatisticsByCategoryType(
         firstDayOfMonth: Long,
         firstDayOfNextMonth: Long
