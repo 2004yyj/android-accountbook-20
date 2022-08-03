@@ -28,7 +28,6 @@ class StatisticsDetailViewModel @Inject constructor(
             getTotalListByCategoryNameGroupByDateUseCase(name).collect {
                 when(it) {
                     is Result.Success<List<Total>> -> {
-                        val calendar = Calendar.getInstance()
                         _totalEntries.emit(it.value.map {
                             LineEntry(it.total * -1, it.date.toMonth())
                         })
@@ -36,6 +35,5 @@ class StatisticsDetailViewModel @Inject constructor(
                 }
             }
         }
-
     }
 }
