@@ -36,16 +36,16 @@ fun LineGraph(
             val spacePerHour = (size.width - spacing) / entries.size
 
             val maxHeight = 500
-            val maxOfPoints = entries.maxOf { it.percent }
+            val maxOfPoints = entries.maxOf { it.value }
 
             val valueX = mutableListOf<Float>()
             val valueY = mutableListOf<Float>()
 
             val strokePath = Path().apply {
                 for (i in entries.indices) {
-                    val realY = maxHeight - ((entries[i].percent/maxOfPoints) * maxHeight)
+                    val realY = maxHeight - ((entries[i].value/maxOfPoints) * maxHeight)
                     val currentX = spacing + i * spacePerHour
-                    val currentY = if (realY > 300) 100f else realY
+                    val currentY = if (realY > 300) 100f else realY.toFloat()
                     if (i == 0) {
                         moveTo(currentX, currentY)
                     } else {
@@ -72,12 +72,20 @@ fun LineGraph(
             }
 
             entries.forEachIndexed { index, item ->
-                val textWidth = textPaint.measureText(item.value.toMoneyString())
+                val moneyTextWidth = textPaint.measureText(item.value.toMoneyString())
+                val labelTextWidth = textPaint.measureText(item.label)
                 val canvas = drawContext.canvas.nativeCanvas
                 canvas.drawText(
                     item.value.toMoneyString(),
-                    valueX[index] - (textWidth/2),
+                    valueX[index] - (moneyTextWidth/2),
                     valueY[index],
+                    textPaint
+                )
+
+                canvas.drawText(
+                    item.label,
+                    valueX[index] - (labelTextWidth/2),
+                    size.height,
                     textPaint
                 )
             }
