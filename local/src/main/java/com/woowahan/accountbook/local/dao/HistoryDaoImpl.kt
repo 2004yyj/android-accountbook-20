@@ -48,7 +48,7 @@ class HistoryDaoImpl @Inject constructor(
                 "LEFT OUTER JOIN (SELECT total(amount) as amount, date FROM History WHERE amount > 0 GROUP BY date) as income " +
                 "ON History.date = income.date " +
                 "LEFT OUTER JOIN (SELECT total(amount) as amount, date FROM History WHERE amount < 0 GROUP BY date) as expense " +
-                "ON income.date = expense.date " +
+                "ON History.date = expense.date " +
                 "INNER JOIN Category " +
                 "ON History.category_id = Category.id " +
                 "LEFT OUTER JOIN PaymentMethod " +
