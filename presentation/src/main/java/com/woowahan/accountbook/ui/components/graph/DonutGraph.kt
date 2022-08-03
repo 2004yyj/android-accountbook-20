@@ -2,6 +2,7 @@ package com.woowahan.accountbook.ui.components.graph
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -26,6 +27,7 @@ fun DonutGraph(
     entries: List<DonutEntry<Long>>,
     modifier: Modifier = Modifier,
     strokeWidth: Dp = 60.dp,
+    onFooterClick: (DonutEntry<Long>) -> Unit,
     footerContent: @Composable BoxScope.(index: Int, item: DonutEntry<Long>) -> Unit,
 ) {
     val stroke = with(LocalDensity.current) { Stroke(strokeWidth.toPx()) }
@@ -44,7 +46,8 @@ fun DonutGraph(
         item {
             Box(Modifier.fillMaxSize()) {
                 Canvas(
-                    modifier.size(350.dp)
+                    modifier
+                        .size(350.dp)
                         .align(Alignment.Center)
                         .padding(horizontal = 24.dp)
                 ) {
@@ -77,7 +80,11 @@ fun DonutGraph(
             Column(
                 Modifier.fillMaxWidth()
             ) {
-                Box(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                Box(
+                    Modifier
+                        .clickable(onClick = { onFooterClick(item) })
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                ) {
                     footerContent(index, item)
                 }
 

@@ -73,6 +73,18 @@ class HistoryRepositoryImpl @Inject constructor(
         return dataSource.deleteAllHistory(idList)
     }
 
+    override suspend fun getTotalListByCategoryNameGroupByDate(name: String): List<Total> {
+        return dataSource.getTotalListByCategoryNameGroupByDate(name)
+    }
+
+    override suspend fun getAllExpendHistoriesByMonthAndCategoryName(
+        firstDayOfMonth: Long,
+        firstDayOfNextMonth: Long,
+        name: String
+    ): List<History> {
+        return dataSource.getAllExpendHistoriesByMonthAndCategoryName(firstDayOfMonth, firstDayOfNextMonth, name)
+    }
+
     override suspend fun getAllStatisticsByCategoryType(
         firstDayOfMonth: Long,
         firstDayOfNextMonth: Long

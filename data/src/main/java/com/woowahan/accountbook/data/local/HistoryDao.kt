@@ -14,5 +14,7 @@ interface HistoryDao {
     suspend fun deleteHistory(id: Int)
     suspend fun deleteAllHistory(idList: List<Int>)
     suspend fun getAllStatisticsByCategoryType(firstDayOfMonth: Long, firstDayOfNextMonth: Long,): List<StatisticData>
+    suspend fun getTotalListByCategoryNameGroupByDate(name: String): List<TotalData>
+    suspend fun getAllExpendHistoriesByMonthAndCategoryName(firstDayOfMonth: Long, firstDayOfNextMonth: Long, name: String): List<HistoryData>
     suspend fun getHistoryById(id: Int): HistoryData
 }

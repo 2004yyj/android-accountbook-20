@@ -1,5 +1,6 @@
 package com.woowahan.accountbook.ui.screens.statistics
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
@@ -10,9 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.woowahan.accountbook.ui.components.appbar.MonthAppBar
 import com.woowahan.accountbook.ui.components.chip.CategoryChip
 import com.woowahan.accountbook.ui.components.graph.DonutGraph
+import com.woowahan.accountbook.ui.navigation.Screen
 import com.woowahan.accountbook.ui.theme.Error
 import com.woowahan.accountbook.ui.theme.Purple
 import com.woowahan.accountbook.ui.theme.PurpleLight
@@ -24,6 +27,7 @@ import kotlin.math.round
 @Composable
 fun StatisticsScreen(
     sharedViewModel: MainViewModel,
+    navController: NavController,
     viewModel: StatisticsViewModel = hiltViewModel()
 ) {
     val entries by viewModel.entries.collectAsState()
@@ -90,7 +94,10 @@ fun StatisticsScreen(
                 DonutGraph(
                     modifier = Modifier
                         .size(350.dp),
-                    entries = entries
+                    entries = entries,
+                    onFooterClick = {
+                        navController.navigate("${Screen.StatisticsIndex.Detail.route}?categoryName=${it.label}")
+                    }
                 ) { index, item ->
                     Row(
                         Modifier

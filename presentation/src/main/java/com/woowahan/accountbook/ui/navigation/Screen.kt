@@ -8,7 +8,9 @@ sealed class Screen(val route: String) {
         object HistoryCreate: Screen("/create")
     }
     object CalendarIndex: Screen("/calendar/index")
-    object StatisticsIndex: Screen("/statistics/index")
+    object StatisticsIndex: Screen("/statistics/index") {
+        object Detail: Screen("/statistics/detail")
+    }
     object SettingIndex: Screen("/setting/index") {
         object PaymentMethodCreate: Screen("/create/paymentMethod")
         object CategoryCreate: Screen("/create/category")

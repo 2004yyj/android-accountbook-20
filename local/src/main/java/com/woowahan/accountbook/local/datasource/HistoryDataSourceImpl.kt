@@ -78,6 +78,20 @@ class HistoryDataSourceImpl @Inject constructor(
         return dao.deleteAllHistory(idList)
     }
 
+    override suspend fun getTotalListByCategoryNameGroupByDate(name: String): List<Total> {
+        return dao.getTotalListByCategoryNameGroupByDate(name).map { it.toModel() }
+    }
+
+    override suspend fun getAllExpendHistoriesByMonthAndCategoryName(
+        firstDayOfMonth: Long,
+        firstDayOfNextMonth: Long,
+        name: String
+    ): List<History> {
+        return dao.getAllExpendHistoriesByMonthAndCategoryName(firstDayOfMonth, firstDayOfNextMonth, name).map {
+            it.toModel()
+        }
+    }
+
     override suspend fun getAllStatisticsByCategoryType(
         firstDayOfMonth: Long,
         firstDayOfNextMonth: Long

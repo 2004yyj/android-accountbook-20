@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.woowahan.accountbook.ui.screens.calendar.CalendarScreen
@@ -29,6 +30,7 @@ import com.woowahan.accountbook.ui.screens.statistics.StatisticsScreen
 import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.ui.navigation.BottomNavigationRoute
 import com.woowahan.accountbook.ui.navigation.Screen
+import com.woowahan.accountbook.ui.screens.statistics.detail.StatisticsDetailScreen
 import com.woowahan.accountbook.ui.theme.AccountBookTheme
 import com.woowahan.accountbook.ui.theme.White80
 import com.woowahan.accountbook.ui.viewmodel.main.MainViewModel
@@ -78,9 +80,7 @@ fun Main(viewModel: MainViewModel = viewModel()) {
                         selected = currentRoute?.hierarchy?.any { it.route == screen.route } == true,
                         label = { Text(screen.label) },
                         onClick = { navController.navigate(screen.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
+                            popUpTo(navController.graph.findStartDestination().id)
                             launchSingleTop = true
                             restoreState = true
                         } },
@@ -129,7 +129,19 @@ fun Main(viewModel: MainViewModel = viewModel()) {
                     route = BottomNavigationRoute.Statistics.route,
                     startDestination = Screen.StatisticsIndex.route
                 ) {
-                    composable(route = Screen.StatisticsIndex.route) { StatisticsScreen(viewModel) }
+                    composable(route = Screen.StatisticsIndex.route) { StatisticsScreen(viewModel, navController) }
+                    composable(
+                        route = "${Screen.StatisticsIndex.Detail.route}?categoryName={categoryName}",
+                        arguments = listOf(
+                            navArgument("categoryName") { defaultValue = "" }
+                        )
+                    ) { navBackStackEntry ->
+                        StatisticsDetailScreen(
+                            navBackStackEntry.arguments?.getString("categoryName") ?: "",
+                            navController,
+                            viewModel
+                        )
+                    }
                 }
                 navigation(
                     route = BottomNavigationRoute.Setting.route,
