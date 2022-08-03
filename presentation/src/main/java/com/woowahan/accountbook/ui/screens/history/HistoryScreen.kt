@@ -211,6 +211,9 @@ fun HistoryScreen(
                                     item = item,
                                     isCheckable = isModifyModeEnabled,
                                     isChecked = historyChecked.contains(item),
+                                    onClick = {
+
+                                    },
                                     onCheckedChange = {
                                         if (it) historyChecked.add(item)
                                         else historyChecked.remove(item)
