@@ -61,8 +61,11 @@ fun HistoryCreateScreen(
     val isSuccessInsertPaymentMethod by viewModel.isSuccessInsertPaymentMethod.collectAsState()
     val isSuccessInsertCategory by viewModel.isSuccessInsertCategory.collectAsState()
 
-    selectedPaymentMethod = isSuccessInsertPaymentMethod
-    selectedCategory = isSuccessInsertCategory
+    if (isSuccessInsertPaymentMethod.isNotEmpty())
+        selectedPaymentMethod = isSuccessInsertPaymentMethod
+
+    if(isSuccessInsertCategory.isNotEmpty())
+        selectedCategory = isSuccessInsertCategory
 
     viewModel.getPaymentMethods()
     viewModel.getCategories(selectedType)
