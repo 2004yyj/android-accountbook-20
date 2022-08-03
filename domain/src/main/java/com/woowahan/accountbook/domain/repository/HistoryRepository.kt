@@ -14,4 +14,5 @@ interface HistoryRepository {
     suspend fun deleteAllHistory(idList: List<Int>)
     suspend fun getAllStatisticsByCategoryType(firstDayOfMonth: Long, firstDayOfNextMonth: Long): List<Statistic>
     suspend fun getTotalListByCategoryNameGroupByDate(name: String): List<Total>
+    suspend fun getAllExpendHistoriesByMonthAndCategoryName(firstDayOfMonth: Long, firstDayOfNextMonth: Long, name: String): List<History>
 }

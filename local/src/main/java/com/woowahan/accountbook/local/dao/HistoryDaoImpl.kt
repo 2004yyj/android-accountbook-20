@@ -2,6 +2,7 @@ package com.woowahan.accountbook.local.dao
 
 import com.woowahan.accountbook.data.entity.*
 import com.woowahan.accountbook.data.local.HistoryDao
+import com.woowahan.accountbook.domain.model.History
 import com.woowahan.accountbook.local.helper.DatabaseOpenHelper
 import com.woowahan.accountbook.local.util.runSQL
 import com.woowahan.accountbook.local.util.runSQLWithReadableTransaction
@@ -234,6 +235,62 @@ class HistoryDaoImpl @Inject constructor(
                     )
                 )
             }
+            cursor.close()
+            list
+        }
+    }
+
+    override suspend fun getAllExpendHistoriesByMonthAndCategoryName(
+        firstDayOfMonth: Long,
+        firstDayOfNextMonth: Long,
+        name: String
+    ): List<HistoryData> {
+        val sql ="SELECT History.*, " +
+                "IFNULL(income.amount, 0), " +
+                "IFNULL(expense.amount, 0), " +
+                "Category.*, PaymentMethod.* " +
+                "FROM History " +
+                "LEFT OUTER JOIN (SELECT total(amount) as amount, date FROM History WHERE amount > 0 GROUP BY date) as income " +
+                "ON History.date = income.date " +
+                "LEFT OUTER JOIN (SELECT total(amount) as amount, date FROM History WHERE amount < 0 GROUP BY date) as expense " +
+                "ON income.date = expense.date " +
+                "INNER JOIN Category " +
+                "ON History.category_id = Category.id " +
+                "LEFT OUTER JOIN PaymentMethod " +
+                "ON IFNULL(History.payment_method_id, -1) = PaymentMethod.id " +
+                "WHERE History.date >= ? AND History.date < ? AND History.amount < 0 AND History.name = ? " +
+                "ORDER BY History.date"
+
+        return dbHelper.runSQLWithReadableTransaction {
+            val cursor = rawQuery(sql, arrayOf(
+                firstDayOfMonth.toString(),
+                firstDayOfNextMonth.toString(),
+                name
+            ))
+            val list = mutableListOf<HistoryData>()
+            while (cursor.moveToNext()) {
+                list.add(
+                    HistoryData(
+                        cursor.getInt(0),
+                        cursor.getLong(1),
+                        cursor.getLong(2),
+                        cursor.getString(3),
+                        cursor.getLong(6),
+                        cursor.getLong(7),
+                        CategoryData(
+                            cursor.getInt(8),
+                            PaymentTypeData.valueOf(cursor.getString(9)),
+                            cursor.getString(10),
+                            cursor.getString(11).toULong()
+                        ),
+                        PaymentMethodData(
+                            cursor.getInt(12),
+                            cursor.getString(13),
+                        )
+                    )
+                )
+            }
+            cursor.close()
             list
         }
     }
@@ -269,6 +326,7 @@ class HistoryDaoImpl @Inject constructor(
                     )
                 )
             }
+            cursor.close()
             list
         }
     }
