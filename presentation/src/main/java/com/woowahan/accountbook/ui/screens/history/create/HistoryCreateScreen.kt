@@ -16,11 +16,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.woowahan.accountbook.ui.components.appbar.BackAppBar
 import com.woowahan.accountbook.ui.components.button.TransparentButton
 import com.woowahan.accountbook.ui.components.editable.Editable
@@ -28,7 +26,6 @@ import com.woowahan.accountbook.ui.components.radio.TypeRadioButton
 import com.woowahan.accountbook.ui.components.spinner.CustomDropDownMenu
 import com.woowahan.accountbook.ui.components.textfield.CustomTextField
 import com.woowahan.accountbook.domain.model.PaymentType
-import com.woowahan.accountbook.ui.type.SettingMode
 import com.woowahan.accountbook.ui.theme.*
 import com.woowahan.accountbook.util.*
 import com.woowahan.accountbook.ui.viewmodel.history.create.HistoryCreateViewModel
@@ -36,7 +33,6 @@ import com.woowahan.accountbook.ui.viewmodel.history.create.HistoryCreateViewMod
 @Composable
 fun HistoryCreateScreen(
     settingMode: String,
-    paymentType: String,
     id: Int,
     navController: NavController,
     viewModel: HistoryCreateViewModel = hiltViewModel()
