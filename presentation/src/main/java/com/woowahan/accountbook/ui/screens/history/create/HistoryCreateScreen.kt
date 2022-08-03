@@ -27,6 +27,7 @@ import com.woowahan.accountbook.ui.components.spinner.CustomDropDownMenu
 import com.woowahan.accountbook.ui.components.textfield.CustomTextField
 import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.ui.theme.*
+import com.woowahan.accountbook.ui.type.SettingMode
 import com.woowahan.accountbook.util.*
 import com.woowahan.accountbook.ui.viewmodel.history.create.HistoryCreateViewModel
 
@@ -37,6 +38,8 @@ fun HistoryCreateScreen(
     navController: NavController,
     viewModel: HistoryCreateViewModel = hiltViewModel()
 ) {
+    var modeTitle by remember { mutableStateOf("등록") }
+
     val context = LocalContext.current
 
     val isSuccess by viewModel.isSuccess.collectAsState()
@@ -60,6 +63,8 @@ fun HistoryCreateScreen(
 
     val isSuccessInsertPaymentMethod by viewModel.isSuccessInsertPaymentMethod.collectAsState()
     val isSuccessInsertCategory by viewModel.isSuccessInsertCategory.collectAsState()
+
+    val modifyData by viewModel.history.collectAsState()
 
     if (isSuccessInsertPaymentMethod.isNotEmpty())
         selectedPaymentMethod = isSuccessInsertPaymentMethod
@@ -92,7 +97,7 @@ fun HistoryCreateScreen(
             .fillMaxSize(),
         topBar = {
             BackAppBar(
-                title = { Text("내역 등록") },
+                title = { Text("내역 $modeTitle") },
                 onClickBack = {
                     navController.popBackStack()
                 }
@@ -322,7 +327,7 @@ fun HistoryCreateScreen(
                     )
                 }
             ) {
-                Text(text = "등록하기", color = White)
+                Text(text = "${modeTitle}하기", color = White)
             }
         }
     }
