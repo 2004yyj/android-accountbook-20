@@ -3,13 +3,11 @@ package com.woowahan.accountbook.ui.viewmodel.history.create
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.woowahan.accountbook.domain.model.Category
-import com.woowahan.accountbook.domain.model.PaymentMethod
-import com.woowahan.accountbook.domain.model.PaymentType
-import com.woowahan.accountbook.domain.model.Result
+import com.woowahan.accountbook.domain.model.*
 import com.woowahan.accountbook.domain.usecase.category.GetCategoryByNameUseCase
 import com.woowahan.accountbook.domain.usecase.category.GetAllCategoryByTypeUseCase
 import com.woowahan.accountbook.domain.usecase.category.InsertCategoryUseCase
+import com.woowahan.accountbook.domain.usecase.history.GetHistoryByIdUseCase
 import com.woowahan.accountbook.domain.usecase.history.InsertHistoryUseCase
 import com.woowahan.accountbook.domain.usecase.paymentmethod.GetAllPaymentMethodsUseCase
 import com.woowahan.accountbook.domain.usecase.paymentmethod.InsertPaymentMethodUseCase
@@ -27,7 +25,8 @@ class HistoryCreateViewModel @Inject constructor(
     private val getAllCategoryByTypeUseCase: GetAllCategoryByTypeUseCase,
     private val getAllPaymentMethodsUseCase: GetAllPaymentMethodsUseCase,
     private val insertCategoryUseCase: InsertCategoryUseCase,
-    private val insertPaymentMethodUseCase: InsertPaymentMethodUseCase
+    private val insertPaymentMethodUseCase: InsertPaymentMethodUseCase,
+    private val getHistoryByIdUseCase: GetHistoryByIdUseCase,
 ): ViewModel() {
 
     private val _isSuccess = MutableStateFlow(false)
@@ -35,6 +34,9 @@ class HistoryCreateViewModel @Inject constructor(
 
     private val _isFailure = MutableStateFlow("")
     val isFailure = _isFailure.asStateFlow()
+
+    private val _history = MutableStateFlow<History?>(null)
+    val history = _history.asStateFlow()
 
     private val _paymentMethods = MutableStateFlow<List<PaymentMethod>>(emptyList())
     val paymentMethods = _paymentMethods.asStateFlow()
@@ -150,6 +152,21 @@ class HistoryCreateViewModel @Inject constructor(
         when(result) {
             is Result.Failure -> {
                 result.cause.message?.let { _isFailure.emit(it) }
+            }
+        }
+    }
+
+    fun getHistoryById(id: Int) {
+        viewModelScope.launch {
+            getHistoryByIdUseCase(id).collect {
+                when(it) {
+                    is Result.Success<History> -> {
+                        _history.emit(it.value)
+                    }
+                    is Result.Failure -> {
+                        it.cause.message?.let { message -> _isFailure.emit(message) }
+                    }
+                }
             }
         }
     }

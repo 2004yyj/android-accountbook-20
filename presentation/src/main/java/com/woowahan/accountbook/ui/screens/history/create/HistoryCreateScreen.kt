@@ -38,6 +38,7 @@ fun HistoryCreateScreen(
     navController: NavController,
     viewModel: HistoryCreateViewModel = hiltViewModel()
 ) {
+    val settingMode = SettingMode.valueOf(settingMode)
     var modeTitle by remember { mutableStateOf("등록") }
 
     val context = LocalContext.current
@@ -74,6 +75,22 @@ fun HistoryCreateScreen(
 
     viewModel.getPaymentMethods()
     viewModel.getCategories(selectedType)
+
+    if (settingMode == SettingMode.Modify) {
+        modeTitle = "수정"
+        viewModel.getHistoryById(id)
+    }
+
+    LaunchedEffect(key1 = modifyData) {
+        if (modifyData != null) {
+            selectedType = if (modifyData!!.amount > 0) PaymentType.Income else PaymentType.Expense
+            selectedDate = modifyData!!.date
+            enterMoney = if (modifyData!!.amount > 0) modifyData!!.amount else modifyData!!.amount * -1
+            enterContent = modifyData!!.content
+            selectedPaymentMethod = if (modifyData!!.paymentMethod != null) modifyData!!.paymentMethod!!.name else ""
+            selectedCategory = modifyData!!.category.name
+        }
+    }
 
     if (isSuccess) {
         LaunchedEffect(true) {
@@ -317,14 +334,18 @@ fun HistoryCreateScreen(
                     .height(48.dp)
                     .align(Alignment.BottomCenter),
                 onClick = {
-                    viewModel.insertHistory(
-                        type = selectedType,
-                        date = selectedDate,
-                        money = if (selectedType == PaymentType.Income) enterMoney else -enterMoney,
-                        content = enterContent,
-                        paymentMethod = paymentMethods.find { it.name == selectedPaymentMethod },
-                        category = categories.find { it.name == selectedCategory }
-                    )
+                    if (settingMode == SettingMode.Create) {
+                        viewModel.insertHistory(
+                            type = selectedType,
+                            date = selectedDate,
+                            money = if (selectedType == PaymentType.Income) enterMoney else -enterMoney,
+                            content = enterContent,
+                            paymentMethod = paymentMethods.find { it.name == selectedPaymentMethod },
+                            category = categories.find { it.name == selectedCategory }
+                        )
+                    } else {
+
+                    }
                 }
             ) {
                 Text(text = "${modeTitle}하기", color = White)
