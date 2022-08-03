@@ -25,6 +25,7 @@ import com.woowahan.accountbook.ui.screens.history.list.HistoryListItem
 import com.woowahan.accountbook.ui.theme.*
 import com.woowahan.accountbook.ui.viewmodel.main.MainViewModel
 import com.woowahan.accountbook.ui.viewmodel.statistics.detail.StatisticsDetailViewModel
+import com.woowahan.accountbook.util.getForwardMonthMillis
 import com.woowahan.accountbook.util.toMoneyString
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -39,6 +40,11 @@ fun StatisticsDetailScreen(
     val history by viewModel.history.collectAsState()
     val currentMonth by sharedViewModel.currentMonth.collectAsState()
 
+    viewModel.getAllHistories(
+        currentMonth,
+        currentMonth.getForwardMonthMillis(),
+        categoryName
+    )
     LaunchedEffect(key1 = entries.isEmpty()) {
         viewModel.getTotalList(categoryName)
     }
@@ -61,6 +67,52 @@ fun StatisticsDetailScreen(
                     .padding(bottom = 5.dp),
                 entries = entries
             )
+            Divider(color = PurpleLight, modifier = Modifier.height(1.dp))
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                history.forEachIndexed { index, item ->
+                    if (index == 0 || history[index - 1].date != item.date) {
+                        stickyHeader {
+                            HistoryListHeader(
+                                date = item.date,
+                                incomeTotal = item.incomeTotalByDate,
+                                expenseTotal = item.expenseTotalByDate,
+                            )
+                        }
+                    }
+
+                    item {
+                        Column {
+                            HistoryListItem(
+                                item = item,
+                                isChecked = false,
+                                isCheckable = false
+                            )
+
+                            if (index != history.size - 1 && history[index + 1].date != item.date) {
+                                Divider(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 10.dp),
+                                    thickness = 1.dp,
+                                    color = PurpleLight,
+                                )
+                            } else {
+                                Divider(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 10.dp)
+                                        .padding(horizontal = 16.dp),
+                                    thickness = 1.dp,
+                                    color = PurpleLight40,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
