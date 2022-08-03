@@ -126,7 +126,8 @@ fun Main(viewModel: MainViewModel = viewModel()) {
                     ) { navBackStackEntry ->
                         StatisticsDetailScreen(
                             navBackStackEntry.arguments?.getString("categoryName") ?: "",
-                            navController
+                            navController,
+                            viewModel
                         )
                     }
                 }
