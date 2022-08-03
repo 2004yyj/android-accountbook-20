@@ -119,9 +119,9 @@ fun Main(viewModel: MainViewModel = viewModel()) {
                 ) {
                     composable(route = Screen.StatisticsIndex.route) { StatisticsScreen(viewModel, navController) }
                     composable(
-                        route = "${Screen.StatisticsIndex.Detail.route}/{categoryName}",
+                        route = "${Screen.StatisticsIndex.Detail.route}?categoryName={categoryName}",
                         arguments = listOf(
-                            navArgument("categoryName") { this.type = NavType.StringType }
+                            navArgument("categoryName") { defaultValue = "" }
                         )
                     ) { navBackStackEntry ->
                         StatisticsDetailScreen(

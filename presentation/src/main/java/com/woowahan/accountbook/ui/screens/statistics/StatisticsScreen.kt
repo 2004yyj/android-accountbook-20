@@ -96,7 +96,7 @@ fun StatisticsScreen(
                         .size(350.dp),
                     entries = entries,
                     onFooterClick = {
-                        navController.navigate("${Screen.StatisticsIndex.Detail.route}/${it.label}")
+                        navController.navigate("${Screen.StatisticsIndex.Detail.route}?categoryName=${it.label}")
                     }
                 ) { index, item ->
                     Row(
