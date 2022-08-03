@@ -24,7 +24,7 @@ import com.woowahan.accountbook.ui.screens.history.create.HistoryCreateScreen
 import com.woowahan.accountbook.ui.screens.setting.SettingScreen
 import com.woowahan.accountbook.ui.screens.setting.create.CategoryCreateScreen
 import com.woowahan.accountbook.ui.screens.setting.create.PaymentMethodCreateScreen
-import com.woowahan.accountbook.ui.screens.setting.mode.SettingMode
+import com.woowahan.accountbook.ui.type.SettingMode
 import com.woowahan.accountbook.ui.screens.statistics.StatisticsScreen
 import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.ui.navigation.BottomNavigationRoute
@@ -105,7 +105,19 @@ fun Main(viewModel: MainViewModel = viewModel()) {
                     startDestination = Screen.HistoryIndex.route
                 ) {
                     composable(route = Screen.HistoryIndex.route) { HistoryScreen(navController, viewModel) }
-                    composable(route = Screen.HistoryIndex.HistoryCreate.route) { HistoryCreateScreen(navController) }
+                    composable(
+                        route = "${Screen.HistoryIndex.HistoryCreate.route}?settingMode={settingMode}&id={id}",
+                        arguments = listOf(
+                            navArgument("settingMode") { defaultValue = SettingMode.Create.toString() },
+                            navArgument("id") { defaultValue = 0 },
+                        ),
+                    ) { navBackStackEntry ->
+                        HistoryCreateScreen(
+                            navBackStackEntry.arguments?.getString("settingMode") ?: SettingMode.Create.toString(),
+                            navBackStackEntry.arguments?.getInt("id") ?: 0,
+                            navController
+                        )
+                    }
                 }
                 navigation(
                     route = BottomNavigationRoute.Calendar.route,

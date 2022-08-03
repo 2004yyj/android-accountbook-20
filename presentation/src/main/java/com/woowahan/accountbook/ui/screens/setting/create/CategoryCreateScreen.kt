@@ -17,7 +17,7 @@ import com.woowahan.accountbook.ui.components.appbar.BackAppBar
 import com.woowahan.accountbook.ui.components.colorpicker.ColorPicker
 import com.woowahan.accountbook.ui.components.colorpicker.ColorPickerItem
 import com.woowahan.accountbook.ui.components.editable.Editable
-import com.woowahan.accountbook.ui.screens.setting.mode.SettingMode
+import com.woowahan.accountbook.ui.type.SettingMode
 import com.woowahan.accountbook.ui.components.textfield.CustomTextField
 import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.ui.theme.*

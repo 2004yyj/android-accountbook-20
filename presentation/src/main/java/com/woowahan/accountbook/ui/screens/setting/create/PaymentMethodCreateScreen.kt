@@ -14,7 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.woowahan.accountbook.ui.components.appbar.BackAppBar
 import com.woowahan.accountbook.ui.components.editable.Editable
-import com.woowahan.accountbook.ui.screens.setting.mode.SettingMode
+import com.woowahan.accountbook.ui.type.SettingMode
 import com.woowahan.accountbook.ui.components.textfield.CustomTextField
 import com.woowahan.accountbook.ui.theme.*
 import com.woowahan.accountbook.ui.viewmodel.setting.create.CreatePaymentMethodViewModel

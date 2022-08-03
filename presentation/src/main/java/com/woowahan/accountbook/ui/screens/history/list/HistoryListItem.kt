@@ -27,6 +27,7 @@ fun HistoryListItem(
     item: History,
     isChecked: Boolean,
     isCheckable: Boolean,
+    onClick: () -> Unit = {},
     onCheckedChange: (Boolean) -> Unit = {},
     onCheckableChange: (Boolean) -> Unit = {}
 ) {
@@ -46,6 +47,8 @@ fun HistoryListItem(
         onClick = {
             if (isCheckable) {
                 onCheckedChange(!isChecked)
+            } else {
+                onClick()
             }
         },
         onLongClick = {

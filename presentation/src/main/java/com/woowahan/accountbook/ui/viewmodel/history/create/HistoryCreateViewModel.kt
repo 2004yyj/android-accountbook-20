@@ -3,14 +3,13 @@ package com.woowahan.accountbook.ui.viewmodel.history.create
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.woowahan.accountbook.domain.model.Category
-import com.woowahan.accountbook.domain.model.PaymentMethod
-import com.woowahan.accountbook.domain.model.PaymentType
-import com.woowahan.accountbook.domain.model.Result
+import com.woowahan.accountbook.domain.model.*
 import com.woowahan.accountbook.domain.usecase.category.GetCategoryByNameUseCase
 import com.woowahan.accountbook.domain.usecase.category.GetAllCategoryByTypeUseCase
 import com.woowahan.accountbook.domain.usecase.category.InsertCategoryUseCase
+import com.woowahan.accountbook.domain.usecase.history.GetHistoryByIdUseCase
 import com.woowahan.accountbook.domain.usecase.history.InsertHistoryUseCase
+import com.woowahan.accountbook.domain.usecase.history.UpdateHistoryUseCase
 import com.woowahan.accountbook.domain.usecase.paymentmethod.GetAllPaymentMethodsUseCase
 import com.woowahan.accountbook.domain.usecase.paymentmethod.InsertPaymentMethodUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,11 +22,13 @@ import kotlin.random.Random
 @HiltViewModel
 class HistoryCreateViewModel @Inject constructor(
     private val insertHistoryUseCase: InsertHistoryUseCase,
+    private val updateHistoryUseCase: UpdateHistoryUseCase,
     private val getCategoryByNameUseCase: GetCategoryByNameUseCase,
     private val getAllCategoryByTypeUseCase: GetAllCategoryByTypeUseCase,
     private val getAllPaymentMethodsUseCase: GetAllPaymentMethodsUseCase,
     private val insertCategoryUseCase: InsertCategoryUseCase,
-    private val insertPaymentMethodUseCase: InsertPaymentMethodUseCase
+    private val insertPaymentMethodUseCase: InsertPaymentMethodUseCase,
+    private val getHistoryByIdUseCase: GetHistoryByIdUseCase,
 ): ViewModel() {
 
     private val _isSuccess = MutableStateFlow(false)
@@ -35,6 +36,9 @@ class HistoryCreateViewModel @Inject constructor(
 
     private val _isFailure = MutableStateFlow("")
     val isFailure = _isFailure.asStateFlow()
+
+    private val _history = MutableStateFlow<History?>(null)
+    val history = _history.asStateFlow()
 
     private val _paymentMethods = MutableStateFlow<List<PaymentMethod>>(emptyList())
     val paymentMethods = _paymentMethods.asStateFlow()
@@ -150,6 +154,60 @@ class HistoryCreateViewModel @Inject constructor(
         when(result) {
             is Result.Failure -> {
                 result.cause.message?.let { _isFailure.emit(it) }
+            }
+        }
+    }
+
+    fun getHistoryById(id: Int) {
+        viewModelScope.launch {
+            getHistoryByIdUseCase(id).collect {
+                when(it) {
+                    is Result.Success<History> -> {
+                        _history.emit(it.value)
+                    }
+                    is Result.Failure -> {
+                        it.cause.message?.let { message -> _isFailure.emit(message) }
+                    }
+                }
+            }
+        }
+    }
+
+    fun updateHistory(
+        id: Int,
+        type: PaymentType,
+        date: Long,
+        money: Long,
+        content: String,
+        paymentMethod: PaymentMethod?,
+        category: Category?
+    ) {
+        viewModelScope.launch {
+            val filteredContent = content.ifEmpty { "무제" }
+            if (category == null) {
+                val name = when (type) {
+                    PaymentType.Expense -> "미분류/지출"
+                    PaymentType.Income -> "미분류/수입"
+                    else -> ""
+                }
+                getCategoryByNameUseCase(name).collect {
+                    if (it is Result.Success<Category>) {
+                        insertHistoryUseCase(
+                            date,
+                            money,
+                            filteredContent,
+                            it.value,
+                            paymentMethod
+                        ).collect {
+                            _isSuccess.emit(true)
+                        }
+                    }
+                }
+            } else {
+                updateHistoryUseCase(id, date, money, filteredContent, category, paymentMethod).collect {
+                    if (it is Result.Failure) it.cause.printStackTrace()
+                    _isSuccess.emit(true)
+                }
             }
         }
     }
