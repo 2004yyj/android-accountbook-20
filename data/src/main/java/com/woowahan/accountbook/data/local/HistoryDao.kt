@@ -1,6 +1,7 @@
 package com.woowahan.accountbook.data.local
 
 import com.woowahan.accountbook.data.entity.*
+import com.woowahan.accountbook.domain.model.History
 
 interface HistoryDao {
     suspend fun getTotalPayByMonthAndType(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: PaymentTypeData): Long
@@ -13,4 +14,5 @@ interface HistoryDao {
     suspend fun deleteHistory(id: Int)
     suspend fun deleteAllHistory(idList: List<Int>)
     suspend fun getAllStatisticsByCategoryType(firstDayOfMonth: Long, firstDayOfNextMonth: Long,): List<StatisticData>
+    suspend fun getHistoryById(id: Int): HistoryData
 }

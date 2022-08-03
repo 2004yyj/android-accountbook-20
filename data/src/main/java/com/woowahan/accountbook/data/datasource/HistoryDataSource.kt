@@ -13,4 +13,5 @@ interface HistoryDataSource {
     suspend fun deleteHistory(id: Int)
     suspend fun deleteAllHistory(idList: List<Int>)
     suspend fun getAllStatisticsByCategoryType(firstDayOfMonth: Long, firstDayOfNextMonth: Long,): List<Statistic>
+    suspend fun getHistoryById(id: Int): History
 }

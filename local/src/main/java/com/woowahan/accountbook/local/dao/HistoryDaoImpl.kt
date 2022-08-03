@@ -1,7 +1,9 @@
 package com.woowahan.accountbook.local.dao
 
+import androidx.core.database.getStringOrNull
 import com.woowahan.accountbook.data.entity.*
 import com.woowahan.accountbook.data.local.HistoryDao
+import com.woowahan.accountbook.domain.model.History
 import com.woowahan.accountbook.local.helper.DatabaseOpenHelper
 import com.woowahan.accountbook.local.util.runSQL
 import com.woowahan.accountbook.local.util.runSQLWithReadableTransaction
@@ -98,7 +100,7 @@ class HistoryDaoImpl @Inject constructor(
                 "LEFT OUTER JOIN (SELECT total(amount) as amount, date FROM History WHERE amount > 0 GROUP BY date) as income " +
                 "ON History.date = income.date " +
                 "LEFT OUTER JOIN (SELECT total(amount) as amount, date FROM History WHERE amount < 0 GROUP BY date) as expense " +
-                "ON income.date = expense.date " +
+                "ON History.date = expense.date " +
                 "INNER JOIN Category " +
                 "ON History.category_id = Category.id " +
                 "LEFT OUTER JOIN PaymentMethod " +
@@ -134,6 +136,50 @@ class HistoryDaoImpl @Inject constructor(
             }
             cursor.close()
             list
+        }
+    }
+
+    override suspend fun getHistoryById(id: Int): HistoryData {
+        val sql ="SELECT History.*, " +
+                "IFNULL(income.amount, 0), " +
+                "IFNULL(expense.amount, 0), " +
+                "Category.*, PaymentMethod.* " +
+                "FROM History " +
+                "LEFT OUTER JOIN (SELECT total(amount) as amount, date FROM History WHERE amount > 0 GROUP BY date) as income " +
+                "ON History.date = income.date " +
+                "LEFT OUTER JOIN (SELECT total(amount) as amount, date FROM History WHERE amount < 0 GROUP BY date) as expense " +
+                "ON History.date = expense.date " +
+                "INNER JOIN Category " +
+                "ON History.category_id = Category.id " +
+                "LEFT OUTER JOIN PaymentMethod " +
+                "ON IFNULL(History.payment_method_id, -1) = PaymentMethod.id " +
+                "WHERE History.id = ?" +
+                "ORDER BY History.date"
+
+        return dbHelper.runSQLWithReadableTransaction {
+            val cursor = rawQuery(sql, arrayOf(id.toString()))
+            cursor.moveToFirst()
+            val historyData = HistoryData(
+                cursor.getInt(0),
+                cursor.getLong(1),
+                cursor.getLong(2),
+                cursor.getString(3),
+                cursor.getLong(6),
+                cursor.getLong(7),
+                CategoryData(
+                    cursor.getInt(8),
+                    PaymentTypeData.valueOf(cursor.getString(9)),
+                    cursor.getString(10),
+                    cursor.getString(11).toULong()
+                ),
+                if (cursor.getStringOrNull(13) == null) null
+                else PaymentMethodData(
+                    cursor.getInt(12),
+                    cursor.getString(13),
+                )
+            )
+            cursor.close()
+            historyData
         }
     }
 
