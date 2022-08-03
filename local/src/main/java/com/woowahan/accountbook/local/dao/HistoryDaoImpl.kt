@@ -10,6 +10,7 @@ import com.woowahan.accountbook.local.util.runSQLWithReadableTransaction
 import com.woowahan.accountbook.local.util.runSQLWithWritableTransaction
 import com.woowahan.accountbook.local.util.whereInSQLQueryIdList
 import javax.inject.Inject
+import kotlin.math.exp
 
 class HistoryDaoImpl @Inject constructor(
     private val dbHelper: DatabaseOpenHelper
@@ -48,7 +49,7 @@ class HistoryDaoImpl @Inject constructor(
                 "LEFT OUTER JOIN (SELECT total(amount) as amount, date FROM History WHERE amount > 0 GROUP BY date) as income " +
                 "ON History.date = income.date " +
                 "LEFT OUTER JOIN (SELECT total(amount) as amount, date FROM History WHERE amount < 0 GROUP BY date) as expense " +
-                "ON income.date = expense.date " +
+                "ON History.date = expense.date " +
                 "INNER JOIN Category " +
                 "ON History.category_id = Category.id " +
                 "LEFT OUTER JOIN PaymentMethod " +
@@ -112,14 +113,22 @@ class HistoryDaoImpl @Inject constructor(
             val cursor = rawQuery(sql, arrayOf(firstDayOfMonth.toString(), firstDayOfNextMonth.toString()))
             val list = mutableListOf<HistoryData>()
             while(cursor.moveToNext()) {
+                val incomeTotal = if (type == PaymentTypeData.Income)
+                    cursor.getLong(6)
+                else 0
+
+                val expenseTotal = if (type == PaymentTypeData.Expense)
+                    cursor.getLong(7)
+                else 0
+
                 list.add(
                     HistoryData(
                         cursor.getInt(0),
                         cursor.getLong(1),
                         cursor.getLong(2),
                         cursor.getString(3),
-                        cursor.getLong(6),
-                        cursor.getLong(7),
+                        incomeTotal,
+                        expenseTotal,
                         CategoryData(
                             cursor.getInt(8),
                             PaymentTypeData.valueOf(cursor.getString(9)),
