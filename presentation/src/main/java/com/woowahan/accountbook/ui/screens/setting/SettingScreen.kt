@@ -25,7 +25,7 @@ import com.woowahan.accountbook.ui.screens.setting.SettingTabs.CategoryExpenseTa
 import com.woowahan.accountbook.ui.screens.setting.item.AddItemFooter
 import com.woowahan.accountbook.ui.screens.setting.item.CategoryListItem
 import com.woowahan.accountbook.ui.screens.setting.item.PaymentMethodListItem
-import com.woowahan.accountbook.ui.screens.setting.mode.SettingMode
+import com.woowahan.accountbook.ui.type.SettingMode
 import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.ui.navigation.Screen
 import com.woowahan.accountbook.ui.theme.Purple

@@ -24,7 +24,7 @@ import com.woowahan.accountbook.ui.screens.history.create.HistoryCreateScreen
 import com.woowahan.accountbook.ui.screens.setting.SettingScreen
 import com.woowahan.accountbook.ui.screens.setting.create.CategoryCreateScreen
 import com.woowahan.accountbook.ui.screens.setting.create.PaymentMethodCreateScreen
-import com.woowahan.accountbook.ui.screens.setting.mode.SettingMode
+import com.woowahan.accountbook.ui.type.SettingMode
 import com.woowahan.accountbook.ui.screens.statistics.StatisticsScreen
 import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.ui.navigation.BottomNavigationRoute

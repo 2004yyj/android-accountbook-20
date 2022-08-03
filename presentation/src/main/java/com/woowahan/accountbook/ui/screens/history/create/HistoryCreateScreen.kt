@@ -28,7 +28,7 @@ import com.woowahan.accountbook.ui.components.radio.TypeRadioButton
 import com.woowahan.accountbook.ui.components.spinner.CustomDropDownMenu
 import com.woowahan.accountbook.ui.components.textfield.CustomTextField
 import com.woowahan.accountbook.domain.model.PaymentType
-import com.woowahan.accountbook.ui.screens.setting.mode.SettingMode
+import com.woowahan.accountbook.ui.type.SettingMode
 import com.woowahan.accountbook.ui.theme.*
 import com.woowahan.accountbook.util.*
 import com.woowahan.accountbook.ui.viewmodel.history.create.HistoryCreateViewModel
