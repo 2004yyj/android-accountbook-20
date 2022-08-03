@@ -234,7 +234,7 @@ class HistoryDaoImpl @Inject constructor(
         category: CategoryData,
         paymentMethod: PaymentMethodData?
     ) {
-        val sql = "UPDATE History SET date = ?, amount = ?, content = ?, category_id = ?, payment_method_id = ${if (paymentMethod != null) "?" else "NULL"})"
+        val sql = "UPDATE History SET date = ?, amount = ?, content = ?, category_id = ?, payment_method_id = ${if (paymentMethod != null) "?" else "NULL"} WHERE id = $id"
         dbHelper.runSQLWithWritableTransaction {
             val statement = compileStatement(sql)
             statement.bindLong(1, date)
