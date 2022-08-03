@@ -344,7 +344,15 @@ fun HistoryCreateScreen(
                             category = categories.find { it.name == selectedCategory }
                         )
                     } else {
-
+                        viewModel.updateHistory(
+                            id = id,
+                            type = selectedType,
+                            date = selectedDate,
+                            money = if (selectedType == PaymentType.Income) enterMoney else -enterMoney,
+                            content = enterContent,
+                            paymentMethod = if (selectedType == PaymentType.Expense) paymentMethods.find { it.name == selectedPaymentMethod } else null,
+                            category = categories.find { it.name == selectedCategory }
+                        )
                     }
                 }
             ) {

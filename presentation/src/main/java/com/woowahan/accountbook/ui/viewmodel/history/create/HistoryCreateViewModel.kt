@@ -9,6 +9,7 @@ import com.woowahan.accountbook.domain.usecase.category.GetAllCategoryByTypeUseC
 import com.woowahan.accountbook.domain.usecase.category.InsertCategoryUseCase
 import com.woowahan.accountbook.domain.usecase.history.GetHistoryByIdUseCase
 import com.woowahan.accountbook.domain.usecase.history.InsertHistoryUseCase
+import com.woowahan.accountbook.domain.usecase.history.UpdateHistoryUseCase
 import com.woowahan.accountbook.domain.usecase.paymentmethod.GetAllPaymentMethodsUseCase
 import com.woowahan.accountbook.domain.usecase.paymentmethod.InsertPaymentMethodUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +22,7 @@ import kotlin.random.Random
 @HiltViewModel
 class HistoryCreateViewModel @Inject constructor(
     private val insertHistoryUseCase: InsertHistoryUseCase,
+    private val updateHistoryUseCase: UpdateHistoryUseCase,
     private val getCategoryByNameUseCase: GetCategoryByNameUseCase,
     private val getAllCategoryByTypeUseCase: GetAllCategoryByTypeUseCase,
     private val getAllPaymentMethodsUseCase: GetAllPaymentMethodsUseCase,
@@ -166,6 +168,45 @@ class HistoryCreateViewModel @Inject constructor(
                     is Result.Failure -> {
                         it.cause.message?.let { message -> _isFailure.emit(message) }
                     }
+                }
+            }
+        }
+    }
+
+    fun updateHistory(
+        id: Int,
+        type: PaymentType,
+        date: Long,
+        money: Long,
+        content: String,
+        paymentMethod: PaymentMethod?,
+        category: Category?
+    ) {
+        viewModelScope.launch {
+            val filteredContent = content.ifEmpty { "무제" }
+            if (category == null) {
+                val name = when (type) {
+                    PaymentType.Expense -> "미분류/지출"
+                    PaymentType.Income -> "미분류/수입"
+                    else -> ""
+                }
+                getCategoryByNameUseCase(name).collect {
+                    if (it is Result.Success<Category>) {
+                        insertHistoryUseCase(
+                            date,
+                            money,
+                            filteredContent,
+                            it.value,
+                            paymentMethod
+                        ).collect {
+                            _isSuccess.emit(true)
+                        }
+                    }
+                }
+            } else {
+                updateHistoryUseCase(id, date, money, filteredContent, category, paymentMethod).collect {
+                    if (it is Result.Failure) it.cause.printStackTrace()
+                    _isSuccess.emit(true)
                 }
             }
         }
