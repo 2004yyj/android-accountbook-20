@@ -58,7 +58,6 @@ class HistoryCreateViewModel @Inject constructor(
             insertCategoryUseCase(type, name, randomColor.value).collect {
                 when(it) {
                     is Result.Success<Unit> -> {
-                        getCategories(type)
                         _isInsertCategorySuccess.emit(name)
                     }
                     is Result.Failure -> {
@@ -74,7 +73,6 @@ class HistoryCreateViewModel @Inject constructor(
             insertPaymentMethodUseCase(name).collect {
                 when(it) {
                     is Result.Success<Unit> -> {
-                        getPaymentMethods()
                         _isInsertPaymentMethodSuccess.emit(name)
                     }
                     is Result.Failure -> {
