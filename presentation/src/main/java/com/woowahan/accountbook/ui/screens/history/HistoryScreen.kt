@@ -27,6 +27,7 @@ import com.woowahan.accountbook.domain.model.History
 import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.ui.navigation.Screen
 import com.woowahan.accountbook.ui.theme.*
+import com.woowahan.accountbook.ui.type.SettingMode
 import com.woowahan.accountbook.util.*
 import com.woowahan.accountbook.ui.viewmodel.history.HistoryViewModel
 import com.woowahan.accountbook.ui.viewmodel.main.MainViewModel
@@ -118,7 +119,7 @@ fun HistoryScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(Screen.HistoryIndex.HistoryCreate.route)
+                    navController.navigate("${Screen.HistoryIndex.HistoryCreate.route}?settingMode=${SettingMode.Create}&id=0")
                 }
             ) {
                 Icon(
@@ -212,7 +213,7 @@ fun HistoryScreen(
                                     isCheckable = isModifyModeEnabled,
                                     isChecked = historyChecked.contains(item),
                                     onClick = {
-
+                                        navController.navigate("${Screen.HistoryIndex.HistoryCreate.route}?settingMode=${SettingMode.Modify}&id=${item.id}")
                                     },
                                     onCheckedChange = {
                                         if (it) historyChecked.add(item)
