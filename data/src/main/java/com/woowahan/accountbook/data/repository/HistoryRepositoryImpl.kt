@@ -1,6 +1,7 @@
 package com.woowahan.accountbook.data.repository
 
 import com.woowahan.accountbook.data.datasource.HistoryDataSource
+import com.woowahan.accountbook.data.mapper.toModel
 import com.woowahan.accountbook.domain.model.*
 import com.woowahan.accountbook.domain.repository.HistoryRepository
 import javax.inject.Inject
@@ -29,6 +30,10 @@ class HistoryRepositoryImpl @Inject constructor(
         type: PaymentType
     ): List<History> {
         return dataSource.getAllHistoriesByMonthAndType(firstDayOfMonth, firstDayOfNextMonth, type)
+    }
+
+    override suspend fun getHistoryById(id: Int): History {
+        return dataSource.getHistoryById(id)
     }
 
     override suspend fun createHistoryTable() {

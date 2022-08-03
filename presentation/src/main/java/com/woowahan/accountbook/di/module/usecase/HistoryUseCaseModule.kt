@@ -69,5 +69,10 @@ object HistoryUseCaseModule {
     @Singleton
     fun providesGetAllExpendHistoriesByMonthAndCategoryNameUseCase(repository: HistoryRepository): GetAllExpendHistoriesByMonthAndCategoryNameUseCase {
         return GetAllExpendHistoriesByMonthAndCategoryNameUseCase(repository)
+    
+    @Provides
+    @Singleton
+    fun providesGetHistoryByIdUseCase(repository: HistoryRepository): GetHistoryByIdUseCase {
+        return GetHistoryByIdUseCase(repository)
     }
 }

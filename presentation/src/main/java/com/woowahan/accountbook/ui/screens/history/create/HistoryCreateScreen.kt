@@ -16,11 +16,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.woowahan.accountbook.ui.components.appbar.BackAppBar
 import com.woowahan.accountbook.ui.components.button.TransparentButton
 import com.woowahan.accountbook.ui.components.editable.Editable
@@ -29,14 +27,20 @@ import com.woowahan.accountbook.ui.components.spinner.CustomDropDownMenu
 import com.woowahan.accountbook.ui.components.textfield.CustomTextField
 import com.woowahan.accountbook.domain.model.PaymentType
 import com.woowahan.accountbook.ui.theme.*
+import com.woowahan.accountbook.ui.type.SettingMode
 import com.woowahan.accountbook.util.*
 import com.woowahan.accountbook.ui.viewmodel.history.create.HistoryCreateViewModel
 
 @Composable
 fun HistoryCreateScreen(
+    settingMode: String,
+    id: Int,
     navController: NavController,
     viewModel: HistoryCreateViewModel = hiltViewModel()
 ) {
+    val settingMode = SettingMode.valueOf(settingMode)
+    var modeTitle by remember { mutableStateOf("등록") }
+
     val context = LocalContext.current
 
     val isSuccess by viewModel.isSuccess.collectAsState()
@@ -61,6 +65,8 @@ fun HistoryCreateScreen(
     val isSuccessInsertPaymentMethod by viewModel.isSuccessInsertPaymentMethod.collectAsState()
     val isSuccessInsertCategory by viewModel.isSuccessInsertCategory.collectAsState()
 
+    val modifyData by viewModel.history.collectAsState()
+
     if (isSuccessInsertPaymentMethod.isNotEmpty())
         selectedPaymentMethod = isSuccessInsertPaymentMethod
 
@@ -69,6 +75,22 @@ fun HistoryCreateScreen(
 
     viewModel.getPaymentMethods()
     viewModel.getCategories(selectedType)
+
+    if (settingMode == SettingMode.Modify) {
+        modeTitle = "수정"
+        viewModel.getHistoryById(id)
+    }
+
+    LaunchedEffect(key1 = modifyData) {
+        if (modifyData != null) {
+            selectedType = if (modifyData!!.amount > 0) PaymentType.Income else PaymentType.Expense
+            selectedDate = modifyData!!.date
+            enterMoney = if (modifyData!!.amount > 0) modifyData!!.amount else modifyData!!.amount * -1
+            enterContent = modifyData!!.content
+            selectedPaymentMethod = if (modifyData!!.paymentMethod != null) modifyData!!.paymentMethod!!.name else ""
+            selectedCategory = modifyData!!.category.name
+        }
+    }
 
     if (isSuccess) {
         LaunchedEffect(true) {
@@ -92,7 +114,7 @@ fun HistoryCreateScreen(
             .fillMaxSize(),
         topBar = {
             BackAppBar(
-                title = { Text("내역 등록") },
+                title = { Text("내역 $modeTitle") },
                 onClickBack = {
                     navController.popBackStack()
                 }
@@ -227,9 +249,13 @@ fun HistoryCreateScreen(
                                 IconButton(
                                     modifier = Modifier.align(Alignment.CenterEnd),
                                     onClick = {
-                                        viewModel.insertPaymentMethod(addingPaymentMethod)
-                                        addingPaymentMethod = ""
-                                        expendedPaymentMethod = !expendedPaymentMethod
+                                        if (addingPaymentMethod != "") {
+                                            viewModel.insertPaymentMethod(addingPaymentMethod)
+                                            addingPaymentMethod = ""
+                                            expendedPaymentMethod = !expendedPaymentMethod
+                                        } else {
+                                            Toast.makeText(context, "값이 비어 있습니다.", Toast.LENGTH_SHORT).show()
+                                        }
                                     }
                                 ) {
                                     Icon(
@@ -272,9 +298,13 @@ fun HistoryCreateScreen(
                             IconButton(
                                 modifier = Modifier.align(Alignment.CenterEnd),
                                 onClick = {
-                                    viewModel.insertCategory(selectedType, addingCategory)
-                                    addingCategory = ""
-                                    expendedCategory = !expendedCategory
+                                    if (addingCategory != "") {
+                                        viewModel.insertCategory(selectedType, addingCategory)
+                                        addingCategory = ""
+                                        expendedCategory = !expendedCategory
+                                    } else {
+                                        Toast.makeText(context, "값이 비어 있습니다.", Toast.LENGTH_SHORT).show()
+                                    }
                                 }
                             ) {
                                 Icon(
@@ -312,24 +342,30 @@ fun HistoryCreateScreen(
                     .height(48.dp)
                     .align(Alignment.BottomCenter),
                 onClick = {
-                    viewModel.insertHistory(
-                        type = selectedType,
-                        date = selectedDate,
-                        money = if (selectedType == PaymentType.Income) enterMoney else -enterMoney,
-                        content = enterContent,
-                        paymentMethod = paymentMethods.find { it.name == selectedPaymentMethod },
-                        category = categories.find { it.name == selectedCategory }
-                    )
+                    if (settingMode == SettingMode.Create) {
+                        viewModel.insertHistory(
+                            type = selectedType,
+                            date = selectedDate,
+                            money = if (selectedType == PaymentType.Income) enterMoney else -enterMoney,
+                            content = enterContent,
+                            paymentMethod = paymentMethods.find { it.name == selectedPaymentMethod },
+                            category = categories.find { it.name == selectedCategory }
+                        )
+                    } else {
+                        viewModel.updateHistory(
+                            id = id,
+                            type = selectedType,
+                            date = selectedDate,
+                            money = if (selectedType == PaymentType.Income) enterMoney else -enterMoney,
+                            content = enterContent,
+                            paymentMethod = if (selectedType == PaymentType.Expense) paymentMethods.find { it.name == selectedPaymentMethod } else null,
+                            category = categories.find { it.name == selectedCategory }
+                        )
+                    }
                 }
             ) {
-                Text(text = "등록하기", color = White)
+                Text(text = "${modeTitle}하기", color = White)
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewHistoryCreateScreen() {
-    HistoryCreateScreen(rememberNavController())
 }

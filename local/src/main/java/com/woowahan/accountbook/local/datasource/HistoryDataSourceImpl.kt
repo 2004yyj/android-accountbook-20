@@ -37,6 +37,10 @@ class HistoryDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun getHistoryById(id: Int): History {
+        return dao.getHistoryById(id).toModel()
+    }
+
     override suspend fun createHistoryTable() {
         return dao.createHistoryTable()
     }
