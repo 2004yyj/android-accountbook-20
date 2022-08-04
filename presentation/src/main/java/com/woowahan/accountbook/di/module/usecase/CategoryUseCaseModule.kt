@@ -13,6 +13,12 @@ import javax.inject.Singleton
 object CategoryUseCaseModule {
     @Provides
     @Singleton
+    fun providesDropCategoryTableUseCase(repository: CategoryRepository): DropCategoryTableUseCase {
+        return DropCategoryTableUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
     fun providesCreateCategoryTableUseCase(repository: CategoryRepository): CreateCategoryTableUseCase {
         return CreateCategoryTableUseCase(repository)
     }

@@ -13,6 +13,12 @@ import javax.inject.Singleton
 object PaymentMethodUseCaseModule {
     @Provides
     @Singleton
+    fun providesDropPaymentMethodTableUseCase(repository: PaymentMethodRepository): DropPaymentMethodTableUseCase {
+        return DropPaymentMethodTableUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
     fun providesCreatePaymentMethodTableUseCase(repository: PaymentMethodRepository): CreatePaymentMethodTableUseCase {
         return CreatePaymentMethodTableUseCase(repository)
     }
