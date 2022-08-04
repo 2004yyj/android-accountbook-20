@@ -54,7 +54,7 @@ class MainViewModel @Inject constructor(
                 categoryResult is Result.Success<Unit> &&
                         paymentMethodResult is Result.Success<Unit> &&
                         historyResult is Result.Success<Unit> -> {
-                    dropTables()
+                    createTables()
                 }
             }
         }
