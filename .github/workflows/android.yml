@@ -4,7 +4,7 @@ on:
     - main
 
 jobs:
-  internal_build:
+  release_build:
     runs-on: ubuntu-latest
 
     steps:
@@ -13,13 +13,13 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: build internal
-        run: ./gradlew assembleInternal
+      - name: build release
+        run: ./gradlew assembleRelease
       - name: Sign APK
         id: sign_apk
         uses: r0adkll/sign-android-release@v1
         with:
-          releaseDirectory: app/build/outputs/apk/release
+          releaseDirectory: presentation/release/
           signingKeyBase64: ${{ secrets.KEYSTORE }}
           alias: ${{ secrets.SIGNING_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.SIGNING_STORE_PASSWORD }}
@@ -29,5 +29,5 @@ jobs:
         with:
           appId: ${{secrets.FIREBASE_APP_ID}}
           token: ${{secrets.FIREBASE_TOKEN}}
-          groups: internal_testers
-          file: app/build/outputs/apk/release/app-internal-unsigned-signed.apk
+          groups: accountBook
+          file: presentation/release/presentation-release.apk
