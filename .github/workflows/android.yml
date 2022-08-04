@@ -1,7 +1,7 @@
 on:
   pull_request:
     branches:
-    - main
+      - main
 
 jobs:
   release_build:
@@ -13,21 +13,32 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/buildSrc/**/*.kt') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
       - name: build release
         run: ./gradlew assembleRelease
       - name: Sign APK
         id: sign_apk
         uses: r0adkll/sign-android-release@v1
         with:
-          releaseDirectory: presentation/release/
+          releaseDirectory: presentation/build/outputs/apk/release/
           signingKeyBase64: ${{ secrets.KEYSTORE }}
           alias: ${{ secrets.SIGNING_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.SIGNING_STORE_PASSWORD }}
           keyPassword: ${{ secrets.SIGNING_KEY_PASSWORD }}
       - name: upload artifact to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.3.4
         with:
           appId: ${{secrets.FIREBASE_APP_ID}}
           token: ${{secrets.FIREBASE_TOKEN}}
           groups: accountBook
-          file: presentation/release/presentation-release.apk
+          file: presentation/build/outputs/apk/release/presentation-release-unsigned-aligned.apk
+          debug: true
