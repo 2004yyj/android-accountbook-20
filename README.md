@@ -16,6 +16,7 @@
 - [X] SettingScreen 개발
 - [X] CategoryCreateScreen 개발
 - [X] PaymentMethodCreateScreen 개발
+- [X] StatisticsDetailScreen 개발
 
 ## Database 구조
 ![제목 없는 다이어그램 drawio](https://user-images.githubusercontent.com/18213322/182394719-e646c8c1-2de3-4b39-a0f2-91cf97908a6f.png)
