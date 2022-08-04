@@ -31,9 +31,6 @@ class HistoryViewModel @Inject constructor(
     private val _expenseTotal = MutableStateFlow(0)
     val expenseTotal = _expenseTotal.asStateFlow()
 
-    private val _isFailure = MutableSharedFlow<String>()
-    val isFailure = _isFailure.asSharedFlow()
-
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
 
@@ -45,11 +42,6 @@ class HistoryViewModel @Inject constructor(
                         _historyList.value.apply {
                             removeAll(idList)
                             _historyList.emit(this)
-                        }
-                    }
-                    is Result.Failure -> {
-                        it.cause.message?.let { message ->
-                            _isFailure.emit(message)
                         }
                     }
                 }
@@ -66,10 +58,6 @@ class HistoryViewModel @Inject constructor(
                 when (it) {
                     is Result.Success<List<History>> -> {
                         _historyList.emit(it.value.toMutableStateList())
-                        _isRefreshing.emit(false)
-                    }
-                    is Result.Failure -> {
-                        it.cause.message?.let { message -> _isFailure.emit(message) }
                         _isRefreshing.emit(false)
                     }
                 }
@@ -96,7 +84,6 @@ class HistoryViewModel @Inject constructor(
                         _isRefreshing.emit(false)
                     }
                     is Result.Failure -> {
-                        it.cause.message?.let { message -> _isFailure.emit(message) }
                         _isRefreshing.emit(false)
                     }
                 }

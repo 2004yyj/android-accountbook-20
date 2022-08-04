@@ -44,7 +44,6 @@ fun HistoryScreen(
     val history by viewModel.history.collectAsState()
     val historyChecked = remember { mutableStateListOf<History>() }
     val isRefreshing by viewModel.isRefreshing.collectAsState()
-    val isFailure by viewModel.isFailure.collectAsState(initial = "")
 
     val incomeTotal by viewModel.incomeTotal.collectAsState()
     val expenseTotal by viewModel.expenseTotal.collectAsState()
@@ -54,10 +53,6 @@ fun HistoryScreen(
     var isModifyModeEnabled by rememberSaveable { mutableStateOf(false) }
 
     val currentMonth by sharedViewModel.currentMonth.collectAsState()
-
-    if (isFailure.isNotEmpty()) {
-        Toast.makeText(context, isFailure, Toast.LENGTH_SHORT).show()
-    }
 
     fun initial(refreshState: Boolean = false) = run {
         isModifyModeEnabled = false
