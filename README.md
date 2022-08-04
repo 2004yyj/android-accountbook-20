@@ -1,7 +1,7 @@
 # 가계부 관리 앱
 
 ## 걸린 시간
-7월 25일 ~ (진행 중)
+7월 25일 ~ 8월 4일
 
 ## 위키
 * [구현 내용 정리](https://github.com/woowa-techcamp-2022/android-accountbook-20/wiki/구현할-내용-정리)
