@@ -6,8 +6,6 @@ interface HistoryDataSource {
     suspend fun getTotalPayByMonthAndType(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: PaymentType): Long
     suspend fun getAllHistoriesByMonthAndType(firstDayOfMonth: Long, firstDayOfNextMonth: Long): List<History>
     suspend fun getAllHistoriesByMonthAndType(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: PaymentType): List<History>
-    suspend fun createHistoryTable()
-    suspend fun dropHistoryTable()
     suspend fun insertHistory(date: Long, amount: Long, content: String, category: Category, paymentMethod: PaymentMethod?)
     suspend fun updateHistory(id: Int, date: Long, amount: Long, content: String, category: Category, paymentMethod: PaymentMethod?)
     suspend fun deleteHistory(id: Int)

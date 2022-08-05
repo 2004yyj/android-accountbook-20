@@ -84,22 +84,6 @@ class CategoryDaoImpl @Inject constructor(
         }
     }
 
-    override suspend fun createCategoryTable() {
-        val sql = "CREATE TABLE IF NOT EXISTS Category (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, name TEXT NOT NULL UNIQUE, color TEXT NOT NULL);"
-        dbHelper.runSQL {
-            val statement = compileStatement(sql)
-            statement.execute()
-        }
-    }
-
-    override suspend fun dropCategoryTable() {
-        val sql = "DROP TABLE Category;"
-        dbHelper.runSQL {
-            val statement = compileStatement(sql)
-            statement.execute()
-        }
-    }
-
     override suspend fun insertCategory(type: PaymentTypeData, name: String, color: ULong) {
         val sql = "INSERT INTO Category (type, name, color) VALUES (?, ?, ?)"
         dbHelper.runSQLWithWritableTransaction {

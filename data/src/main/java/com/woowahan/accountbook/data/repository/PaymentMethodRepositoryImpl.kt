@@ -21,14 +21,6 @@ class PaymentMethodRepositoryImpl @Inject constructor(
         return dataSource.getPaymentMethodById(id)
     }
 
-    override suspend fun createPaymentMethodTable() {
-        return dataSource.createPaymentMethodTable()
-    }
-
-    override suspend fun dropPaymentMethodTable() {
-        return dataSource.dropPaymentMethodTable()
-    }
-
     override suspend fun insertPaymentMethod(name: String) {
         return dataSource.insertPaymentMethod(name)
     }
