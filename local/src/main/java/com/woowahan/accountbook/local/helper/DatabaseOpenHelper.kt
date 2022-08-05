@@ -11,22 +11,9 @@ class DatabaseOpenHelper(
     version: Int
 ): SQLiteOpenHelper(context, dbName, null, version) {
     init { writableDatabase }
-    private lateinit var onUpgradeListener: OnUpgradeListener
-    fun setOnUpgradeListener(onUpgrade: (oldVersion: Int, newVersion: Int) -> Unit) {
-        onUpgradeListener = object : OnUpgradeListener {
-            override fun onUpgrade(oldVersion: Int, newVersion: Int) {
-                onUpgrade(oldVersion, newVersion)
-            }
-        }
-    }
     override fun onCreate(db: SQLiteDatabase?) {}
-    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        onUpgradeListener.onUpgrade(oldVersion, newVersion)
-    }
-}
+    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {}
 
-private interface OnUpgradeListener {
-    fun onUpgrade(oldVersion: Int, newVersion: Int)
     companion object {
         private const val CREATE_CATEGORY = "CREATE TABLE IF NOT EXISTS Category (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT NOT NULL, name TEXT NOT NULL UNIQUE, color TEXT NOT NULL);"
         private const val DROP_CATEGORY = "DROP TABLE IF EXISTS Category;"
