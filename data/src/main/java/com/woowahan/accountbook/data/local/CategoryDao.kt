@@ -10,8 +10,6 @@ interface CategoryDao {
     suspend fun getAllCategoryByType(type: String): List<CategoryData>
     suspend fun getCategoryByName(name: String): CategoryData
     suspend fun getCategoryById(id: Int): CategoryData
-    suspend fun createCategoryTable()
-    suspend fun dropCategoryTable()
     suspend fun insertCategory(type: PaymentTypeData, name: String, color: ULong)
     suspend fun updateCategory(id: Int, type: PaymentTypeData, name: String, color: ULong)
     suspend fun deleteCategory(id: Int)

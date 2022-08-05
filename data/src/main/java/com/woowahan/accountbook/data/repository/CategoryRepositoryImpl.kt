@@ -25,14 +25,6 @@ class CategoryRepositoryImpl @Inject constructor(
         return dataSource.getCategoryById(id)
     }
 
-    override suspend fun createCategoryTable() {
-        return dataSource.createCategoryTable()
-    }
-
-    override suspend fun dropCategoryTable() {
-        return dataSource.dropCategoryTable()
-    }
-
     override suspend fun insertCategory(type: PaymentType, name: String, color: ULong) {
         return dataSource.insertCategory(type, name, color)
     }

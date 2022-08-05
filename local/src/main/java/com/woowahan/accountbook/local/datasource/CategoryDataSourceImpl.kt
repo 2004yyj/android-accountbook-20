@@ -27,14 +27,6 @@ class CategoryDataSourceImpl @Inject constructor(
         return dao.getCategoryById(id).toModel()
     }
 
-    override suspend fun createCategoryTable() {
-        return dao.createCategoryTable()
-    }
-
-    override suspend fun dropCategoryTable() {
-        return dao.dropCategoryTable()
-    }
-
     override suspend fun insertCategory(type: PaymentType, name: String, color: ULong) {
         return dao.insertCategory(type.toEntity(), name, color)
     }
