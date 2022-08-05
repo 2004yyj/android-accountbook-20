@@ -57,22 +57,6 @@ class PaymentMethodDaoImpl @Inject constructor(
         }
     }
 
-    override suspend fun createPaymentMethodTable() {
-        val sql = "CREATE TABLE IF NOT EXISTS PaymentMethod (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE);"
-        dbHelper.runSQL {
-            val statement = compileStatement(sql)
-            statement.execute()
-        }
-    }
-
-    override suspend fun dropPaymentMethodTable() {
-        val sql = "DROP TABLE PaymentMethod;"
-        dbHelper.runSQL {
-            val statement = compileStatement(sql)
-            statement.execute()
-        }
-    }
-
     override suspend fun insertPaymentMethod(name: String) {
         val sql = "INSERT INTO PaymentMethod (name) VALUES (?)"
         dbHelper.runSQLWithWritableTransaction {
