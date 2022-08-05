@@ -13,18 +13,6 @@ import javax.inject.Singleton
 object HistoryUseCaseModule {
     @Provides
     @Singleton
-    fun providesDropHistoryTableUseCase(repository: HistoryRepository): DropHistoryTableUseCase {
-        return DropHistoryTableUseCase(repository)
-    }
-
-    @Provides
-    @Singleton
-    fun providesCreateHistoryTableUseCase(repository: HistoryRepository): CreateHistoryTableUseCase {
-        return CreateHistoryTableUseCase(repository)
-    }
-
-    @Provides
-    @Singleton
     fun providesDeleteAllHistoryUseCase(repository: HistoryRepository): DeleteAllHistoryUseCase {
         return DeleteAllHistoryUseCase(repository)
     }

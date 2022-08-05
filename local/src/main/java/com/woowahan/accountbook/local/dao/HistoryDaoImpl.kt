@@ -192,30 +192,6 @@ class HistoryDaoImpl @Inject constructor(
         }
     }
 
-    override suspend fun createHistoryTable() {
-        val sql =
-            "CREATE TABLE IF NOT EXISTS History (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "date INTEGER NOT NULL, " +
-                "amount INTEGER NOT NULL, " +
-                "content TEXT NOT NULL, " +
-                "category_id INTEGER REFERENCES Category(id), " +
-                "payment_method_id INTEGER REFERENCES PaymentMethod(id)" +
-            ");"
-        dbHelper.runSQL {
-            val statement = compileStatement(sql)
-            statement.execute()
-        }
-    }
-
-    override suspend fun dropHistoryTable() {
-        val sql = "DROP TABLE History;"
-        dbHelper.runSQL {
-            val statement = compileStatement(sql)
-            statement.execute()
-        }
-    }
-
     override suspend fun insertHistory(
         date: Long,
         amount: Long,

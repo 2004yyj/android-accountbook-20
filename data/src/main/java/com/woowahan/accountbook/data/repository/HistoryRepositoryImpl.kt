@@ -36,14 +36,6 @@ class HistoryRepositoryImpl @Inject constructor(
         return dataSource.getHistoryById(id)
     }
 
-    override suspend fun createHistoryTable() {
-        return dataSource.createHistoryTable()
-    }
-
-    override suspend fun dropHistoryTable() {
-        return dataSource.dropHistoryTable()
-    }
-
     override suspend fun insertHistory(
         date: Long,
         amount: Long,
