@@ -7,8 +7,6 @@ interface HistoryDao {
     suspend fun getTotalPayByMonthAndType(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: PaymentTypeData): Long
     suspend fun getAllHistoriesByMonthAndType(firstDayOfMonth: Long, firstDayOfNextMonth: Long): List<HistoryData>
     suspend fun getAllHistoriesByMonthAndType(firstDayOfMonth: Long, firstDayOfNextMonth: Long, type: PaymentTypeData): List<HistoryData>
-    suspend fun createHistoryTable()
-    suspend fun dropHistoryTable()
     suspend fun insertHistory(date: Long, amount: Long, content: String, category: CategoryData, paymentMethod: PaymentMethodData?)
     suspend fun updateHistory(id: Int, date: Long, amount: Long, content: String, category: CategoryData, paymentMethod: PaymentMethodData?)
     suspend fun deleteHistory(id: Int)

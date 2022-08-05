@@ -66,7 +66,7 @@ fun Main(viewModel: MainViewModel = viewModel()) {
         )
     val context = LocalContext.current
 
-    viewModel.createTables()
+    viewModel.insertDefaultData()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
